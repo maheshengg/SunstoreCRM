@@ -15,6 +15,11 @@ export const api = {
   updateParty: (id, data) => axios.put(`${API_URL}/parties/${id}`, data, { headers: getAuthHeader() }),
   deleteParty: (id) => axios.delete(`${API_URL}/parties/${id}`, { headers: getAuthHeader() }),
   exportPartiesCSV: () => axios.get(`${API_URL}/parties/export/csv`, { headers: getAuthHeader(), responseType: 'blob' }),
+  uploadPartiesCSV: (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return axios.post(`${API_URL}/parties/upload/csv`, formData, { headers: { ...getAuthHeader(), 'Content-Type': 'multipart/form-data' } });
+  },
 
   // Items
   getItems: (params) => axios.get(`${API_URL}/items`, { params, headers: getAuthHeader() }),
