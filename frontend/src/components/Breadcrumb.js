@@ -18,7 +18,7 @@ export const Breadcrumb = () => {
     '/quotations/new': 'New Quotation',
     '/proforma-invoices': 'Proforma Invoices',
     '/proforma-invoices/new': 'New Proforma Invoice',
-    '/soa': 'SOA',
+    '/soa': 'Sales Order Acknowledgement',
     '/soa/new': 'New SOA',
     '/reports': 'Reports',
     '/settings': 'Settings'
