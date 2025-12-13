@@ -52,7 +52,7 @@ export const Layout = ({ children }) => {
               <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center font-bold">
                 M
               </div>
-              <span className="font-bold text-lg tracking-tight hidden sm:block">Mahesh CRM</span>
+              <span className="font-bold text-lg tracking-tight hidden sm:block">SUNSTORE CRM</span>
             </Link>
           </div>
 
