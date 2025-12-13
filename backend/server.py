@@ -1217,13 +1217,17 @@ def generate_document_html(
     </head>
     <body>
         <div class="header">
-            <div class="company-name">SUNSTORE KOLHAPUR</div>
-            <div class="company-details">
-                Plot No. 1497, Shamrao Kapadi Complex, Opposite HDFC Bank, Konda Lane, Laxmipuri,<br>
-                Kolhapur - 416002, Maharashtra, India<br>
-                Phone: 0231 - 2644990 / 91 / 92 | Email: sales@sunstorekolhapur.com | Website: www.sunstorekolhapur.com<br>
-                <strong>GST ID: 27ABAFM4283A1ZL</strong>
+            {f'<img src="data:image/png;base64,{letterhead_base64}" alt="Letterhead" />' if letterhead_base64 else '''
+            <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px;">
+                <div class="company-name">SUNSTORE KOLHAPUR</div>
+                <div class="company-details">
+                    Plot No. 1497, Shamrao Kapadi Complex, Opposite HDFC Bank, Konda Lane, Laxmipuri,<br>
+                    Kolhapur - 416002, Maharashtra, India<br>
+                    Phone: 0231 - 2644990 / 91 / 92 | Email: sales@sunstorekolhapur.com<br>
+                    <strong>GST ID: 27ABAFM4283A1ZL</strong>
+                </div>
             </div>
+            '''}
         </div>
         
         <div class="doc-title">{doc_type}</div>
