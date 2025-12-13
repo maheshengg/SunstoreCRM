@@ -44,10 +44,10 @@ export const Login = () => {
       <Card className="w-full max-w-md relative z-10 shadow-2xl">
         <CardHeader className="space-y-2 text-center">
           <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl font-bold text-primary-foreground">M</span>
+            <span className="text-2xl font-bold text-primary-foreground">S</span>
           </div>
-          <CardTitle className="text-3xl font-bold tracking-tight">Mahesh CRM</CardTitle>
-          <CardDescription>Engineering Services Management</CardDescription>
+          <CardTitle className="text-3xl font-bold tracking-tight">SUNSTORE KOLHAPUR</CardTitle>
+          <CardDescription>CRM & ERP Management System</CardDescription>
         </CardHeader>
         
         <form onSubmit={handleSubmit}>
