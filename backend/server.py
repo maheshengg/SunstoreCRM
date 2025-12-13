@@ -1167,19 +1167,71 @@ async def update_settings(settings_data: SettingsBase, current_user: dict = Depe
 # ==================== DASHBOARD ====================
 
 @api_router.get("/dashboard/stats")
-async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
+async def get_dashboard_stats(
+    user_id: Optional[str] = None,
+    period: Optional[str] = "weekly",
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    # Calculate date range based on period
+    date_filter = {}
+    if period and period != "all_time":
+        current_date = datetime.now(timezone.utc)
+        
+        if period == "weekly":
+            start_date = current_date - timedelta(days=7)
+        elif period == "monthly":
+            start_date = current_date - timedelta(days=30)
+        elif period == "ytd":  # Financial Year: April 1 to today
+            current_year = current_date.year
+            if current_date.month >= 4:
+                start_date = datetime(current_year, 4, 1, tzinfo=timezone.utc)
+            else:
+                start_date = datetime(current_year - 1, 4, 1, tzinfo=timezone.utc)
+        elif period == "custom" and from_date and to_date:
+            start_date = datetime.fromisoformat(from_date).replace(tzinfo=timezone.utc)
+            current_date = datetime.fromisoformat(to_date).replace(tzinfo=timezone.utc)
+        else:
+            start_date = None
+        
+        if start_date:
+            date_filter = {"$gte": start_date.isoformat(), "$lte": current_date.isoformat()}
+    
+    # Build query filter
     query_filter = {}
+    
+    # User filter (Admin can filter by user, Sales User sees only their data)
     if current_user["role"] != "Admin":
         query_filter["created_by_user_id"] = current_user["user_id"]
+    elif user_id and user_id != "ALL":
+        query_filter["created_by_user_id"] = user_id
+    
+    # Apply date filter to documents with dates
+    lead_filter = query_filter.copy()
+    if date_filter:
+        lead_filter["lead_date"] = date_filter
+    
+    quotation_filter = query_filter.copy()
+    if date_filter:
+        quotation_filter["date"] = date_filter
+    
+    pi_filter = query_filter.copy()
+    if date_filter:
+        pi_filter["date"] = date_filter
+    
+    soa_filter = query_filter.copy()
+    if date_filter:
+        soa_filter["date"] = date_filter
     
     stats = {
         "parties": await db.parties.count_documents({}),
         "items": await db.items.count_documents({}),
-        "leads": await db.leads.count_documents(query_filter),
-        "quotations": await db.quotations.count_documents(query_filter),
-        "proforma_invoices": await db.proforma_invoices.count_documents(query_filter),
-        "soa": await db.soa.count_documents(query_filter),
-        "open_leads": await db.leads.count_documents({**query_filter, "status": "Open"})
+        "leads": await db.leads.count_documents(lead_filter),
+        "quotations": await db.quotations.count_documents(quotation_filter),
+        "proforma_invoices": await db.proforma_invoices.count_documents(pi_filter),
+        "soa": await db.soa.count_documents(soa_filter),
+        "open_leads": await db.leads.count_documents({**lead_filter, "status": "Open"})
     }
     
     return stats
