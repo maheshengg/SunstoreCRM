@@ -1161,7 +1161,7 @@ async def generate_soa_pdf(soa_id: str, current_user: dict = Depends(get_current
     grand_total = sum(item["total_amount"] for item in soa["items"])
     
     html_content = generate_document_html(
-        doc_type="STATEMENT OF ACCOUNTS",
+        doc_type="SALES ORDER ACKNOWLEDGEMENT",
         doc_no=soa["soa_no"],
         doc_date=soa["date"],
         party=party,
