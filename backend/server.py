@@ -311,7 +311,7 @@ async def forgot_password(request: ForgotPasswordRequest):
                 <p>This token will expire in 1 hour.</p>
                 <p>If you didn't request this, please ignore this email.</p>
                 <br>
-                <p>Regards,<br>Mahesh Engineering Services</p>
+                <p>Regards,<br>SUNSTORE KOLHAPUR</p>
             </body>
             </html>
             """
