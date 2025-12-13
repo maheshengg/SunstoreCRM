@@ -1,0 +1,26 @@
+party_id,party_name,address,city,state,pincode,GST_number,contact_person,mobile,email,status
+PTY0001,BGL Enterprises,"Plot 10, Industrial Estate",Sangli,Maharashtra,400100,27AABB1001E1Z2,Contact Person 1,9820010000,contact1@bglenterprises.com,Active
+PTY0002,CHM Manufacturing,"Plot 20, Industrial Estate",Sangli,Maharashtra,400200,27AABC1002F1Z3,Contact Person 2,9820020000,contact2@chmmanufacturing.com,Active
+PTY0003,DIN Traders,"Plot 30, Industrial Estate",Pune,Maharashtra,400300,27AABD1003G1Z4,Contact Person 3,9820030000,contact3@dintraders.com,Active
+PTY0004,EJO Industries,"Plot 40, Industrial Estate",Mumbai,Maharashtra,400400,27AABE1004H1Z5,Contact Person 4,9820040000,contact4@ejoindustries.com,Active
+PTY0005,FKP Manufacturing,"Plot 50, Industrial Estate",Sangli,Maharashtra,400500,27AABF1005I1Z6,Contact Person 5,9820050000,contact5@fkpmanufacturing.com,Active
+PTY0006,GLQ Industries,"Plot 60, Industrial Estate",Karad,Maharashtra,400600,27AABG1006J1Z7,Contact Person 6,9820060000,contact6@glqindustries.com,Active
+PTY0007,HMR Manufacturing,"Plot 70, Industrial Estate",Satara,Maharashtra,400700,27AABH1007K1Z8,Contact Person 7,9820070000,contact7@hmrmanufacturing.com,Active
+PTY0008,INS Manufacturing,"Plot 80, Industrial Estate",Pune,Maharashtra,400800,27AABI1008L1Z9,Contact Person 8,9820080000,contact8@insmanufacturing.com,Active
+PTY0009,JOT Enterprises,"Plot 90, Industrial Estate",Karad,Maharashtra,400900,27AABJ1009M1Z1,Contact Person 9,9820090000,contact9@jotenterprises.com,Active
+PTY0010,KPU Engineering,"Plot 100, Industrial Estate",Kolhapur,Maharashtra,401000,27AABK1010N1Z2,Contact Person 10,9820100000,contact10@kpuengineering.com,Active
+PTY0011,LQV Manufacturing,"Plot 110, Industrial Estate",Pune,Maharashtra,401100,27AABL1011O1Z3,Contact Person 11,9820110000,contact11@lqvmanufacturing.com,Active
+PTY0012,MRW Works,"Plot 120, Industrial Estate",Mumbai,Maharashtra,401200,27AABM1012P1Z4,Contact Person 12,9820120000,contact12@mrwworks.com,Active
+PTY0013,NSX Engineering,"Plot 130, Industrial Estate",Sangli,Maharashtra,401300,27AABN1013Q1Z5,Contact Person 13,9820130000,contact13@nsxengineering.com,Active
+PTY0014,OTY Industries,"Plot 140, Industrial Estate",Pune,Maharashtra,401400,27AABO1014R1Z6,Contact Person 14,9820140000,contact14@otyindustries.com,Active
+PTY0015,PUZ Solutions,"Plot 150, Industrial Estate",Karad,Maharashtra,401500,27AABP1015S1Z7,Contact Person 15,9820150000,contact15@puzsolutions.com,Active
+PTY0016,QVA Engineering,"Plot 160, Industrial Estate",Ichalkaranji,Maharashtra,401600,27AABQ1016T1Z8,Contact Person 16,9820160000,contact16@qvaengineering.com,Active
+PTY0017,RWB Manufacturing,"Plot 170, Industrial Estate",Karad,Maharashtra,401700,27AABR1017U1Z9,Contact Person 17,9820170000,contact17@rwbmanufacturing.com,Active
+PTY0018,SXC Engineering,"Plot 180, Industrial Estate",Karad,Maharashtra,401800,27AABS1018V1Z1,Contact Person 18,9820180000,contact18@sxcengineering.com,Active
+PTY0019,TYD Traders,"Plot 190, Industrial Estate",Hubli,Karnataka,401900,29AABT1019W1Z2,Contact Person 19,9820190000,contact19@tydtraders.com,Active
+PTY0020,UZE Manufacturing,"Plot 200, Industrial Estate",Chennai,Tamil Nadu,402000,33AABU1020X1Z3,Contact Person 20,9820200000,contact20@uzemanufacturing.com,Active
+PTY0021,VAF Engineering,"Plot 210, Industrial Estate",Belgaum,Karnataka,402100,29AABV1021Y1Z4,Contact Person 21,9820210000,contact21@vafengineering.com,Active
+PTY0022,WBG Traders,"Plot 220, Industrial Estate",Hubli,Karnataka,402200,29AABW1022Z1Z5,Contact Person 22,9820220000,contact22@wbgtraders.com,Active
+PTY0023,XCH Works,"Plot 230, Industrial Estate",Hubli,Karnataka,402300,29AABX1023A1Z6,Contact Person 23,9820230000,contact23@xchworks.com,Active
+PTY0024,YDI Engineering,"Plot 240, Industrial Estate",Belgaum,Karnataka,402400,29AABY1024B1Z7,Contact Person 24,9820240000,contact24@ydiengineering.com,Active
+PTY0025,ZEJ Enterprises,"Plot 250, Industrial Estate",Goa,Goa,402500,30AABZ1025C1Z8,Contact Person 25,9820250000,contact25@zejenterprises.com,Active

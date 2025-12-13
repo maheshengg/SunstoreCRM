@@ -1,0 +1,61 @@
+item_id,item_code,item_name,description,UOM,rate,HSN,GST_percent,brand,category
+ITM0001,WRE-1.5MM,Copper Wire 1.5mm,Single core copper wire,Meter,12.0,85444900,18.0,Polycab,Electrical
+ITM0002,WRE-2.5MM,Copper Wire 2.5mm,Single core copper wire,Meter,18.0,85444900,18.0,Polycab,Electrical
+ITM0003,WRE-4MM,Copper Wire 4mm,Single core copper wire,Meter,28.0,85444900,18.0,Polycab,Electrical
+ITM0004,CBL-3C-1.5,3 Core Cable 1.5mm,Flexible cable,Meter,35.0,85444900,18.0,Havells,Electrical
+ITM0005,CBL-3C-2.5,3 Core Cable 2.5mm,Flexible cable,Meter,52.0,85444900,18.0,Havells,Electrical
+ITM0006,CBL-4C-2.5,4 Core Cable 2.5mm,Flexible cable,Meter,68.0,85444900,18.0,Havells,Electrical
+ITM0007,MCB-16A,MCB 16 Amp,Miniature Circuit Breaker,Nos,85.0,85363010,18.0,Schneider,Electrical
+ITM0008,MCB-32A,MCB 32 Amp,Miniature Circuit Breaker,Nos,95.0,85363010,18.0,Schneider,Electrical
+ITM0009,RCCB-25A,RCCB 25 Amp,Residual Current Circuit Breaker,Nos,450.0,85363010,18.0,Schneider,Electrical
+ITM0010,RCCB-40A,RCCB 40 Amp,Residual Current Circuit Breaker,Nos,520.0,85363010,18.0,Schneider,Electrical
+ITM0011,SWT-1WAY,Switch 1 Way,Modular switch,Nos,45.0,85365090,18.0,Legrand,Electrical
+ITM0012,SWT-2WAY,Switch 2 Way,Modular switch,Nos,52.0,85365090,18.0,Legrand,Electrical
+ITM0013,SKT-6A,Socket 6 Amp,Modular socket,Nos,55.0,85366990,18.0,Legrand,Electrical
+ITM0014,SKT-16A,Socket 16 Amp,Modular socket,Nos,75.0,85366990,18.0,Legrand,Electrical
+ITM0015,LED-9W,LED Bulb 9W,LED lamp,Nos,95.0,85395000,18.0,Philips,Electrical
+ITM0016,LED-12W,LED Bulb 12W,LED lamp,Nos,125.0,85395000,18.0,Philips,Electrical
+ITM0017,TUB-20W,LED Tube 20W,LED tube light,Nos,225.0,85395000,18.0,Bajaj,Electrical
+ITM0018,TUB-40W,LED Tube 40W,LED tube light,Nos,295.0,85395000,18.0,Bajaj,Electrical
+ITM0019,FAN-1200,Ceiling Fan 1200mm,Ceiling fan,Nos,1250.0,84145910,18.0,Crompton,Electrical
+ITM0020,FAN-1400,Ceiling Fan 1400mm,Ceiling fan,Nos,1450.0,84145910,18.0,Crompton,Electrical
+ITM0021,PIP-1IN,PVC Pipe 1 inch,PVC pressure pipe,Meter,55.0,39172900,18.0,Supreme,Plumbing
+ITM0022,PIP-2IN,PVC Pipe 2 inch,PVC pressure pipe,Meter,85.0,39172900,18.0,Supreme,Plumbing
+ITM0023,PIP-3IN,PVC Pipe 3 inch,PVC pressure pipe,Meter,125.0,39172900,18.0,Supreme,Plumbing
+ITM0024,PIP-4IN,PVC Pipe 4 inch,PVC pressure pipe,Meter,185.0,39172900,18.0,Supreme,Plumbing
+ITM0025,ELB-1IN,Elbow 1 inch,PVC elbow,Nos,15.0,39174000,18.0,Ashirvad,Plumbing
+ITM0026,ELB-2IN,Elbow 2 inch,PVC elbow,Nos,25.0,39174000,18.0,Ashirvad,Plumbing
+ITM0027,TEE-1IN,Tee 1 inch,PVC tee,Nos,18.0,39174000,18.0,Ashirvad,Plumbing
+ITM0028,TEE-2IN,Tee 2 inch,PVC tee,Nos,32.0,39174000,18.0,Ashirvad,Plumbing
+ITM0029,VAL-1IN,Ball Valve 1 inch,Brass ball valve,Nos,285.0,84813000,18.0,Jaquar,Plumbing
+ITM0030,VAL-2IN,Ball Valve 2 inch,Brass ball valve,Nos,450.0,84813000,18.0,Jaquar,Plumbing
+ITM0031,TAP-BIB,Bib Tap,Chrome plated tap,Nos,195.0,84818090,18.0,Jaquar,Plumbing
+ITM0032,TAP-PIL,Pillar Tap,Chrome plated tap,Nos,225.0,84818090,18.0,Jaquar,Plumbing
+ITM0033,SNK-SS,Stainless Steel Sink,Kitchen sink,Nos,2250.0,73211190,18.0,Nirali,Plumbing
+ITM0034,WC-EWC,EWC Toilet Seat,European water closet,Set,4500.0,69101000,18.0,Hindware,Plumbing
+ITM0035,WSH-WHB,Wash Basin,Wall mounted basin,Nos,1850.0,69101000,18.0,Hindware,Plumbing
+ITM0036,BRG-6205,Ball Bearing 6205,Deep groove ball bearing,Nos,150.0,84821000,18.0,SKF,Hardware
+ITM0037,BRG-6206,Ball Bearing 6206,Deep groove ball bearing,Nos,180.0,84821000,18.0,SKF,Hardware
+ITM0038,BRG-6207,Ball Bearing 6207,Deep groove ball bearing,Nos,220.0,84821000,18.0,SKF,Hardware
+ITM0039,BLT-M8,Hex Bolt M8x40,High tensile hex bolt,Nos,15.0,73181500,18.0,Unbrako,Hardware
+ITM0040,BLT-M10,Hex Bolt M10x50,High tensile hex bolt,Nos,20.0,73181500,18.0,Unbrako,Hardware
+ITM0041,BLT-M12,Hex Bolt M12x60,High tensile hex bolt,Nos,25.0,73181500,18.0,Unbrako,Hardware
+ITM0042,NUT-M8,Hex Nut M8,Heavy hex nut,Nos,10.0,73181600,18.0,Unbrako,Hardware
+ITM0043,NUT-M10,Hex Nut M10,Heavy hex nut,Nos,12.0,73181600,18.0,Unbrako,Hardware
+ITM0044,NUT-M12,Hex Nut M12,Heavy hex nut,Nos,15.0,73181600,18.0,Unbrako,Hardware
+ITM0045,WSH-M8,Spring Washer M8,Spring lock washer,Nos,5.0,73182100,18.0,Generic,Hardware
+ITM0046,WSH-M10,Spring Washer M10,Spring lock washer,Nos,6.0,73182100,18.0,Generic,Hardware
+ITM0047,WSH-M12,Spring Washer M12,Spring lock washer,Nos,8.0,73182100,18.0,Generic,Hardware
+ITM0048,CHN-8MM,Chain 8mm,Mild steel chain,Meter,45.0,73151290,18.0,Generic,Hardware
+ITM0049,ANK-10MM,Anchor Bolt 10mm,Expansion anchor,Nos,18.0,73181900,18.0,Hilti,Hardware
+ITM0050,ANK-12MM,Anchor Bolt 12mm,Expansion anchor,Nos,22.0,73181900,18.0,Hilti,Hardware
+ITM0051,PLY-6MM,Plywood 6mm,Commercial grade plywood,Sheet,1200.0,44121000,18.0,Century,Building
+ITM0052,PLY-9MM,Plywood 9mm,Commercial grade plywood,Sheet,1650.0,44121000,18.0,Century,Building
+ITM0053,PLY-12MM,Plywood 12mm,Commercial grade plywood,Sheet,2100.0,44121000,18.0,Century,Building
+ITM0054,PNT-5L,Enamel Paint 5L,Exterior enamel paint,Can,1450.0,32089090,18.0,Asian Paints,Building
+ITM0055,PNT-10L,Enamel Paint 10L,Exterior enamel paint,Can,2500.0,32089090,18.0,Asian Paints,Building
+ITM0056,PNT-20L,Enamel Paint 20L,Exterior enamel paint,Can,4750.0,32089090,18.0,Asian Paints,Building
+ITM0057,CEM-50KG,Cement OPC 50kg,Ordinary Portland cement,Bag,385.0,25232900,18.0,UltraTech,Building
+ITM0058,SND-CFT,Sand,Construction sand,CFT,45.0,25051000,18.0,Local,Building
+ITM0059,AGG-10MM,Aggregate 10mm,Crushed stone aggregate,CFT,55.0,25171000,18.0,Local,Building
+ITM0060,AGG-20MM,Aggregate 20mm,Crushed stone aggregate,CFT,52.0,25171000,18.0,Local,Building
