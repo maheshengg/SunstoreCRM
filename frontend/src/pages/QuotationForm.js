@@ -94,10 +94,13 @@ export const QuotationForm = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div><Label>Party *</Label>
-                <Select value={formData.party_id} onValueChange={v => setFormData({...formData, party_id: v})} required>
-                  <SelectTrigger><SelectValue placeholder="Select party" /></SelectTrigger>
-                  <SelectContent>{parties.map(p => <SelectItem key={p.party_id} value={p.party_id}>{p.party_name}</SelectItem>)}</SelectContent>
-                </Select>
+                <SearchableSelect
+                  options={parties.map(p => ({ value: p.party_id, label: `${p.party_name} (${p.city})` }))}
+                  value={formData.party_id}
+                  onChange={v => setFormData({...formData, party_id: v})}
+                  placeholder="Select party..."
+                  searchPlaceholder="Search parties..."
+                />
               </div>
               <div><Label>Date</Label><Input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} /></div>
               <div><Label>Validity (days)</Label><Input type="number" value={formData.validity_days} onChange={e => setFormData({...formData, validity_days: parseInt(e.target.value)})} /></div>
