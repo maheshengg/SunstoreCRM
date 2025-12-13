@@ -1085,10 +1085,10 @@ def generate_document_html(
         items_html += f"""
         <tr>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 10px;">{idx}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('item_id', '')}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">HSN/SAC CODE</td>
-            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">Description will come here</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{item['qty']:.1f}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('item_name', item.get('item_id', ''))}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('hsn', '')}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('description', '')}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{item['qty']:.1f} {item.get('uom', 'Nos')}</td>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{list_price:.2f}</td>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{discount:.2f}%</td>
             <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{rate:.2f}</td>
