@@ -110,10 +110,13 @@ export const QuotationForm = () => {
               <Label>Items</Label>
               {formData.items.map((item, idx) => (
                 <div key={idx} className="grid grid-cols-6 gap-2 items-end">
-                  <Select value={item.item_id} onValueChange={v => updateItem(idx, 'item_id', v)}>
-                    <SelectTrigger><SelectValue placeholder="Select item" /></SelectTrigger>
-                    <SelectContent>{items.map(i => <SelectItem key={i.item_id} value={i.item_id}>{i.item_name}</SelectItem>)}</SelectContent>
-                  </Select>
+                  <SearchableSelect
+                    options={items.map(i => ({ value: i.item_id, label: `${i.item_name} (${i.item_code})` }))}
+                    value={item.item_id}
+                    onChange={v => updateItem(idx, 'item_id', v)}
+                    placeholder="Select item..."
+                    searchPlaceholder="Search items..."
+                  />
                   <Input type="number" placeholder="Qty" value={item.qty} onChange={e => updateItem(idx, 'qty', parseFloat(e.target.value))} />
                   <Input type="number" placeholder="Rate" value={item.rate} onChange={e => updateItem(idx, 'rate', parseFloat(e.target.value))} />
                   <Input type="number" placeholder="Disc%" value={item.discount_percent} onChange={e => updateItem(idx, 'discount_percent', parseFloat(e.target.value))} />
