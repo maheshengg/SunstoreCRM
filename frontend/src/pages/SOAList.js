@@ -42,7 +42,7 @@ export const SOAList = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Statement of Accounts</h1>
+        <h1 className="text-3xl font-bold">Sales Order Acknowledgement</h1>
         <Button onClick={() => navigate('/soa/new')}><Plus size={16} className="mr-2" />New SOA</Button>
       </div>
 
