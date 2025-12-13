@@ -83,6 +83,22 @@ export const Parties = () => {
             <Download size={16} />
             Export CSV
           </Button>
+          <Button 
+            data-testid="import-csv-btn" 
+            variant="outline" 
+            onClick={() => document.getElementById('party-csv-upload').click()} 
+            className="gap-2"
+          >
+            <Upload size={16} />
+            Import CSV
+          </Button>
+          <input
+            id="party-csv-upload"
+            type="file"
+            accept=".csv"
+            onChange={handleFileUpload}
+            style={{ display: 'none' }}
+          />
           <Button data-testid="add-party-btn" onClick={() => navigate('/parties/new')} className="gap-2">
             <Plus size={16} />
             Add Party
