@@ -63,10 +63,13 @@ export const LeadForm = () => {
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div><Label>Party *</Label>
-              <Select value={formData.party_id} onValueChange={v => setFormData({...formData, party_id: v})} required>
-                <SelectTrigger><SelectValue placeholder="Select party" /></SelectTrigger>
-                <SelectContent>{parties.map(p => <SelectItem key={p.party_id} value={p.party_id}>{p.party_name}</SelectItem>)}</SelectContent>
-              </Select>
+              <SearchableSelect
+                options={parties.map(p => ({ value: p.party_id, label: `${p.party_name} (${p.city})` }))}
+                value={formData.party_id}
+                onChange={v => setFormData({...formData, party_id: v})}
+                placeholder="Select party..."
+                searchPlaceholder="Search parties..."
+              />
             </div>
             <div><Label>Contact Name *</Label><Input value={formData.contact_name} onChange={e => setFormData({...formData, contact_name: e.target.value})} required /></div>
             <div><Label>Requirement Summary *</Label><Textarea value={formData.requirement_summary} onChange={e => setFormData({...formData, requirement_summary: e.target.value})} required /></div>
