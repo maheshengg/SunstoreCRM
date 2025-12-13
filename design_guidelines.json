@@ -1,0 +1,137 @@
+{
+  "identity": {
+    "name": "Mahesh Engineering Services CRM",
+    "archetype": "Soft Utility (Industrial Variant)",
+    "vibe": "Precision, Reliability, Efficiency",
+    "principles": [
+      "Mobile First: Every pixel must be touch-friendly (44px+ targets).",
+      "Data Density vs. Clarity: Use collapsible sections (accordions) to manage density on mobile.",
+      "Industrial Contrast: High contrast for readability in variable lighting conditions (shop floor vs office).",
+      "Speed: One-tap actions for common tasks (Quick Create)."
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "heading": "Manrope",
+      "body": "Inter",
+      "mono": "JetBrains Mono"
+    },
+    "weights": {
+      "heading": "font-bold",
+      "body": "font-normal",
+      "emphasis": "font-semibold"
+    },
+    "sizes": {
+      "h1": "text-3xl md:text-4xl tracking-tight",
+      "h2": "text-2xl md:text-3xl tracking-tight",
+      "h3": "text-xl md:text-2xl tracking-tight",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm text-muted-foreground",
+      "tiny": "text-xs uppercase tracking-wider"
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "DEFAULT": "#0F172A",
+        "foreground": "#F8FAFC"
+      },
+      "secondary": {
+        "DEFAULT": "#F1F5F9",
+        "foreground": "#0F172A"
+      },
+      "accent": {
+        "DEFAULT": "#F59E0B",
+        "foreground": "#FFFFFF"
+      },
+      "muted": {
+        "DEFAULT": "#F8FAFC",
+        "foreground": "#64748B"
+      },
+      "destructive": {
+        "DEFAULT": "#EF4444",
+        "foreground": "#FFFFFF"
+      },
+      "background": "#FFFFFF",
+      "foreground": "#0F172A",
+      "border": "#E2E8F0"
+    },
+    "usage": {
+      "primary_action": "bg-primary text-primary-foreground hover:bg-primary/90",
+      "secondary_action": "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      "status_pending": "bg-amber-100 text-amber-800 border-amber-200",
+      "status_success": "bg-emerald-100 text-emerald-800 border-emerald-200",
+      "status_error": "bg-red-100 text-red-800 border-red-200"
+    }
+  },
+  "layout": {
+    "grid_system": {
+      "dashboard": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4",
+      "form": "grid grid-cols-1 gap-6 max-w-2xl mx-auto",
+      "card_grid": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    },
+    "spacing": {
+      "page_padding": "p-4 md:p-8",
+      "section_gap": "gap-8",
+      "component_padding": "p-6"
+    },
+    "containers": {
+      "main": "container mx-auto max-w-7xl",
+      "narrow": "container mx-auto max-w-3xl"
+    }
+  },
+  "components": {
+    "buttons": {
+      "default": "h-12 px-6 rounded-lg font-medium transition-all active:scale-95",
+      "icon": "h-12 w-12 rounded-full flex items-center justify-center",
+      "mobile_fab": "fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-xl bg-primary text-white z-50 flex items-center justify-center"
+    },
+    "cards": {
+      "default": "bg-white border border-border rounded-xl shadow-sm hover:shadow-md transition-shadow",
+      "interactive": "cursor-pointer hover:border-primary/50 transition-colors"
+    },
+    "inputs": {
+      "default": "h-12 rounded-lg border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+      "mobile_optimized": "text-base"
+    }
+  },
+  "visual_enhancers": {
+    "shadows": {
+      "soft": "shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
+      "float": "shadow-[0_8px_30px_rgba(0,0,0,0.12)]"
+    },
+    "borders": {
+      "subtle": "border border-slate-200",
+      "active": "border-l-4 border-l-primary"
+    },
+    "radius": {
+      "default": "rounded-lg",
+      "large": "rounded-xl",
+      "pill": "rounded-full"
+    }
+  },
+  "image_urls": {
+    "login_bg": "https://images.unsplash.com/photo-1583737097428-af53774819a2?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "dashboard_hero": "https://images.unsplash.com/photo-1759159091728-e2c87b9d9315?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "factory_floor": "https://images.unsplash.com/photo-1697281679290-ad7be1b10682?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "machinery": "https://images.unsplash.com/photo-1699791914755-78826dec1c40?crop=entropy&cs=srgb&fm=jpg&q=85"
+  },
+  "instructions_to_main_agent": [
+    "MOBILE FIRST: Always test layouts on 375px width. Use 'hidden md:block' for desktop-only elements.",
+    "TOUCH TARGETS: Ensure all clickable elements are at least 44x44px.",
+    "FORMS: Use 'inputmode' attributes (numeric, decimal, email) for better mobile keyboard experience.",
+    "DATA DISPLAY: On mobile, use 'Card Lists' instead of wide tables. Only use tables on desktop (md+).",
+    "NAVIGATION: Use a bottom navigation bar for mobile and a sidebar for desktop.",
+    "PDF GENERATION: Ensure generated PDFs are A4 size but the preview is responsive.",
+    "THEME: Default to Light Mode for better readability in bright industrial environments, but support Dark Mode.",
+    "TESTING: Add 'data-testid' to all interactive elements."
+  ],
+  "universal_guidelines": [
+    "Do not use generic centered layouts.",
+    "Create depth through layered design elements.",
+    "Use glass-morphism effects sparingly, mostly for overlays.",
+    "Every interaction needs micro-animations.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "Use 'sonner' for toasts."
+  ]
+}
