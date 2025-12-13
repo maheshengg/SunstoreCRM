@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Plus } from 'lucide-react';
+import { Plus, FileDown, Edit } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const SOAList = () => {
@@ -23,6 +23,22 @@ export const SOAList = () => {
     }
   };
 
+  const handleDownloadPDF = async (id, soa_no) => {
+    try {
+      const response = await api.downloadSOAPDF(id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `soa_${soa_no}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('PDF downloaded successfully');
+    } catch (error) {
+      toast.error('Failed to download PDF');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -34,7 +50,20 @@ export const SOAList = () => {
         {soas.map(soa => (
           <Card key={soa.soa_id}>
             <CardHeader><CardTitle>{soa.soa_no}</CardTitle></CardHeader>
-            <CardContent><p className="text-sm">Date: {new Date(soa.date).toLocaleDateString()}</p></CardContent>
+            <CardContent className="space-y-2">
+              <p className="text-sm">Date: {new Date(soa.date).toLocaleDateString()}</p>
+              <p className="text-sm">Confirmation: {soa.party_confirmation_ID}</p>
+              <div className="flex gap-2 pt-2">
+                <Button size="sm" variant="outline" onClick={() => navigate(`/soa/${soa.soa_id}`)}>
+                  <Edit size={14} className="mr-1" />
+                  Edit
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(soa.soa_id, soa.soa_no)}>
+                  <FileDown size={14} className="mr-1" />
+                  PDF
+                </Button>
+              </div>
+            </CardContent>
           </Card>
         ))}
       </div>
