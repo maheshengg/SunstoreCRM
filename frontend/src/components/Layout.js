@@ -127,6 +127,7 @@ export const Layout = ({ children }) => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
+        <Breadcrumb />
         {children}
       </div>
 
