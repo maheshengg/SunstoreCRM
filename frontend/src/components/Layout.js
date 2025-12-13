@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Home, Users, Package, FileText, File, FileCheck, FileBarChart, Settings, LogOut, Menu, X, BarChart3, Plus } from 'lucide-react';
 import { Button } from './ui/button';
+import { Breadcrumb } from './Breadcrumb';
 import {
   DropdownMenu,
   DropdownMenuContent,
