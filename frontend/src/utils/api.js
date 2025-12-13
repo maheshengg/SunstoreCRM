@@ -60,8 +60,8 @@ export const api = {
   downloadSOAPDF: (id) => axios.get(`${API_URL}/soa/${id}/pdf`, { headers: getAuthHeader(), responseType: 'blob' }),
 
   // Dashboard
-  getDashboardStats: () => axios.get(`${API_URL}/dashboard/stats`, { headers: getAuthHeader() }),
-  getRecentActivity: () => axios.get(`${API_URL}/dashboard/activity`, { headers: getAuthHeader() }),
+  getDashboardStats: (params) => axios.get(`${API_URL}/dashboard/stats`, { params, headers: getAuthHeader() }),
+  getRecentActivity: (params) => axios.get(`${API_URL}/dashboard/activity`, { params, headers: getAuthHeader() }),
 
   // Settings
   getSettings: () => axios.get(`${API_URL}/settings`, { headers: getAuthHeader() }),
