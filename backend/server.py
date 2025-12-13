@@ -980,6 +980,18 @@ async def generate_pi_pdf(pi_id: str, current_user: dict = Depends(get_current_u
             enriched_item['uom'] = item_details.get('UOM', 'Nos')
         enriched_items.append(enriched_item)
     
+    # Enrich items with full details from item master
+    enriched_items = []
+    for item in pi["items"]:
+        item_details = await db.items.find_one({"item_id": item["item_id"]}, {"_id": 0})
+        enriched_item = item.copy()
+        if item_details:
+            enriched_item['hsn'] = item_details.get('HSN', '')
+            enriched_item['description'] = item_details.get('description', '')
+            enriched_item['item_name'] = item_details.get('item_name', '')
+            enriched_item['uom'] = item_details.get('UOM', 'Nos')
+        enriched_items.append(enriched_item)
+    
     # Calculate totals
     subtotal = sum(item["taxable_amount"] for item in pi["items"])
     tax_total = sum(item["tax_amount"] for item in pi["items"])
