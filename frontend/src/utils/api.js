@@ -34,6 +34,7 @@ export const api = {
   createLead: (data) => axios.post(`${API_URL}/leads`, data, { headers: getAuthHeader() }),
   updateLead: (id, data) => axios.put(`${API_URL}/leads/${id}`, data, { headers: getAuthHeader() }),
   convertLead: (id) => axios.post(`${API_URL}/leads/${id}/convert`, {}, { headers: getAuthHeader() }),
+  downloadLeadPDF: (id) => axios.get(`${API_URL}/leads/${id}/pdf`, { headers: getAuthHeader(), responseType: 'blob' }),
 
   // Quotations
   getQuotations: (params) => axios.get(`${API_URL}/quotations`, { params, headers: getAuthHeader() }),
