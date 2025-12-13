@@ -1018,6 +1018,11 @@ async def generate_soa_pdf(soa_id: str, current_user: dict = Depends(get_current
         headers={"Content-Disposition": f"attachment; filename=soa_{soa['soa_no']}.pdf"}
     )
 
+async def get_item_details(item_id: str):
+    """Fetch item details from database"""
+    item = await db.items.find_one({"item_id": item_id}, {"_id": 0})
+    return item if item else {}
+
 def generate_document_html(
     doc_type: str,
     doc_no: str,
@@ -1033,29 +1038,85 @@ def generate_document_html(
     party_confirmation_id: str = "",
     is_soa: bool = False
 ):
+    # Build items table rows
     items_html = ""
     for idx, item in enumerate(items, 1):
+        # Calculate list price (before discount)
+        rate = item['rate']
+        discount = item.get('discount_percent', 0)
+        list_price = rate / (1 - discount / 100) if discount > 0 else rate
+        
         items_html += f"""
         <tr>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{idx}</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">{item.get('item_id', '')}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">{item['qty']}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">{item['rate']:.2f}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">{item.get('discount_percent', 0):.1f}%</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">{item['taxable_amount']:.2f}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{item['tax_type']}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">{item['tax_amount']:.2f}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right;"><strong>{item['total_amount']:.2f}</strong></td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 10px;">{idx}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('item_id', '')}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">HSN/SAC CODE</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">Description will come here</td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{item['qty']:.1f}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{list_price:.2f}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{discount:.2f}%</td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{rate:.2f}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;"><strong>₹{item['taxable_amount']:.2f}</strong></td>
         </tr>
         """
     
+    # Build tax table rows (group by HSN)
+    hsn_groups = {}
+    for item in items:
+        hsn = "HSN/SAC"  # Will be replaced with actual HSN from item details
+        if hsn not in hsn_groups:
+            hsn_groups[hsn] = {
+                'taxable': 0,
+                'sgst': 0,
+                'cgst': 0,
+                'igst': 0,
+                'tax_type': item['tax_type']
+            }
+        hsn_groups[hsn]['taxable'] += item['taxable_amount']
+        
+        if item['tax_type'] == 'CGST+SGST':
+            hsn_groups[hsn]['sgst'] += item['tax_amount'] / 2
+            hsn_groups[hsn]['cgst'] += item['tax_amount'] / 2
+        else:
+            hsn_groups[hsn]['igst'] += item['tax_amount']
+    
+    tax_rows_html = ""
+    total_sgst = 0
+    total_cgst = 0
+    total_igst = 0
+    
+    for hsn, values in hsn_groups.items():
+        if values['tax_type'] == 'CGST+SGST':
+            sgst_rate = (values['sgst'] / values['taxable'] * 100) if values['taxable'] > 0 else 9.0
+            cgst_rate = (values['cgst'] / values['taxable'] * 100) if values['taxable'] > 0 else 9.0
+            tax_rows_html += f"""
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{hsn}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{values['taxable']:,.2f}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 10px;">({sgst_rate:.1f}%) ₹{values['sgst']:,.2f}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 10px;">({cgst_rate:.1f}%) ₹{values['cgst']:,.2f}</td>
+            </tr>
+            """
+            total_sgst += values['sgst']
+            total_cgst += values['cgst']
+        else:
+            igst_rate = (values['igst'] / values['taxable'] * 100) if values['taxable'] > 0 else 18.0
+            tax_rows_html += f"""
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{hsn}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{values['taxable']:,.2f}</td>
+                <td colspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 10px;">IGST ({igst_rate:.1f}%) ₹{values['igst']:,.2f}</td>
+            </tr>
+            """
+            total_igst += values['igst']
+    
     confirmation_row = ""
     if is_soa and party_confirmation_id:
-        confirmation_row = f"<p><strong>Party Confirmation ID:</strong> {party_confirmation_id}</p>"
+        confirmation_row = f"<p style='margin: 10px 0;'><strong>Party Confirmation ID:</strong> {party_confirmation_id}</p>"
     
     footer_note = ""
     if is_soa:
-        footer_note = '<p style="text-align: center; margin-top: 30px; font-style: italic; color: #666;">This is a computer-generated document. No signature is required.</p>'
+        footer_note = '<p style="text-align: center; margin-top: 30px; font-style: italic; color: #666; font-size: 10px;">This is a computer-generated document. No signature is required.</p>'
     
     return f"""
     <!DOCTYPE html>
@@ -1064,14 +1125,20 @@ def generate_document_html(
         <meta charset="utf-8">
         <style>
             @page {{ size: A4; margin: 1cm; }}
-            body {{ font-family: Arial, sans-serif; font-size: 11px; }}
-            .header {{ text-align: center; margin-bottom: 20px; border-bottom: 2px solid #0F172A; padding-bottom: 10px; }}
-            .company-name {{ font-size: 18px; font-weight: bold; color: #0F172A; }}
-            .company-details {{ font-size: 10px; color: #666; }}
-            .doc-title {{ font-size: 16px; font-weight: bold; color: #F59E0B; margin: 20px 0 10px; }}
+            body {{ font-family: Arial, sans-serif; font-size: 10px; margin: 0; padding: 0; }}
+            .header {{ text-align: center; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 10px; }}
+            .company-name {{ font-size: 16px; font-weight: bold; color: #000; margin-bottom: 5px; }}
+            .company-details {{ font-size: 9px; color: #333; line-height: 1.4; }}
+            .doc-title {{ font-size: 14px; font-weight: bold; color: #000; margin: 15px 0 10px; text-align: center; background: #f0f0f0; padding: 8px; }}
+            .info-section {{ margin: 10px 0; font-size: 10px; }}
             table {{ width: 100%; border-collapse: collapse; margin: 10px 0; }}
-            th {{ background-color: #0F172A; color: white; padding: 8px; border: 1px solid #ddd; }}
-            .totals {{ text-align: right; margin-top: 20px; }}
+            th {{ background-color: #d0d0d0; color: #000; padding: 6px; border: 1px solid #999; text-align: left; font-size: 10px; font-weight: bold; }}
+            td {{ padding: 6px; border: 1px solid #ddd; font-size: 10px; }}
+            .tax-table-title {{ font-weight: bold; margin-top: 20px; margin-bottom: 10px; font-size: 11px; }}
+            .summary-box {{ float: right; width: 250px; margin-top: -150px; border: 1px solid #999; padding: 10px; background: #f9f9f9; }}
+            .summary-row {{ display: flex; justify-content: space-between; padding: 4px 0; font-size: 10px; }}
+            .summary-row.total {{ font-weight: bold; border-top: 2px solid #333; padding-top: 8px; margin-top: 8px; font-size: 11px; }}
+            .clear {{ clear: both; }}
         </style>
     </head>
     <body>
@@ -1086,28 +1153,33 @@ def generate_document_html(
         </div>
         
         <div class="doc-title">{doc_type}</div>
-        <p><strong>{doc_type} No:</strong> {doc_no} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> {doc_date[:10]}</p>
-        {confirmation_row}
         
-        <p><strong>To:</strong><br>
-        {party['party_name']}<br>
-        {party['address']}<br>
-        {party['city']}, {party['state']} - {party['pincode']}<br>
-        GST: {party['GST_number']}<br>
-        Contact: {party['contact_person']} | {party['mobile']}</p>
+        <div class="info-section">
+            <strong>{doc_type} No:</strong> {doc_no} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> {doc_date[:10]}
+            {f'<br><strong>Party Confirmation ID:</strong> {party_confirmation_id}' if is_soa and party_confirmation_id else ''}
+        </div>
+        
+        <div class="info-section">
+            <strong>To:</strong><br>
+            <strong>{party['party_name']}</strong><br>
+            {party['address']}<br>
+            {party['city']}, {party['state']} - {party['pincode']}<br>
+            <strong>GST:</strong> {party['GST_number']}<br>
+            <strong>Contact:</strong> {party['contact_person']} | {party['mobile']}
+        </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>Sr.</th>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Rate</th>
-                    <th>Disc%</th>
-                    <th>Taxable</th>
-                    <th>Tax Type</th>
-                    <th>Tax Amt</th>
-                    <th>Total</th>
+                    <th style="width: 4%;">Sr</th>
+                    <th style="width: 10%;">Item</th>
+                    <th style="width: 10%;">HSN/SAC</th>
+                    <th style="width: 26%;">Description</th>
+                    <th style="width: 10%; text-align: right;">Quantity</th>
+                    <th style="width: 10%; text-align: right;">List Price</th>
+                    <th style="width: 8%; text-align: right;">Disc%</th>
+                    <th style="width: 10%; text-align: right;">Rate</th>
+                    <th style="width: 12%; text-align: right;">Amount</th>
                 </tr>
             </thead>
             <tbody>
@@ -1115,15 +1187,43 @@ def generate_document_html(
             </tbody>
         </table>
         
-        <div class="totals">
-            <p><strong>Subtotal:</strong> ₹{subtotal:.2f}</p>
-            <p><strong>Tax Total:</strong> ₹{tax_total:.2f}</p>
-            <p style="font-size: 14px;"><strong>Grand Total:</strong> ₹{grand_total:.2f}</p>
+        <div class="tax-table-title">ITEM TAX TABLE</div>
+        
+        <table style="width: 60%;">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">HSN/SAC</th>
+                    <th style="width: 30%; text-align: right;">Taxable Amount</th>
+                    <th style="width: 22%;">SGST</th>
+                    <th style="width: 23%;">CGST</th>
+                </tr>
+            </thead>
+            <tbody>
+                {tax_rows_html}
+            </tbody>
+        </table>
+        
+        <div class="summary-box">
+            <div class="summary-row">
+                <span>Net Total</span>
+                <span>₹{subtotal:,.2f}</span>
+            </div>
+            {f'<div class="summary-row"><span>SGST</span><span>₹{total_sgst:,.2f}</span></div>' if total_sgst > 0 else ''}
+            {f'<div class="summary-row"><span>CGST</span><span>₹{total_cgst:,.2f}</span></div>' if total_cgst > 0 else ''}
+            {f'<div class="summary-row"><span>IGST</span><span>₹{total_igst:,.2f}</span></div>' if total_igst > 0 else ''}
+            <div class="summary-row total">
+                <span>Grand Total</span>
+                <span>₹{grand_total:,.2f}</span>
+            </div>
         </div>
         
-        {f'<p><strong>Payment Terms:</strong> {payment_terms}</p>' if payment_terms else ''}
-        {f'<p><strong>Delivery Terms:</strong> {delivery_terms}</p>' if delivery_terms else ''}
-        {f'<p><strong>Remarks:</strong> {remarks}</p>' if remarks else ''}
+        <div class="clear"></div>
+        
+        <div style="margin-top: 30px; font-size: 10px;">
+            {f'<p><strong>Payment Terms:</strong> {payment_terms}</p>' if payment_terms else ''}
+            {f'<p><strong>Delivery Terms:</strong> {delivery_terms}</p>' if delivery_terms else ''}
+            {f'<p><strong>Remarks:</strong> {remarks}</p>' if remarks else ''}
+        </div>
         
         {footer_note}
     </body>
