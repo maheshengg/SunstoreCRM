@@ -50,7 +50,7 @@ export const Layout = ({ children }) => {
             </button>
             <Link to="/dashboard" className="flex items-center gap-2">
               <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center font-bold">
-                M
+                S
               </div>
               <span className="font-bold text-lg tracking-tight hidden sm:block">SUNSTORE CRM</span>
             </Link>
