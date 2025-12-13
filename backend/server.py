@@ -968,6 +968,18 @@ async def generate_pi_pdf(pi_id: str, current_user: dict = Depends(get_current_u
     
     party = await db.parties.find_one({"party_id": pi["party_id"]}, {"_id": 0})
     
+    # Enrich items with full details from item master
+    enriched_items = []
+    for item in pi["items"]:
+        item_details = await db.items.find_one({"item_id": item["item_id"]}, {"_id": 0})
+        enriched_item = item.copy()
+        if item_details:
+            enriched_item['hsn'] = item_details.get('HSN', '')
+            enriched_item['description'] = item_details.get('description', '')
+            enriched_item['item_name'] = item_details.get('item_name', '')
+            enriched_item['uom'] = item_details.get('UOM', 'Nos')
+        enriched_items.append(enriched_item)
+    
     # Calculate totals
     subtotal = sum(item["taxable_amount"] for item in pi["items"])
     tax_total = sum(item["tax_amount"] for item in pi["items"])
@@ -978,7 +990,7 @@ async def generate_pi_pdf(pi_id: str, current_user: dict = Depends(get_current_u
         doc_no=pi["pi_no"],
         doc_date=pi["date"],
         party=party,
-        items=pi["items"],
+        items=enriched_items,
         subtotal=subtotal,
         tax_total=tax_total,
         grand_total=grand_total,
