@@ -1180,15 +1180,27 @@ def generate_document_html(
     if is_soa:
         footer_note = '<p style="text-align: center; margin-top: 30px; font-style: italic; color: #666; font-size: 10px;">This is a computer-generated document. No signature is required.</p>'
     
+    # Load letterhead image
+    letterhead_base64 = ""
+    try:
+        import base64
+        letterhead_path = Path(__file__).parent / 'letterhead.png'
+        if letterhead_path.exists():
+            with open(letterhead_path, 'rb') as f:
+                letterhead_base64 = base64.b64encode(f.read()).decode('utf-8')
+    except Exception as e:
+        logger.error(f"Failed to load letterhead: {e}")
+    
     return f"""
     <!DOCTYPE html>
     <html>
     <head>
         <meta charset="utf-8">
         <style>
-            @page {{ size: A4; margin: 1cm; }}
+            @page {{ size: A4; margin: 0.5cm 1cm; }}
             body {{ font-family: Arial, sans-serif; font-size: 10px; margin: 0; padding: 0; }}
-            .header {{ text-align: center; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 10px; }}
+            .header {{ margin-bottom: 10px; }}
+            .header img {{ width: 100%; height: auto; max-height: 120px; object-fit: contain; }}
             .company-name {{ font-size: 16px; font-weight: bold; color: #000; margin-bottom: 5px; }}
             .company-details {{ font-size: 9px; color: #333; line-height: 1.4; }}
             .doc-title {{ font-size: 14px; font-weight: bold; color: #000; margin: 15px 0 10px; text-align: center; background: #f0f0f0; padding: 8px; }}
