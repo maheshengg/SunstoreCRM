@@ -443,6 +443,48 @@ async def export_parties_csv(current_user: dict = Depends(get_current_user)):
     csv_data = output.getvalue()
     return Response(content=csv_data, media_type="text/csv", headers={"Content-Disposition": "attachment; filename=parties.csv"})
 
+@api_router.post("/parties/upload/csv")
+async def upload_parties_csv(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    content = await file.read()
+    decoded = content.decode('utf-8')
+    reader = csv.DictReader(io.StringIO(decoded))
+    
+    added_count = 0
+    skipped_count = 0
+    
+    for row in reader:
+        # Check if party with GST number already exists
+        existing = await db.parties.find_one({"GST_number": row.get("GST_number")}, {"_id": 0})
+        if existing:
+            skipped_count += 1
+            continue
+        
+        party_count = await db.parties.count_documents({})
+        party_id = f"PTY{str(party_count + 1).zfill(4)}"
+        
+        party_dict = {
+            "party_id": party_id,
+            "party_name": row.get("party_name", ""),
+            "address": row.get("address", ""),
+            "city": row.get("city", ""),
+            "state": row.get("state", ""),
+            "pincode": row.get("pincode", ""),
+            "GST_number": row.get("GST_number", ""),
+            "contact_person": row.get("contact_person", ""),
+            "mobile": row.get("mobile", ""),
+            "email": row.get("email", ""),
+            "status": row.get("status", "Active")
+        }
+        
+        await db.parties.insert_one(party_dict)
+        
+        # Log
+        await log_document_action("PARTY", party_id, "CREATED", current_user["user_id"])
+        
+        added_count += 1
+    
+    return {"message": f"Added {added_count} parties, skipped {skipped_count} duplicates"}
+
 # ==================== ITEM ENDPOINTS ====================
 
 @api_router.post("/items", response_model=Item)
