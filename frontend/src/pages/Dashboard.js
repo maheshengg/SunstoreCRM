@@ -91,17 +91,89 @@ export const Dashboard = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Welcome, {user?.name}</h1>
-          <p className="text-muted-foreground mt-1">{user?.role} Dashboard</p>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Welcome, {user?.name}</h1>
+            <p className="text-muted-foreground mt-1">{user?.role} Dashboard</p>
+          </div>
+          <div className="flex gap-2">
+            <Button data-testid="create-lead-btn" onClick={() => navigate('/leads/new')} className="gap-2">
+              <Plus size={16} />
+              New Lead
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button data-testid="create-lead-btn" onClick={() => navigate('/leads/new')} className="gap-2">
-            <Plus size={16} />
-            New Lead
-          </Button>
-        </div>
+        
+        {/* Filters */}
+        <Card className="bg-slate-50">
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              {/* User Filter - Only for Admin */}
+              {user?.role === 'Admin' && (
+                <div className="space-y-2">
+                  <Label htmlFor="user-filter">Select User:</Label>
+                  <Select value={selectedUser} onValueChange={setSelectedUser}>
+                    <SelectTrigger id="user-filter" data-testid="user-filter">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ALL">ALL (default)</SelectItem>
+                      {users.map(u => (
+                        <SelectItem key={u.user_id} value={u.user_id}>
+                          {u.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
+              {/* Period Filter */}
+              <div className="space-y-2">
+                <Label htmlFor="period-filter">Period:</Label>
+                <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                  <SelectTrigger id="period-filter" data-testid="period-filter">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="weekly">Last 7 days</SelectItem>
+                    <SelectItem value="monthly">Last 30 days</SelectItem>
+                    <SelectItem value="ytd">Year-to-Date (Apr 1 - Today)</SelectItem>
+                    <SelectItem value="all_time">All Time</SelectItem>
+                    <SelectItem value="custom">Custom Date Range</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Custom Date Range - Show only when custom is selected */}
+              {selectedPeriod === 'custom' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="from-date">From Date:</Label>
+                    <Input
+                      id="from-date"
+                      type="date"
+                      value={customFromDate}
+                      onChange={(e) => setCustomFromDate(e.target.value)}
+                      data-testid="from-date-input"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="to-date">To Date:</Label>
+                    <Input
+                      id="to-date"
+                      type="date"
+                      value={customToDate}
+                      onChange={(e) => setCustomToDate(e.target.value)}
+                      data-testid="to-date-input"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Stats Grid */}
