@@ -41,7 +41,7 @@ if RESEND_API_KEY:
 security = HTTPBearer()
 
 # Create the main app
-app = FastAPI(title="Mahesh Engineering Services CRM")
+app = FastAPI(title="SUNSTORE KOLHAPUR CRM")
 api_router = APIRouter(prefix="/api")
 
 logging.basicConfig(level=logging.INFO)
