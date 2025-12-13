@@ -1237,10 +1237,48 @@ async def get_dashboard_stats(
     return stats
 
 @api_router.get("/dashboard/activity")
-async def get_recent_activity(current_user: dict = Depends(get_current_user)):
+async def get_recent_activity(
+    user_id: Optional[str] = None,
+    period: Optional[str] = None,
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
     query_filter = {}
+    
+    # User filter
     if current_user["role"] != "Admin":
         query_filter["updated_by"] = current_user["user_id"]
+        # Sales user: fixed to last 30 days
+        start_date = datetime.now(timezone.utc) - timedelta(days=30)
+        query_filter["timestamp"] = {"$gte": start_date.isoformat()}
+    else:
+        # Admin can filter by user
+        if user_id and user_id != "ALL":
+            query_filter["updated_by"] = user_id
+        
+        # Admin: apply period filter
+        if period and period != "all_time":
+            current_date = datetime.now(timezone.utc)
+            
+            if period == "weekly":
+                start_date = current_date - timedelta(days=7)
+            elif period == "monthly":
+                start_date = current_date - timedelta(days=30)
+            elif period == "ytd":
+                current_year = current_date.year
+                if current_date.month >= 4:
+                    start_date = datetime(current_year, 4, 1, tzinfo=timezone.utc)
+                else:
+                    start_date = datetime(current_year - 1, 4, 1, tzinfo=timezone.utc)
+            elif period == "custom" and from_date and to_date:
+                start_date = datetime.fromisoformat(from_date).replace(tzinfo=timezone.utc)
+                current_date = datetime.fromisoformat(to_date).replace(tzinfo=timezone.utc)
+            else:
+                start_date = None
+            
+            if start_date:
+                query_filter["timestamp"] = {"$gte": start_date.isoformat(), "$lte": current_date.isoformat()}
     
     activity = await db.document_logs.find(query_filter, {"_id": 0}).sort("timestamp", -1).limit(20).to_list(20)
     return activity
