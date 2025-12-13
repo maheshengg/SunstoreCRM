@@ -1099,7 +1099,9 @@ def generate_document_html(
     # Build tax table rows (group by HSN)
     hsn_groups = {}
     for item in items:
-        hsn = "HSN/SAC"  # Will be replaced with actual HSN from item details
+        hsn = item.get('hsn', 'HSN/SAC')
+        if not hsn:
+            hsn = 'HSN/SAC'
         if hsn not in hsn_groups:
             hsn_groups[hsn] = {
                 'taxable': 0,
