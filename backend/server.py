@@ -631,6 +631,110 @@ async def convert_lead_to_quotation(lead_id: str, current_user: dict = Depends(g
     
     return {"message": "Lead converted successfully", "lead_id": lead_id}
 
+@api_router.get("/leads/{lead_id}/pdf")
+async def generate_lead_pdf(lead_id: str, current_user: dict = Depends(get_current_user)):
+    lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    
+    party = await db.parties.find_one({"party_id": lead["party_id"]}, {"_id": 0})
+    user = await db.users.find_one({"user_id": lead["created_by_user_id"]}, {"_id": 0})
+    
+    # Load letterhead image
+    letterhead_base64 = ""
+    try:
+        import base64
+        letterhead_path = Path(__file__).parent / 'letterhead.png'
+        if letterhead_path.exists():
+            with open(letterhead_path, 'rb') as f:
+                letterhead_base64 = base64.b64encode(f.read()).decode('utf-8')
+    except Exception as e:
+        logger.error(f"Failed to load letterhead: {e}")
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            @page {{ size: A4; margin: 0.5cm 1cm; }}
+            body {{ font-family: Arial, sans-serif; font-size: 11px; margin: 0; padding: 0; }}
+            .header {{ margin-bottom: 15px; }}
+            .header img {{ width: 100%; height: auto; max-height: 120px; object-fit: contain; }}
+            .doc-title {{ font-size: 16px; font-weight: bold; color: #000; margin: 15px 0; text-align: center; background: #f0f0f0; padding: 10px; }}
+            .info-section {{ margin: 15px 0; }}
+            .info-label {{ font-weight: bold; display: inline-block; width: 150px; }}
+            .info-value {{ display: inline-block; }}
+            .section-title {{ font-size: 13px; font-weight: bold; margin-top: 20px; margin-bottom: 10px; background: #e0e0e0; padding: 8px; }}
+            .content-box {{ border: 1px solid #ddd; padding: 15px; margin: 10px 0; background: #fafafa; }}
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            {f'<img src="data:image/png;base64,{letterhead_base64}" alt="Letterhead" />' if letterhead_base64 else '''
+            <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px;">
+                <div style="font-size: 16px; font-weight: bold;">SUNSTORE KOLHAPUR</div>
+                <div style="font-size: 9px;">
+                    Plot No. 1497, Shamrao Kapadi Complex, Opposite HDFC Bank, Konda Lane, Laxmipuri,<br>
+                    Kolhapur - 416002, Maharashtra, India<br>
+                    Phone: 0231 - 2644990 / 91 / 92 | Email: sales@sunstorekolhapur.com<br>
+                    <strong>GST ID: 27ABAFM4283A1ZL</strong>
+                </div>
+            </div>
+            '''}
+        </div>
+        
+        <div class="doc-title">LEAD INFORMATION</div>
+        
+        <div class="info-section">
+            <div><span class="info-label">Lead ID:</span> <span class="info-value">{lead['lead_id']}</span></div>
+            <div><span class="info-label">Lead Date:</span> <span class="info-value">{lead['lead_date'][:10]}</span></div>
+            <div><span class="info-label">Status:</span> <span class="info-value" style="color: {'green' if lead['status'] == 'Open' else ('blue' if lead['status'] == 'Converted' else 'red')}; font-weight: bold;">{lead['status']}</span></div>
+            <div><span class="info-label">Created By:</span> <span class="info-value">{user.get('name', 'N/A') if user else 'N/A'}</span></div>
+        </div>
+        
+        <div class="section-title">PARTY DETAILS</div>
+        <div class="content-box">
+            <div><strong>Party Name:</strong> {party['party_name'] if party else 'N/A'}</div>
+            <div><strong>Address:</strong> {party['address'] if party else 'N/A'}, {party.get('city', 'N/A')}, {party.get('state', 'N/A')} - {party.get('pincode', 'N/A')}</div>
+            <div><strong>GST Number:</strong> {party.get('GST_number', 'N/A') if party else 'N/A'}</div>
+            <div><strong>Contact Person:</strong> {party.get('contact_person', 'N/A') if party else 'N/A'}</div>
+            <div><strong>Mobile:</strong> {party.get('mobile', 'N/A') if party else 'N/A'}</div>
+            <div><strong>Email:</strong> {party.get('email', 'N/A') if party else 'N/A'}</div>
+        </div>
+        
+        <div class="section-title">LEAD DETAILS</div>
+        <div class="content-box">
+            <div><strong>Contact Name:</strong> {lead['contact_name']}</div>
+            <div><strong>Referred By:</strong> {lead.get('referred_by', 'N/A')}</div>
+        </div>
+        
+        <div class="section-title">REQUIREMENT SUMMARY</div>
+        <div class="content-box">
+            {lead['requirement_summary']}
+        </div>
+        
+        <div class="section-title">NOTES</div>
+        <div class="content-box">
+            {lead.get('notes', 'No additional notes')}
+        </div>
+        
+        <div style="margin-top: 40px; text-align: center; font-size: 10px; color: #666;">
+            <p>This is a computer-generated document. No signature is required.</p>
+            <p>Generated on: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC</p>
+        </div>
+    </body>
+    </html>
+    """
+    
+    pdf = HTML(string=html_content).write_pdf()
+    
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=lead_{lead['lead_id']}.pdf"}
+    )
+
 # ==================== QUOTATION ENDPOINTS ====================
 
 async def get_next_number(doc_type: str) -> str:
