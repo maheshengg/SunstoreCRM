@@ -4,7 +4,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { api } from '../utils/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Users, Package, FileText, File, FileCheck, FileBarChart, TrendingUp, Plus } from 'lucide-react';
+import { Label } from '../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Input } from '../components/ui/input';
+import { Users, Package, FileText, File, FileCheck, FileBarChart, TrendingUp, Plus, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Dashboard = () => {
@@ -13,16 +16,50 @@ export const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [activity, setActivity] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  
+  // Filter states
+  const [selectedUser, setSelectedUser] = useState('ALL');
+  const [selectedPeriod, setSelectedPeriod] = useState('weekly');
+  const [customFromDate, setCustomFromDate] = useState('');
+  const [customToDate, setCustomToDate] = useState('');
 
   useEffect(() => {
+    if (user?.role === 'Admin') {
+      fetchUsers();
+    }
     fetchDashboardData();
-  }, []);
+  }, [selectedUser, selectedPeriod, customFromDate, customToDate]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await api.getUsers();
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Failed to fetch users');
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
+      const params = {
+        period: selectedPeriod
+      };
+      
+      // Only add user_id for Admin
+      if (user?.role === 'Admin' && selectedUser !== 'ALL') {
+        params.user_id = selectedUser;
+      }
+      
+      // Add custom date range if selected
+      if (selectedPeriod === 'custom' && customFromDate && customToDate) {
+        params.from_date = customFromDate;
+        params.to_date = customToDate;
+      }
+      
       const [statsRes, activityRes] = await Promise.all([
-        api.getDashboardStats(),
-        api.getRecentActivity()
+        api.getDashboardStats(params),
+        api.getRecentActivity(params)
       ]);
       setStats(statsRes.data);
       setActivity(activityRes.data);
