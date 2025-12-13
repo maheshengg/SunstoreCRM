@@ -319,7 +319,7 @@ async def forgot_password(request: ForgotPasswordRequest):
             params = {
                 "from": SENDER_EMAIL,
                 "to": [request.email],
-                "subject": "Password Reset - Mahesh Engineering CRM",
+                "subject": "Password Reset - SUNSTORE KOLHAPUR CRM",
                 "html": html_content
             }
             
