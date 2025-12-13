@@ -4,7 +4,7 @@ import { api } from '../utils/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Plus, Search, Download, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, Download, Edit, Trash2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Parties = () => {
@@ -53,6 +53,19 @@ export const Parties = () => {
       toast.success('CSV exported successfully');
     } catch (error) {
       toast.error('Failed to export CSV');
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const response = await api.uploadPartiesCSV(file);
+      toast.success(response.data.message);
+      fetchParties();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to upload parties CSV');
     }
   };
 
