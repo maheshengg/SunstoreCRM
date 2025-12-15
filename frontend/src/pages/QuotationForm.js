@@ -309,9 +309,24 @@ export const QuotationForm = () => {
               </div>
             </div>
             
-            <div>
-              <Label>Remarks</Label>
-              <Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Remarks</Label>
+                <Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} />
+              </div>
+              <div>
+                <Label>Quotation Status</Label>
+                <Select value={formData.quotation_status || 'none'} onValueChange={v => setFormData({...formData, quotation_status: v === 'none' ? null : v})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">-- Not Set --</SelectItem>
+                    <SelectItem value="Successful">Successful</SelectItem>
+                    <SelectItem value="Lost">Lost</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="flex gap-4">
