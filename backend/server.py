@@ -620,13 +620,46 @@ async def create_lead(lead_data: LeadCreate, current_user: dict = Depends(get_cu
 async def get_leads(
     status: Optional[str] = None,
     my_leads: bool = False,
+    user_id: Optional[str] = None,
+    period: Optional[str] = None,
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
     current_user: dict = Depends(get_current_user)
 ):
     query = {}
+    
+    # Status filter
     if status:
         query["status"] = status
-    if my_leads and current_user["role"] != "Admin":
+    
+    # User filter (Admin can filter by user, Sales User sees only their data)
+    if current_user["role"] != "Admin":
         query["created_by_user_id"] = current_user["user_id"]
+    elif user_id and user_id != "ALL":
+        query["created_by_user_id"] = user_id
+    
+    # Date filter based on period
+    if period and period != "all_time":
+        current_date = datetime.now(timezone.utc)
+        
+        if period == "weekly":
+            start_date = current_date - timedelta(days=7)
+        elif period == "monthly":
+            start_date = current_date - timedelta(days=30)
+        elif period == "ytd":
+            current_year = current_date.year
+            if current_date.month >= 4:
+                start_date = datetime(current_year, 4, 1, tzinfo=timezone.utc)
+            else:
+                start_date = datetime(current_year - 1, 4, 1, tzinfo=timezone.utc)
+        elif period == "custom" and from_date and to_date:
+            start_date = datetime.fromisoformat(from_date).replace(tzinfo=timezone.utc)
+            current_date = datetime.fromisoformat(to_date).replace(tzinfo=timezone.utc)
+        else:
+            start_date = None
+        
+        if start_date:
+            query["lead_date"] = {"$gte": start_date.isoformat(), "$lte": current_date.isoformat()}
     
     leads = await db.leads.find(query, {"_id": 0}).to_list(1000)
     return leads
@@ -824,13 +857,46 @@ async def create_quotation(quotation_data: QuotationCreate, current_user: dict =
 async def get_quotations(
     my_docs: bool = False,
     party_id: Optional[str] = None,
+    user_id: Optional[str] = None,
+    period: Optional[str] = None,
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
     current_user: dict = Depends(get_current_user)
 ):
     query = {}
-    if my_docs and current_user["role"] != "Admin":
+    
+    # User filter (Admin can filter by user, Sales User sees only their data)
+    if current_user["role"] != "Admin":
         query["created_by_user_id"] = current_user["user_id"]
+    elif user_id and user_id != "ALL":
+        query["created_by_user_id"] = user_id
+    
+    # Party filter
     if party_id:
         query["party_id"] = party_id
+    
+    # Date filter based on period
+    if period and period != "all_time":
+        current_date = datetime.now(timezone.utc)
+        
+        if period == "weekly":
+            start_date = current_date - timedelta(days=7)
+        elif period == "monthly":
+            start_date = current_date - timedelta(days=30)
+        elif period == "ytd":
+            current_year = current_date.year
+            if current_date.month >= 4:
+                start_date = datetime(current_year, 4, 1, tzinfo=timezone.utc)
+            else:
+                start_date = datetime(current_year - 1, 4, 1, tzinfo=timezone.utc)
+        elif period == "custom" and from_date and to_date:
+            start_date = datetime.fromisoformat(from_date).replace(tzinfo=timezone.utc)
+            current_date = datetime.fromisoformat(to_date).replace(tzinfo=timezone.utc)
+        else:
+            start_date = None
+        
+        if start_date:
+            query["date"] = {"$gte": start_date.isoformat(), "$lte": current_date.isoformat()}
     
     quotations = await db.quotations.find(query, {"_id": 0}).to_list(1000)
     return quotations
