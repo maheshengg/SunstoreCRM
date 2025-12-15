@@ -95,8 +95,11 @@ export const ProformaForm = () => {
   };
 
   const calculateItemTotals = (item, party) => {
-    const taxable = item.rate * item.qty * (1 - item.discount_percent / 100);
-    const gstPercent = item.GST_percent || 18;
+    const qty = parseFloat(item.qty) || 0;
+    const rate = parseFloat(item.rate) || 0;
+    const discount = parseFloat(item.discount_percent) || 0;
+    const taxable = rate * qty * (1 - discount / 100);
+    const gstPercent = parseFloat(item.GST_percent) || 18;
     const tax_type = party?.state === 'Maharashtra' ? 'CGST+SGST' : 'IGST';
     const tax_amount = taxable * (gstPercent / 100);
     return { ...item, taxable_amount: taxable, tax_type, tax_amount, total_amount: taxable + tax_amount };
