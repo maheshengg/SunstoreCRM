@@ -221,11 +221,11 @@ export const ProformaForm = () => {
                           </div>
                           <div>
                             <Label className="text-xs">Tax</Label>
-                            <Input value={`₹${item.tax_amount.toFixed(2)}`} readOnly className="h-9 bg-gray-100 text-sm font-medium" />
+                            <Input value={`₹${(parseFloat(item.tax_amount) || 0).toFixed(2)}`} readOnly className="h-9 bg-gray-100 text-sm font-medium" />
                           </div>
                           <div>
                             <Label className="text-xs">Line Total</Label>
-                            <Input value={`₹${item.total_amount.toFixed(2)}`} readOnly className="h-9 bg-green-100 text-sm font-bold" />
+                            <Input value={`₹${(parseFloat(item.total_amount) || 0).toFixed(2)}`} readOnly className="h-9 bg-green-100 text-sm font-bold" />
                           </div>
                         </div>
                       </div>
