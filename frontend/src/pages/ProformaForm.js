@@ -5,7 +5,9 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { SearchableSelect } from '../components/SearchableSelect';
+import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { Card, CardContent } from '../components/ui/card';
+import { Trash2, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const ProformaForm = () => {
@@ -13,6 +15,8 @@ export const ProformaForm = () => {
   const navigate = useNavigate();
   const [parties, setParties] = useState([]);
   const [items, setItems] = useState([]);
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [currentItemIndex, setCurrentItemIndex] = useState(null);
   const [formData, setFormData] = useState({
     party_id: '', date: new Date().toISOString().split('T')[0], validity_days: 30,
     payment_terms: '', delivery_terms: '', remarks: '', items: []
@@ -43,16 +47,56 @@ export const ProformaForm = () => {
   };
 
   const addItem = () => {
+    const newIndex = formData.items.length;
     setFormData({
       ...formData,
-      items: [...formData.items, { item_id: '', qty: 1, rate: 0, discount_percent: 0, taxable_amount: 0, tax_type: 'CGST+SGST', tax_amount: 0, total_amount: 0 }]
+      items: [...formData.items, { 
+        item_id: '', 
+        item_name: '',
+        item_code: '',
+        HSN: '',
+        GST_percent: 0,
+        qty: 1, 
+        rate: 0, 
+        discount_percent: 0, 
+        taxable_amount: 0, 
+        tax_type: 'CGST+SGST', 
+        tax_amount: 0, 
+        total_amount: 0 
+      }]
     });
+    setCurrentItemIndex(newIndex);
+    setIsItemModalOpen(true);
+  };
+
+  const openItemSelector = (index) => {
+    setCurrentItemIndex(index);
+    setIsItemModalOpen(true);
+  };
+
+  const handleItemSelect = (selectedItem) => {
+    if (currentItemIndex === null) return;
+    
+    const party = parties.find(p => p.party_id === formData.party_id);
+    const newItems = [...formData.items];
+    
+    newItems[currentItemIndex] = {
+      ...newItems[currentItemIndex],
+      item_id: selectedItem.item_id,
+      item_name: selectedItem.item_name,
+      item_code: selectedItem.item_code,
+      HSN: selectedItem.HSN,
+      GST_percent: selectedItem.GST_percent,
+      rate: selectedItem.rate,
+    };
+    
+    newItems[currentItemIndex] = calculateItemTotals(newItems[currentItemIndex], party);
+    setFormData({ ...formData, items: newItems });
   };
 
   const calculateItemTotals = (item, party) => {
     const taxable = item.rate * item.qty * (1 - item.discount_percent / 100);
-    const selectedItem = items.find(i => i.item_id === item.item_id);
-    const gstPercent = selectedItem ? selectedItem.GST_percent : 18;
+    const gstPercent = item.GST_percent || 18;
     const tax_type = party?.state === 'Maharashtra' ? 'CGST+SGST' : 'IGST';
     const tax_amount = taxable * (gstPercent / 100);
     return { ...item, taxable_amount: taxable, tax_type, tax_amount, total_amount: taxable + tax_amount };
@@ -62,11 +106,12 @@ export const ProformaForm = () => {
     const party = parties.find(p => p.party_id === formData.party_id);
     const newItems = [...formData.items];
     newItems[index] = { ...newItems[index], [field]: value };
-    if (field === 'item_id') {
-      const selectedItem = items.find(i => i.item_id === value);
-      if (selectedItem) newItems[index].rate = selectedItem.rate;
-    }
     newItems[index] = calculateItemTotals(newItems[index], party);
+    setFormData({ ...formData, items: newItems });
+  };
+
+  const removeItem = (index) => {
+    const newItems = formData.items.filter((_, i) => i !== index);
     setFormData({ ...formData, items: newItems });
   };
 
@@ -91,9 +136,10 @@ export const ProformaForm = () => {
       <h1 className="text-3xl font-bold">{id ? 'Edit' : 'New'} Proforma Invoice</h1>
       <Card>
         <CardContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>Party *</Label>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-1">
+                <Label>Party *</Label>
                 <SearchableSelect
                   options={parties.map(p => ({ value: p.party_id, label: `${p.party_name} (${p.city})` }))}
                   value={formData.party_id}
@@ -102,36 +148,124 @@ export const ProformaForm = () => {
                   searchPlaceholder="Search parties..."
                 />
               </div>
-              <div><Label>Date</Label><Input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} /></div>
-              <div><Label>Validity (days)</Label><Input type="number" value={formData.validity_days} onChange={e => setFormData({...formData, validity_days: parseInt(e.target.value)})} /></div>
+              <div>
+                <Label>Date</Label>
+                <Input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
+              </div>
+              <div>
+                <Label>Validity (days)</Label>
+                <Input type="number" value={formData.validity_days} onChange={e => setFormData({...formData, validity_days: parseInt(e.target.value)})} />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Items</Label>
-              {formData.items.map((item, idx) => (
-                <div key={idx} className="grid grid-cols-6 gap-2 items-end">
-                  <SearchableSelect
-                    options={items.map(i => ({ value: i.item_id, label: `${i.item_name} (${i.item_code})` }))}
-                    value={item.item_id}
-                    onChange={v => updateItem(idx, 'item_id', v)}
-                    placeholder="Select item..."
-                    searchPlaceholder="Search items..."
-                  />
-                  <Input type="number" placeholder="Qty" value={item.qty} onChange={e => updateItem(idx, 'qty', parseFloat(e.target.value))} />
-                  <Input type="number" placeholder="Rate" value={item.rate} onChange={e => updateItem(idx, 'rate', parseFloat(e.target.value))} />
-                  <Input type="number" placeholder="Disc%" value={item.discount_percent} onChange={e => updateItem(idx, 'discount_percent', parseFloat(e.target.value))} />
-                  <div className="text-sm">Tax: ₹{item.tax_amount.toFixed(2)}</div>
-                  <div className="text-sm font-bold">Total: ₹{item.total_amount.toFixed(2)}</div>
+            {/* Items Section - Same as QuotationForm */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <Label className="text-lg font-semibold">Items</Label>
+                <Button type="button" onClick={addItem} className="gap-2">
+                  <Plus size={16} />
+                  Add Item
+                </Button>
+              </div>
+
+              {formData.items.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
+                  No items added yet. Click "Add Item" to get started.
                 </div>
-              ))}
-              <Button type="button" variant="outline" onClick={addItem}>Add Item</Button>
+              ) : (
+                <div className="space-y-4">
+                  {formData.items.map((item, idx) => (
+                    <Card key={idx} className="p-4 bg-slate-50">
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center gap-2">
+                          <div className="flex-1">
+                            <div 
+                              className="text-sm font-medium cursor-pointer text-primary hover:underline"
+                              onClick={() => openItemSelector(idx)}
+                            >
+                              {item.item_name || 'Click to select item'}
+                              {item.item_code && ` (${item.item_code})`}
+                            </div>
+                          </div>
+                          <Button type="button" size="sm" variant="destructive" onClick={() => removeItem(idx)}>
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2">
+                          <div>
+                            <Label className="text-xs">Qty</Label>
+                            <Input type="number" placeholder="Qty" value={item.qty} onChange={e => updateItem(idx, 'qty', parseFloat(e.target.value) || 0)} className="h-9" />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Rate</Label>
+                            <Input type="number" placeholder="Rate" value={item.rate} onChange={e => updateItem(idx, 'rate', parseFloat(e.target.value) || 0)} className="h-9" />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Discount %</Label>
+                            <Input type="number" placeholder="Disc%" value={item.discount_percent} onChange={e => updateItem(idx, 'discount_percent', parseFloat(e.target.value) || 0)} className="h-9" />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-4 gap-2">
+                          <div>
+                            <Label className="text-xs">HSN</Label>
+                            <Input value={item.HSN || 'N/A'} readOnly className="h-9 bg-gray-100 text-sm" />
+                          </div>
+                          <div>
+                            <Label className="text-xs">GST %</Label>
+                            <Input value={`${item.GST_percent || 0}%`} readOnly className="h-9 bg-gray-100 text-sm" />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Tax</Label>
+                            <Input value={`₹${item.tax_amount.toFixed(2)}`} readOnly className="h-9 bg-gray-100 text-sm font-medium" />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Line Total</Label>
+                            <Input value={`₹${item.total_amount.toFixed(2)}`} readOnly className="h-9 bg-green-100 text-sm font-bold" />
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {formData.items.length > 0 && (
+                <div className="flex justify-end">
+                  <div className="w-64 space-y-2 p-4 bg-slate-100 rounded-lg">
+                    <div className="flex justify-between text-sm">
+                      <span>Subtotal:</span>
+                      <span>₹{formData.items.reduce((sum, item) => sum + item.taxable_amount, 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Total Tax:</span>
+                      <span>₹{formData.items.reduce((sum, item) => sum + item.tax_amount, 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-lg font-bold border-t pt-2">
+                      <span>Grand Total:</span>
+                      <span>₹{formData.items.reduce((sum, item) => sum + item.total_amount, 0).toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>Payment Terms</Label><Input value={formData.payment_terms} onChange={e => setFormData({...formData, payment_terms: e.target.value})} /></div>
-              <div><Label>Delivery Terms</Label><Input value={formData.delivery_terms} onChange={e => setFormData({...formData, delivery_terms: e.target.value})} /></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Payment Terms</Label>
+                <Input value={formData.payment_terms} onChange={e => setFormData({...formData, payment_terms: e.target.value})} />
+              </div>
+              <div>
+                <Label>Delivery Terms</Label>
+                <Input value={formData.delivery_terms} onChange={e => setFormData({...formData, delivery_terms: e.target.value})} />
+              </div>
             </div>
-            <div><Label>Remarks</Label><Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} /></div>
+            
+            <div>
+              <Label>Remarks</Label>
+              <Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} />
+            </div>
 
             <div className="flex gap-4">
               <Button type="submit" className="flex-1">Save Proforma Invoice</Button>
@@ -140,6 +274,13 @@ export const ProformaForm = () => {
           </form>
         </CardContent>
       </Card>
+
+      <ItemSelectorModal
+        open={isItemModalOpen}
+        onClose={() => setIsItemModalOpen(false)}
+        items={items}
+        onSelectItem={handleItemSelect}
+      />
     </div>
   );
 };
