@@ -709,6 +709,20 @@ async def convert_lead_to_quotation(lead_id: str, current_user: dict = Depends(g
     
     return {"message": "Lead converted successfully", "lead_id": lead_id}
 
+@api_router.delete("/leads/{lead_id}")
+async def delete_lead(lead_id: str, current_user: dict = Depends(get_current_user)):
+    lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    
+    # Delete the lead
+    await db.leads.delete_one({"lead_id": lead_id})
+    
+    # Log the deletion
+    await log_document_action("LEAD", lead_id, "DELETED", current_user["user_id"])
+    
+    return {"message": "Lead deleted successfully"}
+
 @api_router.get("/leads/{lead_id}/pdf")
 async def generate_lead_pdf(lead_id: str, current_user: dict = Depends(get_current_user)):
     lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
