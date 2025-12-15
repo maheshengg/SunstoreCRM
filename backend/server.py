@@ -15,8 +15,8 @@ import asyncio
 import resend
 import io
 import csv
-# from weasyprint import HTML, CSS
-# from weasyprint.text.fonts import FontConfiguration
+from weasyprint import HTML, CSS
+from weasyprint.text.fonts import FontConfiguration
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
