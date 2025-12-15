@@ -101,7 +101,11 @@ export const ProformaForm = () => {
     const discount = parseFloat(item.discount_percent) || 0;
     const taxable = rate * qty * (1 - discount / 100);
     const gstPercent = parseFloat(item.GST_percent) || 18;
-    const tax_type = party?.state === 'Maharashtra' ? 'CGST+SGST' : 'IGST';
+    
+    // Check GST number prefix - if starts with "27", it's Maharashtra (CGST+SGST)
+    const gstNumber = party?.GST_number || '';
+    const tax_type = gstNumber.startsWith('27') ? 'CGST+SGST' : 'IGST';
+    
     const tax_amount = taxable * (gstPercent / 100);
     return { ...item, taxable_amount: taxable, tax_type, tax_amount, total_amount: taxable + tax_amount };
   };
