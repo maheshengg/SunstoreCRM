@@ -79,6 +79,18 @@ export const Quotations = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this quotation?')) return;
+    
+    try {
+      await api.deleteQuotation(id);
+      toast.success('Quotation deleted successfully');
+      fetchQuotations();
+    } catch (error) {
+      toast.error('Failed to delete quotation');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
