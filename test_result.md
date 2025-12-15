@@ -162,8 +162,38 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Document Filtering Feature - Admin Role"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Leads.js, /app/frontend/src/pages/Quotations.js, /app/frontend/src/pages/ProformaInvoices.js, /app/frontend/src/pages/SOAList.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing setup - Document filtering feature needs to be tested for Admin users on all document pages (Leads, Quotations, Proforma Invoices, SOA). Admin should see both 'Select User' and 'Period' filters."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ ADMIN FILTERING FULLY FUNCTIONAL - Comprehensive testing completed for Admin user: 1) Login successful (admin@sunstore.com), 2) All document pages (Leads, Quotations, Proforma Invoices, SOA) have filter cards with gray background (bg-slate-50), 3) 'Select User' dropdown visible with 'ALL (default)' option and user list, 4) 'Period' dropdown visible with options: Last 7 days, Last 30 days, All Time, Custom Date Range, 5) Custom Date Range shows From Date and To Date inputs when selected, 6) 'Apply Filter' button works on all pages, 7) Filter layout matches Dashboard style. All expected functionality working perfectly for Admin role."
+
+  - task: "Document Filtering Feature - Sales User Role"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Leads.js, /app/frontend/src/pages/Quotations.js, /app/frontend/src/pages/ProformaInvoices.js, /app/frontend/src/pages/SOAList.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing setup - Document filtering feature needs to be tested for Sales users on all document pages. Sales users should only see 'Period' filter, not 'Select User' filter."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ SALES USER FILTERING FULLY FUNCTIONAL - Comprehensive testing completed for Sales user: 1) Login successful (rajesh@sunstore.com), 2) All document pages (Leads, Quotations, Proforma Invoices, SOA) have filter cards with gray background, 3) 'Select User' dropdown correctly hidden from Sales users (proper role-based access control), 4) 'Period' dropdown visible and functional with all period options, 5) Custom Date Range functionality works for Sales users, 6) 'Apply Filter' button works on all pages, 7) Sales users can only see their own documents (proper data filtering). Role-based filtering working as expected."
+
 agent_communication:
     -agent: "testing"
-    -message: "Starting comprehensive testing of Proforma Invoice and SOA forms with searchable dropdowns. Will test: 1) Login as admin, 2) Navigation to both forms, 3) SearchableSelect functionality for Party and Item dropdowns, 4) Search capabilities, 5) Add Item button functionality, 6) Form field validation and layout."
+    -message: "Starting comprehensive testing of document filtering feature for both Admin and Sales User roles. Will test: 1) Login as both user types, 2) Navigation to all document pages (Leads, Quotations, Proforma Invoices, SOA), 3) Filter UI visibility based on user role, 4) Filter functionality including dropdowns and Apply Filter button, 5) Custom Date Range feature, 6) Role-based access control verification."
     -agent: "testing"
-    -message: "✅ TESTING COMPLETED SUCCESSFULLY - All requested features are fully functional and working as expected. Both Proforma Invoice and SOA forms have properly implemented SearchableSelect components with working search functionality. Navigation, form rendering, dropdown interactions, and Add Item functionality all work perfectly. The SearchableSelect component is well-implemented using Radix UI with proper accessibility features. All test requirements have been met and exceeded. Ready for production use."
+    -message: "✅ DOCUMENT FILTERING TESTING COMPLETED SUCCESSFULLY - All requested features are fully functional and working as expected. Both Admin and Sales user roles have properly implemented filtering with correct role-based access control. Admin users can see both 'Select User' and 'Period' filters on all document pages, while Sales users correctly see only 'Period' filter. Filter cards have proper styling with gray background, all dropdown options work correctly, Custom Date Range functionality is implemented, and Apply Filter button works on all pages. The filtering feature meets all requirements and is ready for production use."
