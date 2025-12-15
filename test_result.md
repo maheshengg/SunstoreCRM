@@ -192,6 +192,21 @@ test_plan:
         -agent: "testing"
         -comment: "✅ SALES USER FILTERING FULLY FUNCTIONAL - Comprehensive testing completed for Sales user: 1) Login successful (rajesh@sunstore.com), 2) All document pages (Leads, Quotations, Proforma Invoices, SOA) have filter cards with gray background, 3) 'Select User' dropdown correctly hidden from Sales users (proper role-based access control), 4) 'Period' dropdown visible and functional with all period options, 5) Custom Date Range functionality works for Sales users, 6) 'Apply Filter' button works on all pages, 7) Sales users can only see their own documents (proper data filtering). Role-based filtering working as expected."
 
+  - task: "PDF Download Functionality"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Leads.js, /app/frontend/src/pages/Quotations.js, /app/frontend/src/utils/api.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing setup - PDF download functionality needs to be tested on Leads and Quotations pages. Testing admin login (admin@sunstore.com / admin123), navigation to both pages, PDF download button functionality, and checking for JavaScript errors during download operations."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PDF DOWNLOAD FUNCTIONALITY FULLY WORKING - Comprehensive testing completed successfully: 1) Admin login (admin@sunstore.com / admin123) works perfectly, 2) Leads page: 4 leads displayed, PDF download button (second action button with FileDown icon) successfully downloads PDFs (e.g., lead_LEAD0001.pdf), 3) Quotations page: 4 quotation cards displayed, PDF download button (icon-only second button) successfully downloads PDFs (e.g., quotation_QTN0001.pdf), 4) No JavaScript errors, script errors, or runtime errors detected during PDF operations, 5) Both download flows complete without console errors or network failures, 6) API calls to /api/leads/{id}/pdf and /api/quotations/{id}/pdf working correctly with proper blob response handling. PDF download feature is production-ready."
+
 agent_communication:
     -agent: "testing"
     -message: "Starting comprehensive testing of document filtering feature for both Admin and Sales User roles. Will test: 1) Login as both user types, 2) Navigation to all document pages (Leads, Quotations, Proforma Invoices, SOA), 3) Filter UI visibility based on user role, 4) Filter functionality including dropdowns and Apply Filter button, 5) Custom Date Range feature, 6) Role-based access control verification."
