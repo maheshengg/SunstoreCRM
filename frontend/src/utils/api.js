@@ -48,6 +48,7 @@ export const api = {
   getQuotation: (id) => axios.get(`${API_URL}/quotations/${id}`, { headers: getAuthHeader() }),
   createQuotation: (data) => axios.post(`${API_URL}/quotations`, data, { headers: getAuthHeader() }),
   updateQuotation: (id, data) => axios.put(`${API_URL}/quotations/${id}`, data, { headers: getAuthHeader() }),
+  deleteQuotation: (id) => axios.delete(`${API_URL}/quotations/${id}`, { headers: getAuthHeader() }),
   duplicateQuotation: (id) => axios.post(`${API_URL}/quotations/${id}/duplicate`, {}, { headers: getAuthHeader() }),
   convertQuotationToPI: (id) => axios.post(`${API_URL}/quotations/${id}/convert-to-pi`, {}, { headers: getAuthHeader() }),
   downloadQuotationPDF: (id) => axios.get(`${API_URL}/quotations/${id}/pdf`, { headers: getAuthHeader(), responseType: 'blob' }),
@@ -57,6 +58,7 @@ export const api = {
   getProformaInvoice: (id) => axios.get(`${API_URL}/proforma-invoices/${id}`, { headers: getAuthHeader() }),
   createProformaInvoice: (data) => axios.post(`${API_URL}/proforma-invoices`, data, { headers: getAuthHeader() }),
   updateProformaInvoice: (id, data) => axios.put(`${API_URL}/proforma-invoices/${id}`, data, { headers: getAuthHeader() }),
+  deleteProformaInvoice: (id) => axios.delete(`${API_URL}/proforma-invoices/${id}`, { headers: getAuthHeader() }),
   convertPIToSOA: (id) => axios.post(`${API_URL}/proforma-invoices/${id}/convert-to-soa`, {}, { headers: getAuthHeader() }),
   downloadPIPDF: (id) => axios.get(`${API_URL}/proforma-invoices/${id}/pdf`, { headers: getAuthHeader(), responseType: 'blob' }),
 
