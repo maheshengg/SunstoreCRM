@@ -19,7 +19,7 @@ export const QuotationForm = () => {
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
   const [formData, setFormData] = useState({
     party_id: '', date: new Date().toISOString().split('T')[0], validity_days: 30,
-    payment_terms: '', delivery_terms: '', remarks: '', items: []
+    payment_terms: '', delivery_terms: '', remarks: '', quotation_status: null, items: []
   });
 
   useEffect(() => {
