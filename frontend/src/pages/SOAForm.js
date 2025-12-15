@@ -5,6 +5,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { SearchableSelect } from '../components/SearchableSelect';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { Card, CardContent } from '../components/ui/card';
@@ -20,7 +21,7 @@ export const SOAForm = () => {
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
   const [formData, setFormData] = useState({
     party_id: '', date: new Date().toISOString().split('T')[0],
-    terms_and_conditions: '', remarks: '', items: []
+    terms_and_conditions: '', remarks: '', soa_status: 'In Process', items: []
   });
 
   useEffect(() => {
@@ -256,9 +257,23 @@ export const SOAForm = () => {
               <Textarea value={formData.terms_and_conditions} onChange={e => setFormData({...formData, terms_and_conditions: e.target.value})} rows={4} />
             </div>
             
-            <div>
-              <Label>Remarks</Label>
-              <Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Remarks</Label>
+                <Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} />
+              </div>
+              <div>
+                <Label>SOA Status</Label>
+                <Select value={formData.soa_status} onValueChange={v => setFormData({...formData, soa_status: v})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="In Process">In Process</SelectItem>
+                    <SelectItem value="Material Given">Material Given</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="flex gap-4">
