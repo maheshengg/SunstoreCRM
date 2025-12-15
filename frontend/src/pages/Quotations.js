@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
-import { Plus, FileDown, Filter } from 'lucide-react';
+import { Plus, FileDown, Filter, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Quotations = () => {
@@ -186,6 +186,9 @@ export const Quotations = () => {
               <div className="flex gap-2 pt-2">
                 <Button size="sm" variant="outline" onClick={() => navigate(`/quotations/${qtn.quotation_id}`)}>Edit</Button>
                 <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(qtn.quotation_id)}><FileDown size={14} /></Button>
+                {user?.role === 'Admin' && (
+                  <Button size="sm" variant="destructive" onClick={() => handleDelete(qtn.quotation_id)}><Trash2 size={14} /></Button>
+                )}
               </div>
             </CardContent>
           </Card>
