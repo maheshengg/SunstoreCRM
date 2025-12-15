@@ -1683,14 +1683,41 @@ async def get_dashboard_stats(
     if date_filter:
         soa_filter["date"] = date_filter
     
+    # Get status breakdowns
+    leads_by_status = {
+        "total": await db.leads.count_documents(lead_filter),
+        "open": await db.leads.count_documents({**lead_filter, "status": "Open"}),
+        "converted": await db.leads.count_documents({**lead_filter, "status": "Converted"}),
+        "lost": await db.leads.count_documents({**lead_filter, "status": "Lost"})
+    }
+    
+    quotations_by_status = {
+        "total": await db.quotations.count_documents(quotation_filter),
+        "successful": await db.quotations.count_documents({**quotation_filter, "quotation_status": "Successful"}),
+        "lost": await db.quotations.count_documents({**quotation_filter, "quotation_status": "Lost"}),
+        "pending": await db.quotations.count_documents({**quotation_filter, "quotation_status": None})
+    }
+    
+    pi_by_status = {
+        "total": await db.proforma_invoices.count_documents(pi_filter),
+        "pi_submitted": await db.proforma_invoices.count_documents({**pi_filter, "pi_status": "PI Submitted"}),
+        "payment_recd": await db.proforma_invoices.count_documents({**pi_filter, "pi_status": "Payment Recd"})
+    }
+    
+    soa_by_status = {
+        "total": await db.soa.count_documents(soa_filter),
+        "in_process": await db.soa.count_documents({**soa_filter, "soa_status": "In Process"}),
+        "material_given": await db.soa.count_documents({**soa_filter, "soa_status": "Material Given"})
+    }
+    
     stats = {
         "parties": await db.parties.count_documents({}),
         "items": await db.items.count_documents({}),
-        "leads": await db.leads.count_documents(lead_filter),
-        "quotations": await db.quotations.count_documents(quotation_filter),
-        "proforma_invoices": await db.proforma_invoices.count_documents(pi_filter),
-        "soa": await db.soa.count_documents(soa_filter),
-        "open_leads": await db.leads.count_documents({**lead_filter, "status": "Open"})
+        "leads": leads_by_status,
+        "quotations": quotations_by_status,
+        "proforma_invoices": pi_by_status,
+        "soa": soa_by_status,
+        "open_leads": leads_by_status["open"]
     }
     
     return stats
