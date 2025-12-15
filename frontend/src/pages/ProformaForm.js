@@ -4,6 +4,7 @@ import { api } from '../utils/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { SearchableSelect } from '../components/SearchableSelect';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { Card, CardContent } from '../components/ui/card';
@@ -19,7 +20,7 @@ export const ProformaForm = () => {
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
   const [formData, setFormData] = useState({
     party_id: '', date: new Date().toISOString().split('T')[0], validity_days: 30,
-    payment_terms: '', delivery_terms: '', remarks: '', items: []
+    payment_terms: '', delivery_terms: '', remarks: '', pi_status: 'PI Submitted', items: []
   });
 
   useEffect(() => {
@@ -265,9 +266,23 @@ export const ProformaForm = () => {
               </div>
             </div>
             
-            <div>
-              <Label>Remarks</Label>
-              <Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Remarks</Label>
+                <Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} />
+              </div>
+              <div>
+                <Label>PI Status</Label>
+                <Select value={formData.pi_status} onValueChange={v => setFormData({...formData, pi_status: v})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PI Submitted">PI Submitted</SelectItem>
+                    <SelectItem value="Payment Recd">Payment Recd</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="flex gap-4">
