@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the Proforma Invoice and SOA forms with searchable dropdowns on the SUNSTORE KOLHAPUR CRM application"
+user_problem_statement: "Test the document filtering feature on all document pages (Leads, Quotations, Proforma Invoices, SOA) for both Admin and Sales User roles in the SUNSTORE KOLHAPUR CRM application"
 
 frontend:
   - task: "Proforma Invoice Form with Searchable Dropdowns"
