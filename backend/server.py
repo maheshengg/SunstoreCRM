@@ -1100,6 +1100,20 @@ async def update_proforma_invoice(pi_id: str, pi_data: ProformaInvoiceCreate, cu
     pi_dict["created_by_user_id"] = existing["created_by_user_id"]
     return pi_dict
 
+@api_router.delete("/proforma-invoices/{pi_id}")
+async def delete_proforma_invoice(pi_id: str, current_user: dict = Depends(get_current_user)):
+    pi = await db.proforma_invoices.find_one({"pi_id": pi_id}, {"_id": 0})
+    if not pi:
+        raise HTTPException(status_code=404, detail="Proforma Invoice not found")
+    
+    # Delete the PI
+    await db.proforma_invoices.delete_one({"pi_id": pi_id})
+    
+    # Log the deletion
+    await log_document_action("PROFORMA_INVOICE", pi_id, "DELETED", current_user["user_id"])
+    
+    return {"message": "Proforma Invoice deleted successfully"}
+
 @api_router.post("/proforma-invoices/{pi_id}/convert-to-soa")
 async def convert_pi_to_soa(pi_id: str, current_user: dict = Depends(get_current_user)):
     pi = await db.proforma_invoices.find_one({"pi_id": pi_id}, {"_id": 0})
