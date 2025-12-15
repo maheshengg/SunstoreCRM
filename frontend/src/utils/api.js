@@ -27,6 +27,7 @@ export const api = {
   createItem: (data) => axios.post(`${API_URL}/items`, data, { headers: getAuthHeader() }),
   updateItem: (id, data) => axios.put(`${API_URL}/items/${id}`, data, { headers: getAuthHeader() }),
   deleteItem: (id) => axios.delete(`${API_URL}/items/${id}`, { headers: getAuthHeader() }),
+  exportItemsCSV: () => axios.get(`${API_URL}/items/export/csv`, { headers: getAuthHeader(), responseType: 'blob' }),
   uploadItemsCSV: (file) => {
     const formData = new FormData();
     formData.append('file', file);
