@@ -178,6 +178,7 @@ class SOABase(BaseModel):
     reference_document_id: Optional[str] = None
     terms_and_conditions: str = ""
     date: str
+    soa_status: str = "In Process"
     items: List[QuotationItemBase]
 
 class SOACreate(SOABase):
