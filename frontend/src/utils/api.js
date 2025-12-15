@@ -39,6 +39,7 @@ export const api = {
   getLead: (id) => axios.get(`${API_URL}/leads/${id}`, { headers: getAuthHeader() }),
   createLead: (data) => axios.post(`${API_URL}/leads`, data, { headers: getAuthHeader() }),
   updateLead: (id, data) => axios.put(`${API_URL}/leads/${id}`, data, { headers: getAuthHeader() }),
+  deleteLead: (id) => axios.delete(`${API_URL}/leads/${id}`, { headers: getAuthHeader() }),
   convertLead: (id) => axios.post(`${API_URL}/leads/${id}/convert`, {}, { headers: getAuthHeader() }),
   downloadLeadPDF: (id) => axios.get(`${API_URL}/leads/${id}/pdf`, { headers: getAuthHeader(), responseType: 'blob' }),
 
@@ -64,6 +65,7 @@ export const api = {
   getSOA: (id) => axios.get(`${API_URL}/soa/${id}`, { headers: getAuthHeader() }),
   createSOA: (data) => axios.post(`${API_URL}/soa`, data, { headers: getAuthHeader() }),
   updateSOA: (id, data) => axios.put(`${API_URL}/soa/${id}`, data, { headers: getAuthHeader() }),
+  deleteSOA: (id) => axios.delete(`${API_URL}/soa/${id}`, { headers: getAuthHeader() }),
   downloadSOAPDF: (id) => axios.get(`${API_URL}/soa/${id}/pdf`, { headers: getAuthHeader(), responseType: 'blob' }),
 
   // Dashboard
