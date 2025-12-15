@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
-import { Plus, FileDown, Edit, Filter } from 'lucide-react';
+import { Plus, FileDown, Edit, Filter, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const ProformaInvoices = () => {
@@ -77,6 +77,18 @@ export const ProformaInvoices = () => {
       toast.success('PDF downloaded successfully');
     } catch (error) {
       toast.error('Failed to download PDF');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this proforma invoice?')) return;
+    
+    try {
+      await api.deleteProformaInvoice(id);
+      toast.success('Proforma Invoice deleted successfully');
+      fetchPIs();
+    } catch (error) {
+      toast.error('Failed to delete proforma invoice');
     }
   };
 
@@ -179,6 +191,11 @@ export const ProformaInvoices = () => {
                   <FileDown size={14} className="mr-1" />
                   PDF
                 </Button>
+                {user?.role === 'Admin' && (
+                  <Button size="sm" variant="destructive" onClick={() => handleDelete(pi.pi_id)}>
+                    <Trash2 size={14} />
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
