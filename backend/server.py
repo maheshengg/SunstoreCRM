@@ -1234,6 +1234,20 @@ async def update_soa(soa_id: str, soa_data: SOACreate, current_user: dict = Depe
     soa_dict["created_by_user_id"] = existing["created_by_user_id"]
     return soa_dict
 
+@api_router.delete("/soa/{soa_id}")
+async def delete_soa(soa_id: str, current_user: dict = Depends(get_current_user)):
+    soa = await db.soa.find_one({"soa_id": soa_id}, {"_id": 0})
+    if not soa:
+        raise HTTPException(status_code=404, detail="SOA not found")
+    
+    # Delete the SOA
+    await db.soa.delete_one({"soa_id": soa_id})
+    
+    # Log the deletion
+    await log_document_action("SOA", soa_id, "DELETED", current_user["user_id"])
+    
+    return {"message": "SOA deleted successfully"}
+
 # ==================== PDF GENERATION ====================
 
 @api_router.get("/quotations/{quotation_id}/pdf")
