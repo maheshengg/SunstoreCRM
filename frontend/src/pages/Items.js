@@ -198,9 +198,9 @@ export const Items = () => {
                       Item ID <ArrowUpDown size={14} />
                     </div>
                   </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort('item_name')}>
+                  <TableHead className="cursor-pointer" onClick={() => handleSort('description')}>
                     <div className="flex items-center gap-2">
-                      Item Name <ArrowUpDown size={14} />
+                      Description <ArrowUpDown size={14} />
                     </div>
                   </TableHead>
                   <TableHead className="cursor-pointer" onClick={() => handleSort('item_code')}>
@@ -226,7 +226,11 @@ export const Items = () => {
                       </TableCell>
                     )}
                     <TableCell className="font-medium">{item.item_id}</TableCell>
-                    <TableCell>{item.item_name}</TableCell>
+                    <TableCell className="max-w-xs">
+                      <div className="whitespace-normal break-words">
+                        {item.description || item.item_name || 'N/A'}
+                      </div>
+                    </TableCell>
                     <TableCell>{item.item_code}</TableCell>
                     <TableCell>{item.HSN || 'N/A'}</TableCell>
                     <TableCell>{item.GST_percent}%</TableCell>
