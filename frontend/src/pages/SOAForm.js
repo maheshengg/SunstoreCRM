@@ -236,15 +236,15 @@ export const SOAForm = () => {
                   <div className="w-64 space-y-2 p-4 bg-slate-100 rounded-lg">
                     <div className="flex justify-between text-sm">
                       <span>Subtotal:</span>
-                      <span>₹{formData.items.reduce((sum, item) => sum + item.taxable_amount, 0).toFixed(2)}</span>
+                      <span>₹{formData.items.reduce((sum, item) => sum + (parseFloat(item.taxable_amount) || 0), 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Total Tax:</span>
-                      <span>₹{formData.items.reduce((sum, item) => sum + item.tax_amount, 0).toFixed(2)}</span>
+                      <span>₹{formData.items.reduce((sum, item) => sum + (parseFloat(item.tax_amount) || 0), 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-lg font-bold border-t pt-2">
                       <span>Grand Total:</span>
-                      <span>₹{formData.items.reduce((sum, item) => sum + item.total_amount, 0).toFixed(2)}</span>
+                      <span>₹{formData.items.reduce((sum, item) => sum + (parseFloat(item.total_amount) || 0), 0).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
