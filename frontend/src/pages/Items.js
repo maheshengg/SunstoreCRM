@@ -120,7 +120,8 @@ export const Items = () => {
   const filteredItems = items.filter(item =>
     item.item_name.toLowerCase().includes(search.toLowerCase()) ||
     item.item_code.toLowerCase().includes(search.toLowerCase()) ||
-    item.HSN?.toLowerCase().includes(search.toLowerCase())
+    item.HSN?.toLowerCase().includes(search.toLowerCase()) ||
+    item.description?.toLowerCase().includes(search.toLowerCase())
   );
 
   const sortedItems = [...filteredItems].sort((a, b) => {
