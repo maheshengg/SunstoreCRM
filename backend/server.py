@@ -142,6 +142,7 @@ class QuotationBase(BaseModel):
     payment_terms: str = ""
     delivery_terms: str = ""
     remarks: str = ""
+    quotation_status: Optional[str] = None
     items: List[QuotationItemBase]
 
 class QuotationCreate(QuotationBase):
@@ -160,6 +161,7 @@ class ProformaInvoiceBase(BaseModel):
     payment_terms: str = ""
     delivery_terms: str = ""
     remarks: str = ""
+    pi_status: str = "PI Submitted"
     items: List[QuotationItemBase]
 
 class ProformaInvoiceCreate(ProformaInvoiceBase):
