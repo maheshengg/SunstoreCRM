@@ -207,6 +207,30 @@ test_plan:
         -agent: "testing"
         -comment: "✅ PDF DOWNLOAD FUNCTIONALITY FULLY WORKING - Comprehensive testing completed successfully: 1) Admin login (admin@sunstore.com / admin123) works perfectly, 2) Leads page: 4 leads displayed, PDF download button (second action button with FileDown icon) successfully downloads PDFs (e.g., lead_LEAD0001.pdf), 3) Quotations page: 4 quotation cards displayed, PDF download button (icon-only second button) successfully downloads PDFs (e.g., quotation_QTN0001.pdf), 4) No JavaScript errors, script errors, or runtime errors detected during PDF operations, 5) Both download flows complete without console errors or network failures, 6) API calls to /api/leads/{id}/pdf and /api/quotations/{id}/pdf working correctly with proper blob response handling. PDF download feature is production-ready."
 
+  - task: "User and Status Display on Document List Cards"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Quotations.js, /app/frontend/src/pages/ProformaInvoices.js, /app/frontend/src/pages/SOAList.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Implemented User and Status badges on all document list cards (Quotations, PI, SOA). Each card now shows: 1) Status badge with color coding (Successful=green, Lost=red, Pending=gray), 2) User name who created the document with icon. Backend already has created_by_user_id field. Frontend fetches user list and creates a usersMap for display."
+
+  - task: "User/Status Header and Convert Document UI on Forms"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/QuotationForm.js, /app/frontend/src/pages/ProformaForm.js, /app/frontend/src/pages/SOAForm.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Implemented on all document forms (Quotation, PI, SOA): 1) User display with icon showing who created the document, 2) Status badge showing current status, 3) Convert Document dropdown with options to convert to other document types, 4) Convert button that calls backend API and navigates to new document. Available conversions: Quotation→PI/SOA, PI→Quotation/SOA, SOA→Quotation/PI."
+
 agent_communication:
     -agent: "testing"
     -message: "Starting comprehensive testing of document filtering feature for both Admin and Sales User roles. Will test: 1) Login as both user types, 2) Navigation to all document pages (Leads, Quotations, Proforma Invoices, SOA), 3) Filter UI visibility based on user role, 4) Filter functionality including dropdowns and Apply Filter button, 5) Custom Date Range feature, 6) Role-based access control verification."
@@ -214,3 +238,5 @@ agent_communication:
     -message: "✅ DOCUMENT FILTERING TESTING COMPLETED SUCCESSFULLY - All requested features are fully functional and working as expected. Both Admin and Sales user roles have properly implemented filtering with correct role-based access control. Admin users can see both 'Select User' and 'Period' filters on all document pages, while Sales users correctly see only 'Period' filter. Filter cards have proper styling with gray background, all dropdown options work correctly, Custom Date Range functionality is implemented, and Apply Filter button works on all pages. The filtering feature meets all requirements and is ready for production use."
     -agent: "testing"
     -message: "✅ PDF DOWNLOAD FUNCTIONALITY TESTING COMPLETED - Comprehensive testing of PDF download feature on SUNSTORE KOLHAPUR CRM application completed successfully. Login as admin (admin@sunstore.com) works perfectly. Leads page: PDF download functionality working correctly - clicking the second action button (FileDown icon) successfully downloads lead PDFs (e.g., lead_LEAD0001.pdf). Quotations page: PDF download functionality working correctly - clicking the icon-only button (second button) in quotation cards successfully downloads quotation PDFs (e.g., quotation_QTN0001.pdf). No JavaScript errors, script errors, or runtime errors detected during PDF download operations. Both download flows complete successfully without any console errors or network failures."
+    -agent: "main"
+    -message: "NEW IMPLEMENTATION - Document Status & Conversion UI: Implemented User/Status display on document list cards (Quotations, PI, SOA) with colored badges. Also added to document forms: 1) User/Status header showing creator and status, 2) 'Convert to...' dropdown and button for document conversion (Quotation↔PI↔SOA). Backend APIs already exist. Test credentials: admin@sunstore.com/admin123. Please test: 1) User name and Status badge visibility on list cards, 2) Convert functionality on edit forms, 3) Navigation after conversion."
