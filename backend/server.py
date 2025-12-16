@@ -1545,12 +1545,14 @@ def generate_document_html(
             table {{ width: 100%; border-collapse: collapse; margin: 10px 0; }}
             th {{ background-color: #d0d0d0; color: #000; padding: 6px; border: 1px solid #999; text-align: left; font-size: 10px; font-weight: bold; }}
             td {{ padding: 6px; border: 1px solid #ddd; font-size: 10px; }}
-            .tax-table-title {{ font-weight: bold; margin-top: 30px; margin-bottom: 10px; font-size: 11px; clear: both; }}
-            .items-table {{ margin-bottom: 20px; }}
-            .tax-section {{ margin-bottom: 20px; clear: both; }}
-            .summary-box {{ float: right; width: 250px; margin-top: 20px; border: 1px solid #999; padding: 10px; background: #f9f9f9; }}
+            .items-table {{ margin-bottom: 15px; }}
+            .below-items-section {{ display: flex; justify-content: space-between; margin-bottom: 20px; }}
+            .terms-box {{ width: 55%; padding-right: 20px; }}
+            .summary-box {{ width: 40%; border: 1px solid #999; padding: 10px; background: #f9f9f9; }}
             .summary-row {{ display: flex; justify-content: space-between; padding: 4px 0; font-size: 10px; }}
             .summary-row.total {{ font-weight: bold; border-top: 2px solid #333; padding-top: 8px; margin-top: 8px; font-size: 11px; }}
+            .tax-section {{ margin-top: 20px; clear: both; }}
+            .tax-table-title {{ font-weight: bold; margin-bottom: 10px; font-size: 11px; }}
             .clear {{ clear: both; }}
         </style>
     </head>
