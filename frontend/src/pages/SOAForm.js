@@ -47,8 +47,36 @@ export const SOAForm = () => {
     try {
       const response = await api.getSOA(id);
       setFormData(response.data);
+      // Fetch user who created this SOA
+      if (response.data.created_by_user_id) {
+        try {
+          const usersRes = await api.getUsers();
+          const creator = usersRes.data.find(u => u.user_id === response.data.created_by_user_id);
+          setCreatedByUser(creator);
+        } catch (err) { console.error('Failed to fetch user'); }
+      }
     } catch (error) {
       toast.error('Failed to load SOA');
+    }
+  };
+
+  const handleConvert = async () => {
+    if (!convertTarget || !id) return;
+    setIsConverting(true);
+    try {
+      if (convertTarget === 'quotation') {
+        const res = await api.convertSOAToQuotation(id);
+        toast.success('Converted to Quotation');
+        navigate(`/quotations/${res.data.quotation_id}`);
+      } else if (convertTarget === 'pi') {
+        const res = await api.convertSOAToPI(id);
+        toast.success('Converted to Proforma Invoice');
+        navigate(`/proforma-invoices/${res.data.pi_id}`);
+      }
+    } catch (error) {
+      toast.error('Failed to convert document');
+    } finally {
+      setIsConverting(false);
     }
   };
 
