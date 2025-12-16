@@ -62,7 +62,6 @@ export const ProformaInvoices = () => {
   useEffect(() => {
     fetchUsers();
     fetchPIs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleApplyFilter = () => {
