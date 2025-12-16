@@ -1606,44 +1606,46 @@ def generate_document_html(
             </tbody>
         </table>
         
+        <!-- Terms on LEFT, Totals on RIGHT -->
+        <div class="below-items-section">
+            <div class="terms-box">
+                {f'<p style="margin: 0 0 8px 0;"><strong>Payment Terms:</strong> {payment_terms}</p>' if payment_terms else ''}
+                {f'<p style="margin: 0 0 8px 0;"><strong>Delivery Terms:</strong> {delivery_terms}</p>' if delivery_terms else ''}
+                {f'<p style="margin: 0;"><strong>Remarks:</strong> {remarks}</p>' if remarks else ''}
+            </div>
+            
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Net Total</span>
+                    <span>₹{subtotal:,.2f}</span>
+                </div>
+                {f'<div class="summary-row"><span>SGST</span><span>₹{total_sgst:,.2f}</span></div>' if total_sgst > 0 else ''}
+                {f'<div class="summary-row"><span>CGST</span><span>₹{total_cgst:,.2f}</span></div>' if total_cgst > 0 else ''}
+                {f'<div class="summary-row"><span>IGST</span><span>₹{total_igst:,.2f}</span></div>' if total_igst > 0 else ''}
+                <div class="summary-row total">
+                    <span>Grand Total</span>
+                    <span>₹{grand_total:,.2f}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tax Table Below -->
         <div class="tax-section">
             <div class="tax-table-title">ITEM TAX TABLE</div>
             
-            <table style="width: 60%; margin-bottom: 20px;">
+            <table style="width: 70%;">
                 <thead>
                     <tr>
                         <th style="width: 25%;">HSN/SAC</th>
                         <th style="width: 30%; text-align: right;">Taxable Amount</th>
-                        <th style="width: 22%;">SGST</th>
-                        <th style="width: 23%;">CGST</th>
+                        <th style="width: 22%; text-align: right;">SGST</th>
+                        <th style="width: 23%; text-align: right;">CGST</th>
                     </tr>
                 </thead>
                 <tbody>
                     {tax_rows_html}
                 </tbody>
             </table>
-        </div>
-        
-        <div class="summary-box">
-            <div class="summary-row">
-                <span>Net Total</span>
-                <span>₹{subtotal:,.2f}</span>
-            </div>
-            {f'<div class="summary-row"><span>SGST</span><span>₹{total_sgst:,.2f}</span></div>' if total_sgst > 0 else ''}
-            {f'<div class="summary-row"><span>CGST</span><span>₹{total_cgst:,.2f}</span></div>' if total_cgst > 0 else ''}
-            {f'<div class="summary-row"><span>IGST</span><span>₹{total_igst:,.2f}</span></div>' if total_igst > 0 else ''}
-            <div class="summary-row total">
-                <span>Grand Total</span>
-                <span>₹{grand_total:,.2f}</span>
-            </div>
-        </div>
-        
-        <div class="clear"></div>
-        
-        <div style="margin-top: 30px; font-size: 10px;">
-            {f'<p><strong>Payment Terms:</strong> {payment_terms}</p>' if payment_terms else ''}
-            {f'<p><strong>Delivery Terms:</strong> {delivery_terms}</p>' if delivery_terms else ''}
-            {f'<p><strong>Remarks:</strong> {remarks}</p>' if remarks else ''}
         </div>
         
         {footer_note}
