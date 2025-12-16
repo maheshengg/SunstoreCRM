@@ -1,227 +1,182 @@
 <analysis>**original_problem_statement:**
-Build a complete mobile-first CRM mini-ERP web application with database backend, PDF generation and document workflow management for the company “Mahesh Engineering Services”.
+Build a complete mobile-first CRM mini-ERP web application for SUNSTORE KOLHAPUR with a FastAPI backend, React frontend, and MongoDB database.
 
 **PRODUCT REQUIREMENTS:**
-- **Platform:** Web application, mobile-first UI/UX.
-- **Authentication:** JWT-based login with Admin and Sales User roles, role-based permissions, and a forgot password flow.
-- **Company Branding:** Initially Mahesh Engineering Services, later changed to SUNSTORE KOLHAPUR. Static company info to be displayed on screens and PDFs.
-- **Database Schema (MongoDB):** , , , , , , , , .
-- **Workflow:** Lead → Quotation → Proforma Invoice (PI) → Sales Order Acknowledgement (SOA), with direct creation allowed.
-- **Numbering:** Admin-configurable prefixes for documents with auto-incrementing serial numbers.
-- **Tax Logic:** CGST+SGST for parties in Maharashtra, IGST otherwise.
-- **UI Screens:** Login, Dashboards (Admin/User), master data management (Party, Item), document forms (Lead, Quotation, PI, SOA), document listings, and a reporting module.
-- **Features:** CSV export/import for master data, duplicate detection, automatic tax calculation, and document conversion.
-- **PDF Generation:** Mobile-friendly PDFs for all documents, including a company letterhead and proper data tables.
-- **Security:** JWT, sanitized inputs, password hashing.
+- **Authentication:** JWT-based login with Admin and Sales User roles.
+- **Branding:** SUNSTORE KOLHAPUR brand to be used throughout the app and on PDFs.
+- **Database & Documents:** Manage , , , , , , , and .
+- **Document Workflow & Conversion:** Implement a workflow allowing conversion between Quotations, Proforma Invoices (PI), and Sales Order Acknowledgements (SOA).
+- **Document Status:** Add and manage status fields for all documents (e.g., , , ).
+- **UI/UX:**
+    - Mobile-first design.
+    - Role-based dashboards with filtering capabilities.
+    - Master data (Party, Item) and Document (Lead, Quotation, etc.) pages to use a table/list format with sorting, filtering, and pagination.
+    - Implement a modal-based, multi-parameter item selector (search by brand, category, name, code) for document forms.
+    - Display User and Status on all document list cards and form headers.
+- **Features:**
+    - PDF generation for all documents with a corrected, professional layout.
+    - Correct GST tax logic based on customer's GST number prefix (27 for Maharashtra).
+    - CRUD operations for all entities, including a Delete option with confirmation for all documents.
+    - CSV import/export for master data.
+- **Dashboard:** A redesigned dashboard with a 3-row layout showing status breakdowns for each document type, quick actions, and master data counts.
 
 **User's preferred language**: English
 
 **what currently exists?**
-A comprehensive full-stack CRM/ERP application has been built using a FastAPI backend, React frontend, and MongoDB database.
-
-The application includes:
-- User authentication (Admin, Sales User) with JWT.
-- Role-based dashboards: Admin dashboard has user and date-range filters; Sales User dashboard shows their personal stats.
-- Complete CRUD functionality for Parties, Items, Leads, Quotations, Proforma Invoices (PI), and Sales Order Acknowledgements (SOA).
-- PDF generation for all documents (Leads, Quotations, PI, SOA) featuring a custom company letterhead.
-- Breadcrumb navigation for improved UX.
-- Keyboard-searchable dropdowns on Lead and Quotation forms.
-- Scripts to populate and clear a large set of test data.
-- Scripts to export Party and Item master data to CSV files.
+A comprehensive full-stack CRM/ERP application using FastAPI, React, and MongoDB. The application includes:
+- JWT-based authentication for Admin and Sales User roles.
+- Role-specific dashboards with advanced filtering and a redesigned layout showing status breakdowns.
+- Full CRUD for Parties, Items, Leads, Quotations, Proforma Invoices (PI), and Sales Order Acknowledgements (SOA).
+- PDF generation for all documents with corrected layout and tax logic.
+- Master data pages (Parties, Items) and Document pages (Leads, etc.) have been refactored from card layouts to functional data tables with filtering, sorting, and pagination.
+- A highly improved item entry UI using a modal for multi-parameter search (brand, category, name) and auto-filling item details on document forms.
+- Document status fields (, , ) have been added to the database models and backend endpoints.
+- Backend API endpoints for document conversion (e.g., Quotation to PI, PI to SOA) and document deletion have been created.
 
 **Last working item**:
-- **Last item agent was working:** Adding a CSV import feature for the Party Master. The agent implemented the backend API endpoint () and the frontend API call, but it failed to correctly add the Import CSV button and file input to the UI on the Parties page. The user reported that the button was not visible.
+- **Last item agent was working:** The agent had just finished creating the backend API endpoints for document conversions (e.g., ) and added the corresponding functions to . However, the user pointed out that none of the requested UI changes for this feature (conversion buttons, user/status display) were visible. The agent was about to start implementing the required frontend UI.
 - **Status:** IN PROGRESS
 - **Agent Testing Done:** N
-- **Which testing method agent to use?** Frontend testing agent. The agent must verify the Import CSV button and file input are visible on the  page, and then test the end-to-end flow of uploading a valid CSV and checking if the new parties appear in the list.
-- **User Testing Done:** Y (User confirmed the button is missing).
+- **Which testing method agent to use?** Frontend testing agent. The agent must verify the new UI elements on the document list pages and forms, and then test the end-to-end document conversion workflow.
+- **User Testing Done:** Y (User confirmed the UI changes are missing).
 
 **All Pending/In progress Issue list**:
-- **Issue 1:** Import CSV button is not visible on the Parties page. (P0)
-- **Issue 2:** The backend service is unstable and frequently crashes due to a missing WeasyPrint dependency (). (P1)
+- **Issue 1:** The backend is prone to crashing due to a missing WeasyPrint system dependency (). (P1)
 
 **Issues Detail:**
-- **Issue 1: Import CSV button not visible on Parties page**
-    - **Attempted fixes:** The agent edited  but the changes did not render the button correctly.
-    - **Next debug checklist:**
-        1.  View the current content of  to see the incomplete code.
-        2.  Add the necessary JSX for a file input and an Upload CSV button, likely near the Add New Party button. Make sure to connect it to the  function.
-        3.  Use the  on the  page to confirm the button is now visible.
-        4.  Perform an end-to-end test of the feature.
-    - **Why fix this issue and what will be achieved with the fix?** This will complete the user-requested feature for bulk-importing party data, which is a critical time-saver.
-    - **Status:** IN PROGRESS
-    - **Is recurring issue?** N
-    - **Should Test frontend/backend/both after fix?** Both. Frontend for the UI element and backend for the file processing logic.
-    - **Blocked on other issue:** None.
-
-- **Issue 2: Recurring backend crash due to WeasyPrint dependency**
-    - **Attempted fixes:** The agent has repeatedly fixed this by reinstalling the missing system library with Reading package lists...
+- **Issue 1: Recurring backend crash due to WeasyPrint dependency**
+    - **Attempted fixes:** The agent has repeatedly fixed this by reinstalling the missing system library. This is a known workaround for an environmental issue.
+    - **Next debug checklist:** If the backend is unresponsive, check logs for .
+        1.  Run Hit:1 http://deb.debian.org/debian bookworm InRelease
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Hit:4 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 InRelease
+Hit:5 https://deb.nodesource.com/node_20.x nodistro InRelease
+Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [285 kB]
+Fetched 389 kB in 2s (256 kB/s)
+Reading package lists...
+Reading package lists...
 Building dependency tree...
 Reading state information...
 The following NEW packages will be installed:
   libpangoft2-1.0-0
-0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
 Need to get 44.5 kB of archives.
 After this operation, 178 kB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian bookworm/main arm64 libpangoft2-1.0-0 arm64 1.50.12+ds-1 [44.5 kB]
-Fetched 44.5 kB in 0s (469 kB/s)
+Fetched 44.5 kB in 0s (874 kB/s)
 Selecting previously unselected package libpangoft2-1.0-0:arm64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 38368 files and directories currently installed.)
 Preparing to unpack .../libpangoft2-1.0-0_1.50.12+ds-1_arm64.deb ...
 Unpacking libpangoft2-1.0-0:arm64 (1.50.12+ds-1) ...
 Setting up libpangoft2-1.0-0:arm64 (1.50.12+ds-1) ...
-Processing triggers for libc-bin (2.36-9+deb12u13) .... This works temporarily.
-    - **Next debug checklist:** The root cause is environment instability, where system-level packages are lost on some resets. The next agent should not try to find a permanent fix but must be aware of the quick fix. If the backend is unresponsive or returns an empty response, the agent should:
-        1.  Check backend logs: Process SpawnProcess-1:
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
-    self.run()
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 108, in run
-    self._target(*self._args, **self._kwargs)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 76, in subprocess_started
-    target(sockets=sockets)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 61, in run
-    return asyncio.run(self.serve(sockets=sockets))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
-    return runner.run(main)
-           ^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
-    return self._loop.run_until_complete(task)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
-    return future.result()
-           ^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 68, in serve
-    config.load()
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 467, in load
-    self.loaded_app = import_from_string(self.app)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 21, in import_from_string
-    module = importlib.import_module(module_str)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
-  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
-  File "/app/backend/server.py", line 18, in <module>
-    from weasyprint import HTML, CSS
-  File "/root/.venv/lib/python3.11/site-packages/weasyprint/__init__.py", line 440, in <module>
-    from .css import preprocess_stylesheet  # noqa: I001, E402
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/weasyprint/css/__init__.py", line 30, in <module>
-    from ..text.fonts import FontConfiguration
-  File "/root/.venv/lib/python3.11/site-packages/weasyprint/text/fonts.py", line 17, in <module>
-    from .constants import (  # isort:skip
-  File "/root/.venv/lib/python3.11/site-packages/weasyprint/text/constants.py", line 5, in <module>
-    from .ffi import pango
-  File "/root/.venv/lib/python3.11/site-packages/weasyprint/text/ffi.py", line 492, in <module>
-    pangoft2 = _dlopen(
-               ^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/weasyprint/text/ffi.py", line 464, in _dlopen
-    return ffi.dlopen(names[0], flags)  # pragma: no cover
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/cffi/api.py", line 150, in dlopen
-    lib, function_cache = _make_ffi_library(self, name, flags)
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/cffi/api.py", line 834, in _make_ffi_library
-    backendlib = _load_backend_lib(backend, libname, flags)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/cffi/api.py", line 829, in _load_backend_lib
-    raise OSError(msg)
-OSError: cannot load library 'libpangoft2-1.0-0': libpangoft2-1.0-0: cannot open shared object file: No such file or directory.  Additionally, ctypes.util.find_library() did not manage to locate a library called 'libpangoft2-1.0-0'.
-        2.  If the log shows , run Reading package lists...
-Building dependency tree...
-Reading state information...
-libpangoft2-1.0-0 is already the newest version (1.50.12+ds-1).
-0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded..
-        3.  Restart the backend: backend: stopped
+Processing triggers for libc-bin (2.36-9+deb12u13) ....
+        2.  Restart the backend: backend: stopped
 backend: started.
-    - **Why fix this issue and what will be achieved with the fix?** This makes the backend operational again. It's a critical workaround for development to continue.
+    - **Why fix this issue and what will be achieved with the fix?** Makes the backend operational, allowing development to continue.
     - **Status:** RECURRING (Workaround known)
     - **Is recurring issue?** Y
-    - **Should Test frontend/backend/both after fix?** Backend (e.g., with a simple  to an API endpoint).
+    - **Should Test frontend/backend/both after fix?** Backend (confirm with a  to an API endpoint).
     - **Blocked on other issue:** None.
 
 **In progress Task List**:
-- **Task 1: Complete the Party CSV Import feature** (P0)
-    - **Where to resume:** Edit  to add the file input and upload button to the UI.
-    - **What will be achieved with this?** Allows users to efficiently upload party master data from a CSV file.
+- **Task 1: Implement Frontend UI for Document Status and Conversion** (P0)
+    - **Where to resume:** Implement the frontend changes across all document list pages (, , ) and their corresponding forms (, , ).
+    - **What will be achieved with this?** This will complete the user's latest request by making the document conversion features usable and providing crucial status/user visibility.
     - **Status:** IN PROGRESS
-    - **Should Test frontend/backend/both after fix?** Both.
+    - **Should Test frontend/backend/both after fix?** Both. Frontend for UI elements and backend for the conversion logic.
     - **Blocked on something:** None.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks:**
-    - **Task 1 (P1):** Implement searchable dropdowns on  and  to match the functionality already on the Quotation and Lead forms.
-    - **Task 2 (P2):** Implement a Custom Date Range picker (From/To dates) for the dashboard filters.
+    - **Task 1 (P0):** Show User and Status on all document list cards (Quotations, PI, SOA). Requires fetching user data and mapping it.
+    - **Task 2 (P0):** Add User and Status to the header of each document form.
+    - **Task 3 (P0):** Add the Convert Document UI (dropdown and button) inside each document form page (Quotation, PI, SOA).
+    - **Task 4 (P1):** Verify that Delete buttons and confirmation dialogs are implemented and working correctly on all document list pages as requested.
+- **Future Tasks:**
+    - **Task 1 (P2):** Implement enhanced reporting based on the new status fields (e.g., Lead Funnel Report, Quotation Win/Loss Analysis).
 
 **Completed work in this session**
-- **Branding:** Updated the entire application from Mahesh Engineering Services to SUNSTORE KOLHAPUR.
-- **Dashboards:** Created role-specific dashboards with advanced filtering for Admins.
-- **Navigation:** Implemented breadcrumb navigation across the application.
-- **PDF Generation:**
-    - Integrated a custom letterhead image into all PDF documents.
-    - Implemented PDF generation for Leads, Quotations, PIs, and SOAs.
-    - Corrected the PDF table layout to match the user's specification.
-- **Data Management:**
-    - Created scripts to generate large volumes of test data ().
-    - Created a script to clear all data from the database ().
-    - Implemented CSV export for Party and Item masters.
-- **UI/UX Improvements:**
-    - Implemented keyboard-searchable Combobox dropdowns for Party and Item selection on Lead and Quotation forms.
-- **Bug Fixes:**
-    - Resolved a recurring  error caused by UI components.
-    from Statement of Accounts to Sales Order Acknowledgement.
-    - Fixed multiple instances of the backend crashing due to a missing WeasyPrint dependency.
-    - Resolved admin login failures by restoring test data.
+- **CSV Import:** Fixed the missing Import CSV button on the Parties page and tested the full feature.
+- **Form UI:** Implemented searchable dropdowns on Proforma & SOA forms.
+- **Dashboard:**
+    - Verified that the Custom Date Range picker was already implemented.
+    - Added comprehensive user and period filters to all document list pages.
+    - Completely redesigned the dashboard UI into a 3-row layout with status breakdowns, color-coding, and icons.
+    - Updated the backend  endpoint to provide status-wise counts.
+- **UI Refactoring:**
+    - Converted Item and Party list pages from a card layout to a data table with search, sorting, pagination, and bulk delete functionality.
+    - Replaced Item Name with Description in the Items table.
+    - Implemented a new modal-based, multi-parameter item selector for all document forms.
+- **Bug Fixes & Core Logic:**
+    - Fixed a critical runtime error on the Quotation form by adding safety checks.
+    - Corrected the PDF layout to prevent the totals box from overlapping the items table.
+    - Fixed the GST tax calculation logic across the application to correctly use the 27 prefix for the customer's GST number.
+    - Repeatedly fixed the recurring backend crash due to the WeasyPrint dependency.
+    - Resolved login failures by repopulating test data and ensuring the backend was running.
+- **Backend APIs:**
+    - Added document status fields (, , ) to the backend models and forms.
+    - Created all necessary backend  endpoints for Leads, Quotations, PIs, and SOAs.
+    - Created a full set of backend  endpoints for document conversions between Quotations, PIs, and SOAs.
 
 **Earlier issues found/mentioned but not fixed**
-   - No open issues were missed. The primary un-fixed issue is the recurring WeasyPrint dependency problem, which is documented above as a known recurring issue with a workaround.
+- The full suite of reporting features based on document statuses (Lead Funnel, Win/Loss analysis, etc.) was requested but not started.
 
 **Known issue recurrence from previous fork**
-  - This is the first summary, so this section is not applicable.
+- **Issue recurrence in previous fork:** The backend crash due to the missing  WeasyPrint dependency is a known, recurring environmental issue.
+- **Recurrence count:** High.
+- **Status:** RECURRING (Workaround known)
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Backend:** FastAPI, Python, MongoDB (via Pymongo), JWT for authentication, WeasyPrint for PDF generation.
-- **Frontend:** React, Tailwind CSS, shadcn/ui components, Radix UI.
-- **Architecture:** Decoupled frontend/backend full-stack application.
-- **Deployment:** Containerized environment managed by .
+- **Backend:** FastAPI, Python, Pymongo, JWT, WeasyPrint.
+- **Frontend:** React, Tailwind CSS, shadcn/ui components.
+- **Architecture:** Decoupled full-stack application.
+- **Environment:** Docker container managed by .
 
 **key DB schema**
-- **USER_MASTER:** (user_id, name, email, mobile, role, password_hashed, status)
-- **PARTY_MASTER:** (party_id, party_name, address, city, state, pincode, GST_number, contact_person, mobile, email, status)
-- **ITEM_MASTER:** (item_id, item_code, item_name, description, UOM, rate, HSN, GST%, brand, category)
-- **LEADS:** (lead_id, party_id, contact_name, requirement_summary, notes, created_by_user_id, lead_date, status)
-- **QUOTATIONS:** (quotation_id, quotation_no, party_id, date, validity_days, payment_terms, delivery_terms)
-- **PROFORMA_INVOICE:** (Same as Quotation with separate numbering)
-- **SOA:** (soa_id, soa_no, party_id, terms_and_conditions, date)
+- **USER_MASTER:** (user_id, name, email, role, password_hashed)
+- **PARTY_MASTER:** (party_id, party_name, GST_number, ...)
+- **ITEM_MASTER:** (item_id, item_code, item_name, description, brand, category, rate, HSN, ...)
+- **LEADS:** (lead_id, party_id, created_by_user_id, status, ...)
+- **QUOTATIONS:** (quotation_id, party_id, created_by_user_id, **quotation_status**, items, ...)
+- **PROFORMA_INVOICE:** (pi_id, party_id, created_by_user_id, **pi_status**, items, ...)
+- **SOA:** (soa_id, party_id, created_by_user_id, **soa_status**, items, ...)
+
+**changes in tech stack**
+- None.
 
 **All files of reference**
-- : Core backend logic, all API endpoints, PDF generation.
-- : File being edited to add the CSV import button.
-- : Contains the logic for admin and sales user dashboards.
-- : Reusable component for keyboard-searchable dropdowns.
-- : Contains the global error handler for the  issue.
-- : Script to generate comprehensive test data.
-- : Script to wipe the database.
-- : Script to export master data.
+- : Contains all API endpoints, including the newly added conversion and deletion logic.
+- : Contains all frontend API call functions, including the new conversion functions.
+- : The completely rewritten dashboard component.
+- : Example of the new table layout for master data.
+- : Example of the new table layout for master data.
+- , , : The forms that need the conversion UI and user/status header.
+- , , : The list pages that need user/status display on cards.
+- : The new component for advanced item selection.
+
+**Areas that need refactoring**:
+- The document list pages (, , ) still use a card-based layout. The user has requested a table format for documents as well (Message #115), but this was superseded by other requests. This should be addressed after the current tasks are complete.
+
+**key api endpoints**
+- 
+- : Returns detailed counts including status breakdowns.
+-  (e.g., ): Fetches list of documents, now supports user/period filters.
+- : New endpoints to delete documents.
+- : New endpoints for document conversion.
 
 **Critical Info for New Agent**
-- **WeasyPrint Dependency:** The backend will crash if the  system library is missing. If the backend is unresponsive, check the logs for this error and run Reading package lists...
+- **Highest Priority:** The immediate task is to implement the frontend UI for document conversion and status/user display, as requested by the user in their last message. The backend APIs are already built; you just need to connect the UI.
+- **WeasyPrint Dependency:** The backend is unstable and will crash if the  library is missing. If the backend is unresponsive, check logs and run Reading package lists...
 Building dependency tree...
 Reading state information...
 libpangoft2-1.0-0 is already the newest version (1.50.12+ds-1).
-0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded., then restart the backend. This is a recurring environmental issue.
-- **Test Data:** The database might be empty. If you encounter login failures or see no data, run the populate script: ============================================================
+0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded. followed by backend: stopped
+backend: started.
+- **Test Data:** The database can be empty after resets. If login fails or you see no data, run ============================================================
 SUNSTORE KOLHAPUR CRM - Large Test Data Population
 ============================================================
 🗑️  Clearing existing data...
@@ -240,8 +195,8 @@ SUNSTORE KOLHAPUR CRM - Large Test Data Population
 ✓ Created 40 leads
 ✓ Created 24 quotations
 ✓ Created 10 proforma invoices
-✓ Created 2 SOA documents
-✓ Created 76 document logs
+✓ Created 3 SOA documents
+✓ Created 77 document logs
 
 ⚙️  Creating settings...
 ✓ Created default settings
@@ -264,52 +219,92 @@ SUNSTORE KOLHAPUR CRM - Large Test Data Population
    - Leads: 40
    - Quotations: 24
    - Proforma Invoices: 10
-   - SOA: 2
-   - Document Logs: 76
+   - SOA: 3
+   - Document Logs: 77
 
-🎉 Ready for comprehensive testing!. The user may also request the data to be cleared.
-- **Branding:** The application is for SUNSTORE KOLHAPUR. Do not use Mahesh Engineering Services.
-- **SOA:** Stands for Sales Order Acknowledgement.
+🎉 Ready for comprehensive testing!.
 
 **documents created in this job**
 - 
-- 
-- 
-- 
-- 
 
 **Last 10 User Messages and any pending user messages**
-1.  **User:** Remove all test data, but first give me CSVs of Items and Parties, then create a new set of test data.
-2.  **Agent:** Actioned. Exported CSVs, cleared DB, and created new test data.
-3.  **User:** Looks like the test data was not cleared. Please clear it.
-4.  **Agent:** Actioned. Cleared the data and verified the database is empty.
-5.  **User:** There is no import CSV option for parties.
-6.  **Agent:** Acknowledged. Started implementing the CSV import feature for parties.
-7.  **User:** Import CSV button not found on parties page.
-8.  **Agent:** The agent's last action was to attempt to add this button.
-
-The pending request is to correctly implement the Import CSV button and functionality for the Parties page.
+1. **User:** PDF has a layout issue (overlapping boxes) and incorrect GST logic.
+2. **Agent:** Fixed both PDF layout and GST logic.
+3. **User:** Comprehensive request to add PDF layout fix, correct GST logic, and add DELETE options consistently across ALL document types (Quotation, PI, SOA).
+4. **Agent:** Implemented backend DELETE endpoints and API functions, then summarized progress (prematurely).
+5. **User:** Points out that the DELETE buttons are not visible on the UI.
+6. **Agent:** Acknowledges mistake and adds DELETE buttons to the UI for all document list pages.
+7. **User:** Cannot log in.
+8. **Agent:** Diagnoses an empty database, repopulates test data, and provides credentials.
+9. **User:** Login still fails.
+10. **Agent:** Diagnoses the recurring backend crash, fixes it, and confirms the login API is working. User is asked to try again.
+11. **(PENDING) User:** Provides another screenshot of the PDF with layout issues (black boxes, incorrect positioning of totals/terms).
+12. **(PENDING) User:** Provides a very large, comprehensive request to add User/Status display on document cards/headers and implement a full document conversion feature.
+13. **(PENDING) User:** Complains that none of the changes from the previous request are visible, restating the requirements. This is the most recent and highest-priority task.
 
 **Project Health Check:**
-- **Broken:** The Party CSV import feature is incomplete. The backend service is prone to crashing due to an environmental issue (though a workaround exists).
-- **Mocked:** None. Features are being built out completely.
+- **Broken:** The frontend UI for document conversion and for displaying user/status information on document lists and forms is completely missing.
+- **Mocked:** None.
 
 **3rd Party Integrations**
 - **WeasyPrint:** Used for PDF generation. Has a fragile system dependency.
-- **Gmail API:** Chosen for email but not yet implemented.
 
 **Testing status**
-- **Testing agent used after significant changes:** NO
+- **Testing agent used after significant changes:** YES
 - **Troubleshoot agent used after agent stuck in loop:** NO
-- **Test files created:** None. Testing was done via curl, python scripts, and .
-- **Known regressions:** The backend environment loses a system package () on some resets, causing the application to crash.
+- **Test files created:** None.
+- **Known regressions:** The backend environment periodically loses the  library, causing the server to crash.
 
 **Credentials to test flow:**
 - **Admin:**  / 
 - **Sales User:**  / 
-- **Note:** These users will only exist if the test data has been populated.
+- **Note:** Test data may need to be populated by running ============================================================
+SUNSTORE KOLHAPUR CRM - Large Test Data Population
+============================================================
+🗑️  Clearing existing data...
+✓ All data cleared
+
+👥 Creating users...
+✓ Created 5 users
+
+🏢 Creating 25 parties...
+✓ Created 25 parties
+
+📦 Creating 60 items...
+✓ Created 60 items
+
+📋 Creating 40 leads and documents...
+✓ Created 40 leads
+✓ Created 24 quotations
+✓ Created 11 proforma invoices
+✓ Created 3 SOA documents
+✓ Created 78 document logs
+
+⚙️  Creating settings...
+✓ Created default settings
+
+============================================================
+✅ LARGE TEST DATA POPULATION COMPLETE!
+============================================================
+
+📌 Login Credentials:
+   Admin: admin@sunstore.com / admin123
+   Sales: rajesh@sunstore.com / sales123
+   Sales: priya@sunstore.com / sales123
+   Sales: amit@sunstore.com / sales123
+   Sales: sneha@sunstore.com / sales123
+
+📊 Database Summary:
+   - Users: 5
+   - Parties: 25
+   - Items: 60
+   - Leads: 40
+   - Quotations: 24
+   - Proforma Invoices: 11
+   - SOA: 3
+   - Document Logs: 78
+
+🎉 Ready for comprehensive testing!.
 
 **What agent forgot to execute**
-- The agent did not correctly add the UI for the Party CSV Import feature.
-- The agent did not implement the searchable dropdowns on the Proforma and SOA forms, which it had suggested.
-- The agent did not implement the Custom Date Range date-picker UI for the dashboard filters.</analysis>
+- The previous agent built the entire backend and API layer for the document conversion feature but completely forgot to implement any of the corresponding frontend UI (buttons, dropdowns, status displays). The user's latest message is a direct result of this omission.</analysis>
