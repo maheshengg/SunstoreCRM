@@ -182,10 +182,21 @@ export const SOAList = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {soas.map(soa => (
           <Card key={soa.soa_id}>
-            <CardHeader><CardTitle>{soa.soa_no}</CardTitle></CardHeader>
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg">{soa.soa_no}</CardTitle>
+                <Badge variant={soa.soa_status === 'Material Given' ? 'default' : 'secondary'}>
+                  {soa.soa_status || 'In Process'}
+                </Badge>
+              </div>
+            </CardHeader>
             <CardContent className="space-y-2">
               <p className="text-sm">Date: {new Date(soa.date).toLocaleDateString()}</p>
               <p className="text-sm">Confirmation: {soa.party_confirmation_ID}</p>
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <User size={14} />
+                <span>{usersMap[soa.created_by_user_id] || 'Unknown'}</span>
+              </div>
               <div className="flex gap-2 pt-2">
                 <Button size="sm" variant="outline" onClick={() => navigate(`/soa/${soa.soa_id}`)}>
                   <Edit size={14} className="mr-1" />

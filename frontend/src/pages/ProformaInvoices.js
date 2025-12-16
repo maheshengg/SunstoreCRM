@@ -182,10 +182,21 @@ export const ProformaInvoices = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {pis.map(pi => (
           <Card key={pi.pi_id}>
-            <CardHeader><CardTitle>{pi.pi_no}</CardTitle></CardHeader>
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg">{pi.pi_no}</CardTitle>
+                <Badge variant={pi.pi_status === 'Payment Recd' ? 'default' : 'secondary'}>
+                  {pi.pi_status || 'PI Submitted'}
+                </Badge>
+              </div>
+            </CardHeader>
             <CardContent className="space-y-2">
               <p className="text-sm">Date: {new Date(pi.date).toLocaleDateString()}</p>
               <p className="text-sm">Validity: {pi.validity_days} days</p>
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <User size={14} />
+                <span>{usersMap[pi.created_by_user_id] || 'Unknown'}</span>
+              </div>
               <div className="flex gap-2 pt-2">
                 <Button size="sm" variant="outline" onClick={() => navigate(`/proforma-invoices/${pi.pi_id}`)}>
                   <Edit size={14} className="mr-1" />

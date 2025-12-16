@@ -181,12 +181,24 @@ export const Quotations = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {quotations.map(qtn => (
           <Card key={qtn.quotation_id}>
-            <CardHeader>
-              <CardTitle>{qtn.quotation_no}</CardTitle>
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg">{qtn.quotation_no}</CardTitle>
+                <Badge variant={
+                  qtn.quotation_status === 'Successful' ? 'default' :
+                  qtn.quotation_status === 'Lost' ? 'destructive' : 'secondary'
+                }>
+                  {qtn.quotation_status || 'Pending'}
+                </Badge>
+              </div>
             </CardHeader>
             <CardContent className="space-y-2">
               <p className="text-sm">Date: {new Date(qtn.date).toLocaleDateString()}</p>
               <p className="text-sm">Validity: {qtn.validity_days} days</p>
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <User size={14} />
+                <span>{usersMap[qtn.created_by_user_id] || 'Unknown'}</span>
+              </div>
               <div className="flex gap-2 pt-2">
                 <Button size="sm" variant="outline" onClick={() => navigate(`/quotations/${qtn.quotation_id}`)}>Edit</Button>
                 <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(qtn.quotation_id)}><FileDown size={14} /></Button>
