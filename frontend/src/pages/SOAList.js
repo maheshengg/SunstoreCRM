@@ -62,7 +62,6 @@ export const SOAList = () => {
   useEffect(() => {
     fetchUsers();
     fetchSOAs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleApplyFilter = () => {
