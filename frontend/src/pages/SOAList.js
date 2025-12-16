@@ -35,6 +35,10 @@ export const SOAList = () => {
     try {
       const response = await api.getUsers();
       setUsers(response.data);
+      // Create a map for quick lookup
+      const map = {};
+      response.data.forEach(u => { map[u.user_id] = u.name; });
+      setUsersMap(map);
     } catch (error) {
       console.error('Failed to fetch users');
     }
