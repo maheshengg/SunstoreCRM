@@ -60,6 +60,7 @@ export const api = {
   updateProformaInvoice: (id, data) => axios.put(`${API_URL}/proforma-invoices/${id}`, data, { headers: getAuthHeader() }),
   deleteProformaInvoice: (id) => axios.delete(`${API_URL}/proforma-invoices/${id}`, { headers: getAuthHeader() }),
   convertPIToSOA: (id) => axios.post(`${API_URL}/proforma-invoices/${id}/convert-to-soa`, {}, { headers: getAuthHeader() }),
+  convertPIToQuotation: (id) => axios.post(`${API_URL}/proforma-invoices/${id}/convert-to-quotation`, {}, { headers: getAuthHeader() }),
   downloadPIPDF: (id) => axios.get(`${API_URL}/proforma-invoices/${id}/pdf`, { headers: getAuthHeader(), responseType: 'blob' }),
 
   // SOA
@@ -68,6 +69,8 @@ export const api = {
   createSOA: (data) => axios.post(`${API_URL}/soa`, data, { headers: getAuthHeader() }),
   updateSOA: (id, data) => axios.put(`${API_URL}/soa/${id}`, data, { headers: getAuthHeader() }),
   deleteSOA: (id) => axios.delete(`${API_URL}/soa/${id}`, { headers: getAuthHeader() }),
+  convertSOAToQuotation: (id) => axios.post(`${API_URL}/soa/${id}/convert-to-quotation`, {}, { headers: getAuthHeader() }),
+  convertSOAToPI: (id) => axios.post(`${API_URL}/soa/${id}/convert-to-pi`, {}, { headers: getAuthHeader() }),
   downloadSOAPDF: (id) => axios.get(`${API_URL}/soa/${id}/pdf`, { headers: getAuthHeader(), responseType: 'blob' }),
 
   // Dashboard
