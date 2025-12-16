@@ -25,9 +25,7 @@ export const SOAList = () => {
   const [customToDate, setCustomToDate] = useState('');
 
   useEffect(() => {
-    if (user?.role === 'Admin') {
-      fetchUsers();
-    }
+    fetchUsers();
     fetchSOAs();
   }, []);
 

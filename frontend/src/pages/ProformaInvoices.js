@@ -25,9 +25,7 @@ export const ProformaInvoices = () => {
   const [customToDate, setCustomToDate] = useState('');
 
   useEffect(() => {
-    if (user?.role === 'Admin') {
-      fetchUsers();
-    }
+    fetchUsers();
     fetchPIs();
   }, []);
 
