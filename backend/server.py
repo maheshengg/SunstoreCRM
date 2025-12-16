@@ -1311,6 +1311,70 @@ async def delete_soa(soa_id: str, current_user: dict = Depends(get_current_user)
     
     return {"message": "SOA deleted successfully"}
 
+@api_router.post("/soa/{soa_id}/convert-to-quotation")
+async def convert_soa_to_quotation(soa_id: str, current_user: dict = Depends(get_current_user)):
+    soa = await db.soa.find_one({"soa_id": soa_id}, {"_id": 0})
+    if not soa:
+        raise HTTPException(status_code=404, detail="SOA not found")
+    
+    # Create Quotation from SOA
+    quotation_no = await get_next_number("quotation")
+    quotation_id = f"QTN{await db.quotations.count_documents({}) + 1:04d}"
+    
+    quotation_dict = {
+        "quotation_id": quotation_id,
+        "quotation_no": quotation_no,
+        "party_id": soa["party_id"],
+        "reference_lead_id": None,
+        "date": datetime.now(timezone.utc).isoformat(),
+        "validity_days": 30,
+        "payment_terms": "",
+        "delivery_terms": "",
+        "quotation_status": None,
+        "remarks": soa.get("remarks", ""),
+        "items": soa.get("items", []),
+        "created_by_user_id": current_user["user_id"]
+    }
+    
+    await db.quotations.insert_one(quotation_dict)
+    
+    # Log
+    await log_document_action("QUOTATION", quotation_id, "CREATED_FROM_SOA", current_user["user_id"])
+    
+    return {"message": "Converted to Quotation", "quotation_id": quotation_id, "quotation_no": quotation_no}
+
+@api_router.post("/soa/{soa_id}/convert-to-pi")
+async def convert_soa_to_pi(soa_id: str, current_user: dict = Depends(get_current_user)):
+    soa = await db.soa.find_one({"soa_id": soa_id}, {"_id": 0})
+    if not soa:
+        raise HTTPException(status_code=404, detail="SOA not found")
+    
+    # Create PI from SOA
+    pi_no = await get_next_number("pi")
+    pi_id = f"PI{await db.proforma_invoices.count_documents({}) + 1:04d}"
+    
+    pi_dict = {
+        "pi_id": pi_id,
+        "pi_no": pi_no,
+        "party_id": soa["party_id"],
+        "reference_document_id": soa_id,
+        "date": datetime.now(timezone.utc).isoformat(),
+        "validity_days": 30,
+        "payment_terms": "",
+        "delivery_terms": "",
+        "pi_status": "PI Submitted",
+        "remarks": soa.get("remarks", ""),
+        "items": soa.get("items", []),
+        "created_by_user_id": current_user["user_id"]
+    }
+    
+    await db.proforma_invoices.insert_one(pi_dict)
+    
+    # Log
+    await log_document_action("PROFORMA_INVOICE", pi_id, "CREATED_FROM_SOA", current_user["user_id"])
+    
+    return {"message": "Converted to Proforma Invoice", "pi_id": pi_id, "pi_no": pi_no}
+
 # ==================== PDF GENERATION ====================
 
 @api_router.get("/quotations/{quotation_id}/pdf")
