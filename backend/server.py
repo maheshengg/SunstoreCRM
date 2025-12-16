@@ -1009,6 +1009,37 @@ async def convert_quotation_to_pi(quotation_id: str, current_user: dict = Depend
     
     return {"message": "Converted to Proforma Invoice", "pi_id": pi_id, "pi_no": pi_no}
 
+@api_router.post("/quotations/{quotation_id}/convert-to-soa")
+async def convert_quotation_to_soa(quotation_id: str, current_user: dict = Depends(get_current_user)):
+    quotation = await db.quotations.find_one({"quotation_id": quotation_id}, {"_id": 0})
+    if not quotation:
+        raise HTTPException(status_code=404, detail="Quotation not found")
+    
+    # Create SOA from quotation
+    soa_no = await get_next_number("soa")
+    soa_id = f"SOA{await db.soa.count_documents({}) + 1:04d}"
+    
+    soa_dict = {
+        "soa_id": soa_id,
+        "soa_no": soa_no,
+        "party_id": quotation["party_id"],
+        "party_confirmation_ID": "",
+        "reference_document_id": quotation_id,
+        "date": datetime.now(timezone.utc).isoformat(),
+        "terms_and_conditions": "",
+        "soa_status": "In Process",
+        "remarks": quotation.get("remarks", ""),
+        "items": quotation.get("items", []),
+        "created_by_user_id": current_user["user_id"]
+    }
+    
+    await db.soa.insert_one(soa_dict)
+    
+    # Log
+    await log_document_action("SOA", soa_id, "CREATED_FROM_QUOTATION", current_user["user_id"])
+    
+    return {"message": "Converted to SOA", "soa_id": soa_id, "soa_no": soa_no}
+
 # ==================== PROFORMA INVOICE ENDPOINTS ====================
 
 @api_router.post("/proforma-invoices", response_model=ProformaInvoice)
