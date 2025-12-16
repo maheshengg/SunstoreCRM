@@ -562,6 +562,22 @@ async def delete_item(item_id: str, current_user: dict = Depends(get_current_use
         raise HTTPException(status_code=404, detail="Item not found")
     return {"message": "Item deleted successfully"}
 
+@api_router.get("/items/export/csv")
+async def export_items_csv(current_user: dict = Depends(get_current_user)):
+    items = await db.items.find({}, {"_id": 0}).to_list(10000)
+    
+    output = io.StringIO()
+    if items:
+        writer = csv.DictWriter(output, fieldnames=items[0].keys())
+        writer.writeheader()
+        writer.writerows(items)
+    
+    return Response(
+        content=output.getvalue(),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=items_export.csv"}
+    )
+
 @api_router.post("/items/upload/csv")
 async def upload_items_csv(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
     content = await file.read()
