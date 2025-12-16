@@ -24,11 +24,6 @@ export const SOAList = () => {
   const [customFromDate, setCustomFromDate] = useState('');
   const [customToDate, setCustomToDate] = useState('');
 
-  useEffect(() => {
-    fetchUsers();
-    fetchSOAs();
-  }, []);
-
   const fetchUsers = async () => {
     try {
       const response = await api.getUsers();
@@ -63,6 +58,12 @@ export const SOAList = () => {
       toast.error('Failed to load SOAs');
     }
   };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchSOAs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleApplyFilter = () => {
     fetchSOAs();

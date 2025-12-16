@@ -24,11 +24,6 @@ export const ProformaInvoices = () => {
   const [customFromDate, setCustomFromDate] = useState('');
   const [customToDate, setCustomToDate] = useState('');
 
-  useEffect(() => {
-    fetchUsers();
-    fetchPIs();
-  }, []);
-
   const fetchUsers = async () => {
     try {
       const response = await api.getUsers();
@@ -63,6 +58,12 @@ export const ProformaInvoices = () => {
       toast.error('Failed to load proforma invoices');
     }
   };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchPIs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleApplyFilter = () => {
     fetchPIs();

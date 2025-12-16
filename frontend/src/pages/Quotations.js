@@ -24,11 +24,6 @@ export const Quotations = () => {
   const [customFromDate, setCustomFromDate] = useState('');
   const [customToDate, setCustomToDate] = useState('');
 
-  useEffect(() => {
-    fetchUsers();
-    fetchQuotations();
-  }, []);
-
   const fetchUsers = async () => {
     try {
       const response = await api.getUsers();
@@ -63,6 +58,12 @@ export const Quotations = () => {
       toast.error('Failed to load quotations');
     }
   };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchQuotations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleApplyFilter = () => {
     fetchQuotations();
