@@ -173,7 +173,45 @@ export const ProformaForm = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold">{id ? 'Edit' : 'New'} Proforma Invoice</h1>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <h1 className="text-3xl font-bold">{id ? 'Edit' : 'New'} Proforma Invoice</h1>
+        {id && (
+          <div className="flex flex-wrap items-center gap-3">
+            {/* User & Status Info */}
+            {createdByUser && (
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <User size={14} />
+                <span>{createdByUser.name}</span>
+              </div>
+            )}
+            <Badge variant={formData.pi_status === 'Payment Recd' ? 'default' : 'secondary'}>
+              {formData.pi_status || 'PI Submitted'}
+            </Badge>
+            {/* Convert Document */}
+            <div className="flex items-center gap-2">
+              <Select value={convertTarget} onValueChange={setConvertTarget}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="Convert to..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="quotation">Quotation</SelectItem>
+                  <SelectItem value="soa">SOA</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={handleConvert} 
+                disabled={!convertTarget || isConverting}
+                className="gap-1"
+              >
+                <ArrowRightLeft size={14} />
+                Convert
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
