@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { SearchableSelect } from '../components/SearchableSelect';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { Card, CardContent } from '../components/ui/card';
-import { Trash2, Plus } from 'lucide-react';
+import { Badge } from '../components/ui/badge';
+import { Trash2, Plus, ArrowRightLeft, User } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const ProformaForm = () => {
@@ -18,6 +19,9 @@ export const ProformaForm = () => {
   const [items, setItems] = useState([]);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
+  const [createdByUser, setCreatedByUser] = useState(null);
+  const [convertTarget, setConvertTarget] = useState('');
+  const [isConverting, setIsConverting] = useState(false);
   const [formData, setFormData] = useState({
     party_id: '', date: new Date().toISOString().split('T')[0], validity_days: 30,
     payment_terms: '', delivery_terms: '', remarks: '', pi_status: 'PI Submitted', items: []
