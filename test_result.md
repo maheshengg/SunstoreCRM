@@ -209,27 +209,33 @@ test_plan:
 
   - task: "User and Status Display on Document List Cards"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Quotations.js, /app/frontend/src/pages/ProformaInvoices.js, /app/frontend/src/pages/SOAList.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "main"
         -comment: "Implemented User and Status badges on all document list cards (Quotations, PI, SOA). Each card now shows: 1) Status badge with color coding (Successful=green, Lost=red, Pending=gray), 2) User name who created the document with icon. Backend already has created_by_user_id field. Frontend fetches user list and creates a usersMap for display."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ COMPREHENSIVE TESTING COMPLETED - User & Status display fully functional on all document list pages: 1) Quotations: 24 'Pending' status badges visible, user names displayed (Sneha Kulkarni, Amit Patel, Rajesh Kumar), 24 delete buttons visible for Admin, 2) Proforma Invoices: 11 'PI Submitted' status badges found, 3 user names visible, 3) SOA: 3 'In Process' status badges found, 2 user names visible. All cards properly show status badges at top right and user names with icons at bottom. Role-based permissions working - Admin sees delete buttons."
 
   - task: "User/Status Header and Convert Document UI on Forms"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/QuotationForm.js, /app/frontend/src/pages/ProformaForm.js, /app/frontend/src/pages/SOAForm.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "main"
         -comment: "Implemented on all document forms (Quotation, PI, SOA): 1) User display with icon showing who created the document, 2) Status badge showing current status, 3) Convert Document dropdown with options to convert to other document types, 4) Convert button that calls backend API and navigates to new document. Available conversions: Quotation→PI/SOA, PI→Quotation/SOA, SOA→Quotation/PI."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ COMPREHENSIVE TESTING COMPLETED - User/Status Header & Convert functionality fully working: 1) Quotation Form: User name 'Sneha Kulkarni' displayed in header, Status badge 'Pending' visible, Convert dropdown with 'Proforma Invoice' and 'SOA' options working, Convert button functional, 2) Document Conversion: Successfully converted quotation to Proforma Invoice and redirected to new PI form (PI0012), 3) All form headers show user who created document and current status badge, 4) Convert dropdown shows appropriate options for each document type. Screenshots captured showing successful conversion flow."
 
 agent_communication:
     -agent: "testing"
