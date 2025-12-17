@@ -186,7 +186,8 @@ export const Quotations = () => {
                 <CardTitle className="text-lg">{qtn.quotation_no}</CardTitle>
                 <Badge variant={
                   qtn.quotation_status === 'Successful' ? 'default' :
-                  qtn.quotation_status === 'Lost' ? 'destructive' : 'secondary'
+                  qtn.quotation_status === 'Lost' ? 'destructive' :
+                  qtn.quotation_status === 'In Process' ? 'outline' : 'secondary'
                 }>
                   {qtn.quotation_status || 'Pending'}
                 </Badge>
