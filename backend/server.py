@@ -1949,6 +1949,7 @@ async def get_dashboard_stats(
         "total": await db.quotations.count_documents(quotation_filter),
         "successful": await db.quotations.count_documents({**quotation_filter, "quotation_status": "Successful"}),
         "lost": await db.quotations.count_documents({**quotation_filter, "quotation_status": "Lost"}),
+        "in_process": await db.quotations.count_documents({**quotation_filter, "quotation_status": "In Process"}),
         "pending": await db.quotations.count_documents({**quotation_filter, "quotation_status": None})
     }
     
