@@ -1535,9 +1535,12 @@ async def generate_soa_pdf(soa_id: str, current_user: dict = Depends(get_current
         subtotal=subtotal,
         tax_total=tax_total,
         grand_total=grand_total,
-        remarks=soa.get("terms_and_conditions", ""),
+        remarks=soa.get("remarks", ""),
+        payment_terms=soa.get("payment_terms", ""),
+        delivery_terms=soa.get("delivery_terms", ""),
         party_confirmation_id=soa.get("party_confirmation_ID", ""),
-        is_soa=True
+        is_soa=True,
+        is_quotation=False
     )
     
     pdf = HTML(string=html_content).write_pdf()
