@@ -981,7 +981,9 @@ async def duplicate_quotation(quotation_id: str, current_user: dict = Depends(ge
     if not quotation:
         raise HTTPException(status_code=404, detail="Quotation not found")
     
-    new_quotation_no = await get_next_number("quotation")
+    base_quotation_no = await get_next_number("quotation")
+    user_prefix = current_user["name"][:4].upper() if current_user.get("name") else "USER"
+    new_quotation_no = f"{base_quotation_no}/{user_prefix}"
     new_quotation_id = f"QTN{await db.quotations.count_documents({}) + 1:04d}"
     
     new_quotation = quotation.copy()
