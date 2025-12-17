@@ -1793,23 +1793,17 @@ def generate_document_html(
             </tbody>
         </table>
         
-        <!-- Terms on LEFT, Totals on RIGHT -->
-        <div class="below-items-section">
-            <div class="terms-box">
-                {f'<p style="margin: 0 0 8px 0;"><strong>Payment Terms:</strong> {payment_terms}</p>' if payment_terms else ''}
-                {f'<p style="margin: 0 0 8px 0;"><strong>Delivery Terms:</strong> {delivery_terms}</p>' if delivery_terms else ''}
-                {f'<p style="margin: 0;"><strong>Remarks:</strong> {remarks}</p>' if remarks else ''}
-            </div>
-            
-            <div class="summary-box">
-                <div class="summary-row">
+        <!-- Totals Summary Box -->
+        <div style="display: flex; justify-content: flex-end; margin: 15px 0;">
+            <div class="summary-box" style="width: 40%; border: 1px solid #999; padding: 10px; background: #f9f9f9;">
+                <div class="summary-row" style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 10px;">
                     <span>Net Total</span>
                     <span>₹{subtotal:,.2f}</span>
                 </div>
-                {f'<div class="summary-row"><span>SGST</span><span>₹{total_sgst:,.2f}</span></div>' if total_sgst > 0 else ''}
-                {f'<div class="summary-row"><span>CGST</span><span>₹{total_cgst:,.2f}</span></div>' if total_cgst > 0 else ''}
-                {f'<div class="summary-row"><span>IGST</span><span>₹{total_igst:,.2f}</span></div>' if total_igst > 0 else ''}
-                <div class="summary-row total">
+                {f'<div class="summary-row" style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 10px;"><span>SGST</span><span>₹{total_sgst:,.2f}</span></div>' if total_sgst > 0 else ''}
+                {f'<div class="summary-row" style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 10px;"><span>CGST</span><span>₹{total_cgst:,.2f}</span></div>' if total_cgst > 0 else ''}
+                {f'<div class="summary-row" style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 10px;"><span>IGST</span><span>₹{total_igst:,.2f}</span></div>' if total_igst > 0 else ''}
+                <div class="summary-row total" style="display: flex; justify-content: space-between; font-weight: bold; border-top: 2px solid #333; padding-top: 8px; margin-top: 8px; font-size: 11px;">
                     <span>Grand Total</span>
                     <span>₹{grand_total:,.2f}</span>
                 </div>
@@ -1817,8 +1811,8 @@ def generate_document_html(
         </div>
         
         <!-- Tax Table Below -->
-        <div class="tax-section">
-            <div class="tax-table-title">ITEM TAX TABLE</div>
+        <div class="tax-section" style="margin-top: 15px;">
+            <div class="tax-table-title" style="font-weight: bold; margin-bottom: 10px; font-size: 11px;">ITEM TAX TABLE</div>
             
             <table style="width: 70%;">
                 <thead>
@@ -1835,7 +1829,11 @@ def generate_document_html(
             </table>
         </div>
         
-        {footer_note}
+        <!-- Terms & Conditions -->
+        {terms_and_conditions_html}
+        
+        <!-- Footer -->
+        {footer_html}
     </body>
     </html>
     """
