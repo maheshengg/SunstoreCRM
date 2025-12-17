@@ -1587,27 +1587,44 @@ def generate_document_html(
     else:
         intro_paragraph = "Dear Sir,<br>We thank you for your enquiry and we are pleased to submit our <strong>order</strong> as detailed below."
     
-    # Build items table rows
+    # Check if any item has discount > 0
+    has_discount = any(item.get('discount_percent', 0) > 0 for item in items)
+    
+    # Build items table rows based on discount presence
     items_html = ""
     for idx, item in enumerate(items, 1):
-        # Calculate list price (before discount)
         rate = item['rate']
         discount = item.get('discount_percent', 0)
-        list_price = rate / (1 - discount / 100) if discount > 0 else rate
         
-        items_html += f"""
-        <tr>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 10px;">{idx}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('item_name', item.get('item_id', ''))}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('hsn', '')}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('description', '')}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{item['qty']:.1f} {item.get('uom', 'Nos')}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{list_price:.2f}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{discount:.2f}%</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{rate:.2f}</td>
-            <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;"><strong>₹{item['taxable_amount']:.2f}</strong></td>
-        </tr>
-        """
+        if has_discount:
+            # Full table with List Price, Disc%, Rate columns
+            list_price = rate / (1 - discount / 100) if discount > 0 else rate
+            items_html += f"""
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 10px;">{idx}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('item_name', item.get('item_id', ''))}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('hsn', '')}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('description', '')}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{item['qty']:.1f} {item.get('uom', 'Nos')}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{list_price:.2f}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{discount:.2f}%</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{rate:.2f}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;"><strong>₹{item['taxable_amount']:.2f}</strong></td>
+            </tr>
+            """
+        else:
+            # Simplified table: Sr, Item, HSN/SAC, Description, Quantity, Rate, Amount
+            items_html += f"""
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 10px;">{idx}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('item_name', item.get('item_id', ''))}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('hsn', '')}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; font-size: 10px;">{item.get('description', '')}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">{item['qty']:.1f} {item.get('uom', 'Nos')}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;">₹{rate:.2f}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 10px;"><strong>₹{item['taxable_amount']:.2f}</strong></td>
+            </tr>
+            """
     
     # Build tax table rows (group by HSN)
     hsn_groups = {}
