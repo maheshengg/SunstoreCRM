@@ -871,7 +871,10 @@ async def get_next_number(doc_type: str) -> str:
 
 @api_router.post("/quotations", response_model=Quotation)
 async def create_quotation(quotation_data: QuotationCreate, current_user: dict = Depends(get_current_user)):
-    quotation_no = await get_next_number("quotation")
+    base_quotation_no = await get_next_number("quotation")
+    # Get first 4 letters of user name (uppercase)
+    user_prefix = current_user["name"][:4].upper() if current_user.get("name") else "USER"
+    quotation_no = f"{base_quotation_no}/{user_prefix}"
     quotation_id = f"QTN{await db.quotations.count_documents({}) + 1:04d}"
     
     quotation_dict = quotation_data.model_dump()
