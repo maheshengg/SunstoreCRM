@@ -2016,7 +2016,7 @@ async def report_party_wise_sales(current_user: dict = Depends(get_current_user)
     
     for collection_name in ["quotations", "proforma_invoices", "soa"]:
         collection = db[collection_name]
-        docs = await collection.find({}, {"_id": 0}).to_list(1000)
+        docs = await collection.find({}, {"_id": 0, "party_id": 1, "items": 1}).to_list(1000)
         for doc in docs:
             party_id = doc["party_id"]
             if party_id not in party_sales:
@@ -2036,7 +2036,7 @@ async def report_user_wise_sales(current_user: dict = Depends(get_current_user))
     
     for collection_name in ["quotations", "proforma_invoices", "soa"]:
         collection = db[collection_name]
-        docs = await collection.find({}, {"_id": 0}).to_list(1000)
+        docs = await collection.find({}, {"_id": 0, "created_by_user_id": 1, "items": 1}).to_list(1000)
         for doc in docs:
             user_id = doc["created_by_user_id"]
             if user_id not in user_sales:
