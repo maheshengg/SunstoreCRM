@@ -1682,25 +1682,13 @@ def generate_document_html(
     </div>
     """
     
-    # Footer for all documents
+    # Footer for all documents - right aligned, single line format
     footer_html = """
-    <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #333; font-size: 10px;">
-        <p style="text-align: center; font-style: italic; margin-bottom: 15px;">
-            Thank you for your opportunity! We now look forward to your continued support in our mutual interest.
-        </p>
-        <p style="text-align: center; margin-bottom: 15px;">
-            <strong>Regards,</strong><br>
-            <strong>Mahesh Engineering Services</strong>
-        </p>
-        <div style="text-align: center; background: #f0f0f0; padding: 10px; border: 1px solid #ddd;">
-            <strong>| Our Back Office Contact Details |</strong><br>
-            Email : d@maheshengg.com<br>
-            Assistance : 9049990950<br>
-            Help Desk : 9049990949
-        </div>
-        <p style="text-align: center; margin-top: 15px; font-style: italic; color: #666; font-size: 9px;">
-            Computer Generated Document, hence unsigned.
-        </p>
+    <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #999; font-size: 9px; text-align: right;">
+        <p style="margin: 0 0 5px 0;">Thank you for your opportunity! We now look forward to your continued support in our mutual interest.</p>
+        <p style="margin: 0 0 5px 0;"><strong>Regards,</strong></p>
+        <p style="margin: 0 0 8px 0;"><strong>Mahesh Engineering Services</strong></p>
+        <p style="margin: 0; color: #333;">| Our Back Office Contact Details | Email : d@maheshengg.com | Assistance : 9049990950 | Help Desk : 9049990949 | Computer Generated Document, hence unsigned.</p>
     </div>
     """
     
