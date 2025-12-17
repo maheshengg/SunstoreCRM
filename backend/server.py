@@ -1769,6 +1769,11 @@ def generate_document_html(
             <strong>Contact:</strong> {party['contact_person']} | {party['mobile']}
         </div>
         
+        <!-- Intro Paragraph -->
+        <div style="margin: 15px 0; padding: 10px; font-size: 11px; line-height: 1.5;">
+            {intro_paragraph}
+        </div>
+        
         <table class="items-table">
             <thead>
                 <tr>
