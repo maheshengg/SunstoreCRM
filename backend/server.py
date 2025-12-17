@@ -1682,9 +1682,9 @@ def generate_document_html(
     </div>
     """
     
-    # Footer for all documents - right aligned, single line format
+    # Footer for all documents - left aligned, single line format
     footer_html = """
-    <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #999; font-size: 9px; text-align: right;">
+    <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #999; font-size: 9px; text-align: left;">
         <p style="margin: 0 0 5px 0;">Thank you for your opportunity! We now look forward to your continued support in our mutual interest.</p>
         <p style="margin: 0 0 5px 0;"><strong>Regards,</strong></p>
         <p style="margin: 0 0 8px 0;"><strong>Mahesh Engineering Services</strong></p>
