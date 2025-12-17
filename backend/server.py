@@ -1485,7 +1485,8 @@ async def generate_pi_pdf(pi_id: str, current_user: dict = Depends(get_current_u
         grand_total=grand_total,
         remarks=pi.get("remarks", ""),
         payment_terms=pi.get("payment_terms", ""),
-        delivery_terms=pi.get("delivery_terms", "")
+        delivery_terms=pi.get("delivery_terms", ""),
+        is_quotation=False
     )
     
     pdf = HTML(string=html_content).write_pdf()
