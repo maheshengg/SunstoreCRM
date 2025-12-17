@@ -186,7 +186,8 @@ export const QuotationForm = () => {
             )}
             <Badge variant={
               formData.quotation_status === 'Successful' ? 'default' :
-              formData.quotation_status === 'Lost' ? 'destructive' : 'secondary'
+              formData.quotation_status === 'Lost' ? 'destructive' :
+              formData.quotation_status === 'In Process' ? 'outline' : 'secondary'
             }>
               {formData.quotation_status || 'Pending'}
             </Badge>
