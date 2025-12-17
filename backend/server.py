@@ -1339,7 +1339,9 @@ async def convert_soa_to_quotation(soa_id: str, current_user: dict = Depends(get
         raise HTTPException(status_code=404, detail="SOA not found")
     
     # Create Quotation from SOA
-    quotation_no = await get_next_number("quotation")
+    base_quotation_no = await get_next_number("quotation")
+    user_prefix = current_user["name"][:4].upper() if current_user.get("name") else "USER"
+    quotation_no = f"{base_quotation_no}/{user_prefix}"
     quotation_id = f"QTN{await db.quotations.count_documents({}) + 1:04d}"
     
     quotation_dict = {
