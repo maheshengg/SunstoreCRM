@@ -1651,9 +1651,53 @@ def generate_document_html(
     if is_soa and party_confirmation_id:
         confirmation_row = f"<p style='margin: 10px 0;'><strong>Party Confirmation ID:</strong> {party_confirmation_id}</p>"
     
-    footer_note = ""
-    if is_soa:
-        footer_note = '<p style="text-align: center; margin-top: 30px; font-style: italic; color: #666; font-size: 10px;">This is a computer-generated document. No signature is required.</p>'
+    # Dynamic Terms & Conditions with defaults
+    delivery_display = delivery_terms if delivery_terms else "At Earliest"
+    payment_display = payment_terms if payment_terms else "100% Advance along with Techno commercially Signed and Stamped PO"
+    remarks_line = f"<strong>REMARKS :</strong> {remarks}<br>" if remarks else ""
+    
+    terms_and_conditions_html = f"""
+    <div style="margin-top: 20px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; font-size: 9px; line-height: 1.6;">
+        <div style="font-weight: bold; font-size: 11px; margin-bottom: 10px; border-bottom: 1px solid #999; padding-bottom: 5px;">TERMS & CONDITIONS :</div>
+        <strong>PRICES :</strong> Net, EX-Our Nagaon (Shiroli - P) Godown, inclusive of final discounts.<br>
+        <strong>GST :</strong> Extra at actuals, <strong>INSURANCE :</strong> To be arranged by you. <strong>FREIGHT :</strong> Tempo charges extra at actuals.<br>
+        <strong>PACKING & FORWARDING :</strong> NIL in standard conditions.<br>
+        <strong>INSPECTION :</strong> At our Shiroli Facility, Kolhapur.<br>
+        <strong>DELIVERY :</strong> {delivery_display}<br>
+        <strong>PAYMENTS :</strong> {payment_display}<br>
+        <strong>JURISDICTION :</strong> All transactions arising out of this quotation shall be subject to Kolhapur Courts jurisdiction only.<br>
+        <strong>VALIDITY :</strong> Our offer is valid up to 15 days subject to manufacturer's price revision.<br>
+        {remarks_line}
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #999;">
+            <strong>OUR BANK DETAILS :</strong><br>
+            HDFC Bank Ltd<br>
+            Account No. 50200012223900<br>
+            IFSC HDFC0001274
+        </div>
+    </div>
+    """
+    
+    # Footer for all documents
+    footer_html = """
+    <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #333; font-size: 10px;">
+        <p style="text-align: center; font-style: italic; margin-bottom: 15px;">
+            Thank you for your opportunity! We now look forward to your continued support in our mutual interest.
+        </p>
+        <p style="text-align: center; margin-bottom: 15px;">
+            <strong>Regards,</strong><br>
+            <strong>Mahesh Engineering Services</strong>
+        </p>
+        <div style="text-align: center; background: #f0f0f0; padding: 10px; border: 1px solid #ddd;">
+            <strong>| Our Back Office Contact Details |</strong><br>
+            Email : d@maheshengg.com<br>
+            Assistance : 9049990950<br>
+            Help Desk : 9049990949
+        </div>
+        <p style="text-align: center; margin-top: 15px; font-style: italic; color: #666; font-size: 9px;">
+            Computer Generated Document, hence unsigned.
+        </p>
+    </div>
+    """
     
     # Load letterhead image
     letterhead_base64 = ""
