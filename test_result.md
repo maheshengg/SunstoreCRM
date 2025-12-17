@@ -218,7 +218,11 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus: 
+    - "Quotation Creation with 'In Process' Status"
+    - "PDF Generation for Quotations with Enhanced Template"
+    - "Dashboard Stats with 'In Process' Count"
+    - "Quotation Status Update with New Options"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
