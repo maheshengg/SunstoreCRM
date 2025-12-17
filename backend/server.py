@@ -1999,7 +1999,7 @@ async def report_item_wise_sales(current_user: dict = Depends(get_current_user))
     
     for collection_name in ["quotations", "proforma_invoices", "soa"]:
         collection = db[collection_name]
-        docs = await collection.find({}, {"_id": 0}).to_list(1000)
+        docs = await collection.find({}, {"_id": 0, "items": 1}).to_list(1000)
         for doc in docs:
             for item in doc.get("items", []):
                 item_id = item["item_id"]
