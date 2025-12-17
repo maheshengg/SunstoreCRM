@@ -45,12 +45,35 @@ export const QuotationForm = () => {
   const fetchQuotation = async () => {
     try {
       const response = await api.getQuotation(id);
-      setFormData(response.data);
+      const quotationData = response.data;
+      
+      // Enrich items with full details from items master
+      const itemsRes = await api.getItems({});
+      const itemsMap = {};
+      itemsRes.data.forEach(item => { itemsMap[item.item_id] = item; });
+      
+      if (quotationData.items && quotationData.items.length > 0) {
+        quotationData.items = quotationData.items.map(item => {
+          const masterItem = itemsMap[item.item_id];
+          if (masterItem) {
+            return {
+              ...item,
+              item_name: masterItem.item_name || item.item_name || '',
+              item_code: masterItem.item_code || item.item_code || '',
+              HSN: masterItem.HSN || item.HSN || '',
+              GST_percent: masterItem.GST_percent || item.GST_percent || 0
+            };
+          }
+          return item;
+        });
+      }
+      
+      setFormData(quotationData);
       // Fetch user who created this quotation
-      if (response.data.created_by_user_id) {
+      if (quotationData.created_by_user_id) {
         try {
           const usersRes = await api.getUsers();
-          const creator = usersRes.data.find(u => u.user_id === response.data.created_by_user_id);
+          const creator = usersRes.data.find(u => u.user_id === quotationData.created_by_user_id);
           setCreatedByUser(creator);
         } catch (err) { console.error('Failed to fetch user'); }
       }
