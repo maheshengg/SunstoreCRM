@@ -238,8 +238,8 @@ export const ProformaForm = () => {
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-1">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="md:col-span-2">
                 <Label>Party *</Label>
                 <SearchableSelect
                   options={parties.map(p => ({ value: p.party_id, label: `${p.party_name} (${p.city})` }))}
