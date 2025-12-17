@@ -1564,8 +1564,15 @@ def generate_document_html(
     payment_terms: str = "",
     delivery_terms: str = "",
     party_confirmation_id: str = "",
-    is_soa: bool = False
+    is_soa: bool = False,
+    is_quotation: bool = False
 ):
+    # Intro paragraph - different for Quotation vs PI/SOA
+    if is_quotation:
+        intro_paragraph = "Dear Sir,<br>We thank you for your enquiry and we are pleased to submit our <strong>offer</strong> as detailed below."
+    else:
+        intro_paragraph = "Dear Sir,<br>We thank you for your enquiry and we are pleased to submit our <strong>order</strong> as detailed below."
+    
     # Build items table rows
     items_html = ""
     for idx, item in enumerate(items, 1):
