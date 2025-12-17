@@ -1401,11 +1401,15 @@ async def generate_quotation_pdf(quotation_id: str, current_user: dict = Depends
     
     party = await db.parties.find_one({"party_id": quotation["party_id"]}, {"_id": 0})
     
-    # Enrich items with full details from item master
+    # Enrich items with full details from item master (batch fetch to avoid N+1)
+    item_ids = [item["item_id"] for item in quotation["items"]]
+    items_cursor = await db.items.find({"item_id": {"$in": item_ids}}, {"_id": 0}).to_list(1000)
+    items_map = {i["item_id"]: i for i in items_cursor}
+    
     enriched_items = []
     for item in quotation["items"]:
-        item_details = await db.items.find_one({"item_id": item["item_id"]}, {"_id": 0})
         enriched_item = item.copy()
+        item_details = items_map.get(item["item_id"])
         if item_details:
             enriched_item['hsn'] = item_details.get('HSN', '')
             enriched_item['description'] = item_details.get('description', '')
