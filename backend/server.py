@@ -1433,7 +1433,8 @@ async def generate_quotation_pdf(quotation_id: str, current_user: dict = Depends
         grand_total=grand_total,
         remarks=quotation.get("remarks", ""),
         payment_terms=quotation.get("payment_terms", ""),
-        delivery_terms=quotation.get("delivery_terms", "")
+        delivery_terms=quotation.get("delivery_terms", ""),
+        is_quotation=True
     )
     
     pdf = HTML(string=html_content).write_pdf()
