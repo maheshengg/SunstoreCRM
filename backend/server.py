@@ -1796,7 +1796,7 @@ def generate_document_html(
         <table class="items-table">
             <thead>
                 <tr>
-                    <th style="width: 4%;">Sr</th>
+                    {f'''<th style="width: 4%;">Sr</th>
                     <th style="width: 10%;">Item</th>
                     <th style="width: 10%;">HSN/SAC</th>
                     <th style="width: 26%;">Description</th>
@@ -1804,7 +1804,13 @@ def generate_document_html(
                     <th style="width: 10%; text-align: right;">List Price</th>
                     <th style="width: 8%; text-align: right;">Disc%</th>
                     <th style="width: 10%; text-align: right;">Rate</th>
-                    <th style="width: 12%; text-align: right;">Amount</th>
+                    <th style="width: 12%; text-align: right;">Amount</th>''' if has_discount else '''<th style="width: 5%;">Sr</th>
+                    <th style="width: 15%;">Item</th>
+                    <th style="width: 12%;">HSN/SAC</th>
+                    <th style="width: 33%;">Description</th>
+                    <th style="width: 12%; text-align: right;">Quantity</th>
+                    <th style="width: 11%; text-align: right;">Rate</th>
+                    <th style="width: 12%; text-align: right;">Amount</th>'''}
                 </tr>
             </thead>
             <tbody>
