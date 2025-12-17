@@ -209,6 +209,10 @@ export const Dashboard = () => {
                   <span className={`font-semibold ${statusColors.quotLost}`}>{stats?.quotations?.lost || 0}</span>
                 </div>
                 <div className="flex justify-between">
+                  <span className="text-blue-600">In Process:</span>
+                  <span className="font-semibold text-blue-600">{stats?.quotations?.in_process || 0}</span>
+                </div>
+                <div className="flex justify-between">
                   <span className={statusColors.pending}>Pending:</span>
                   <span className={`font-semibold ${statusColors.pending}`}>{stats?.quotations?.pending || 0}</span>
                 </div>
