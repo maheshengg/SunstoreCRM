@@ -399,6 +399,7 @@ export const QuotationForm = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">-- Not Set --</SelectItem>
+                    <SelectItem value="In Process">In Process</SelectItem>
                     <SelectItem value="Successful">Successful</SelectItem>
                     <SelectItem value="Lost">Lost</SelectItem>
                   </SelectContent>
