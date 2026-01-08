@@ -1566,10 +1566,16 @@ async def generate_soa_pdf(soa_id: str, current_user: dict = Depends(get_current
     
     pdf = HTML(string=html_content).write_pdf()
     
+    # Generate filename with username and timestamp
+    username = current_user["name"].replace(" ", "_").lower()[:10]
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    doc_no_safe = soa['soa_no'].replace("/", "_")
+    filename = f"soa_{doc_no_safe}_{username}_{timestamp}.pdf"
+    
     return Response(
         content=pdf,
         media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=soa_{soa['soa_no']}.pdf"}
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
 async def get_item_details(item_id: str):
