@@ -8,7 +8,8 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { Plus, FileDown, Edit, Filter, Trash2, User } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { Plus, FileDown, Edit, Filter, Trash2, User, Grid, List } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const SOAList = () => {
@@ -16,6 +17,8 @@ export const SOAList = () => {
   const [soas, setSoas] = useState([]);
   const [users, setUsers] = useState([]);
   const [usersMap, setUsersMap] = useState({});
+  const [partiesMap, setPartiesMap] = useState({});
+  const [viewMode, setViewMode] = useState('grid');
   const navigate = useNavigate();
   
   // Filter states
@@ -35,6 +38,22 @@ export const SOAList = () => {
     } catch (error) {
       console.error('Failed to fetch users');
     }
+  };
+
+  const fetchParties = async () => {
+    try {
+      const response = await api.getParties();
+      const map = {};
+      response.data.forEach(p => { map[p.party_id] = p.party_name; });
+      setPartiesMap(map);
+    } catch (error) {
+      console.error('Failed to fetch parties');
+    }
+  };
+
+  const getPartyShortName = (partyId) => {
+    const partyName = partiesMap[partyId] || '';
+    return partyName.substring(0, 5).toUpperCase();
   };
 
   const fetchSOAs = async () => {
@@ -61,7 +80,9 @@ export const SOAList = () => {
 
   useEffect(() => {
     fetchUsers();
+    fetchParties();
     fetchSOAs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleApplyFilter = () => {
@@ -179,43 +200,100 @@ export const SOAList = () => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {soas.map(soa => (
-          <Card key={soa.soa_id}>
-            <CardHeader className="pb-2">
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-lg">{soa.soa_no}</CardTitle>
-                <Badge variant={soa.soa_status === 'Material Given' ? 'default' : 'secondary'}>
-                  {soa.soa_status || 'In Process'}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <p className="text-sm">Date: {new Date(soa.date).toLocaleDateString()}</p>
-              <p className="text-sm">Confirmation: {soa.party_confirmation_ID}</p>
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <User size={14} />
-                <span>{usersMap[soa.created_by_user_id] || 'Unknown'}</span>
-              </div>
-              <div className="flex gap-2 pt-2">
-                <Button size="sm" variant="outline" onClick={() => navigate(`/soa/${soa.soa_id}`)}>
-                  <Edit size={14} className="mr-1" />
-                  Edit
-                </Button>
-                <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(soa.soa_id, soa.soa_no)}>
-                  <FileDown size={14} className="mr-1" />
-                  PDF
-                </Button>
-                {user?.role === 'Admin' && (
-                  <Button size="sm" variant="destructive" onClick={() => handleDelete(soa.soa_id)}>
-                    <Trash2 size={14} />
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      {/* View Toggle */}
+      <div className="flex justify-end gap-2 mb-4">
+        <Button
+          variant={viewMode === 'grid' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('grid')}
+        >
+          <Grid size={16} className="mr-1" /> Grid
+        </Button>
+        <Button
+          variant={viewMode === 'list' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('list')}
+        >
+          <List size={16} className="mr-1" /> List
+        </Button>
       </div>
+
+      {/* Grid View */}
+      {viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {soas.map(soa => (
+            <Card key={soa.soa_id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/soa/${soa.soa_id}`)}>
+              <CardHeader className="pb-2">
+                <div className="flex justify-between items-start">
+                  <CardTitle className="text-base">
+                    {soa.soa_no} | {getPartyShortName(soa.party_id)}
+                  </CardTitle>
+                  <Badge variant={soa.soa_status === 'Material Given' ? 'default' : 'secondary'} className="text-xs">
+                    {soa.soa_status || 'In Process'}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-1 pt-0">
+                <p className="text-xs text-muted-foreground">{partiesMap[soa.party_id] || 'Unknown Party'}</p>
+                <p className="text-xs">Date: {new Date(soa.date).toLocaleDateString()}</p>
+                <p className="text-xs">Confirmation: {soa.party_confirmation_ID || 'N/A'}</p>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <User size={12} />
+                  <span>{usersMap[soa.created_by_user_id] || 'Unknown'}</span>
+                </div>
+                <div className="flex gap-2 pt-2" onClick={(e) => e.stopPropagation()}>
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/soa/${soa.soa_id}`)}>Edit</Button>
+                  <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(soa.soa_id, soa.soa_no)}><FileDown size={14} /></Button>
+                  {user?.role === 'Admin' && (
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(soa.soa_id)}><Trash2 size={14} /></Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        /* List View */
+        <Card>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>SOA No</TableHead>
+                <TableHead>Party</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Confirmation ID</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Created By</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {soas.map(soa => (
+                <TableRow key={soa.soa_id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/soa/${soa.soa_id}`)}>
+                  <TableCell className="font-medium">{soa.soa_no}</TableCell>
+                  <TableCell>{partiesMap[soa.party_id] || 'Unknown'}</TableCell>
+                  <TableCell>{new Date(soa.date).toLocaleDateString()}</TableCell>
+                  <TableCell>{soa.party_confirmation_ID || 'N/A'}</TableCell>
+                  <TableCell>
+                    <Badge variant={soa.soa_status === 'Material Given' ? 'default' : 'secondary'} className="text-xs">
+                      {soa.soa_status || 'In Process'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{usersMap[soa.created_by_user_id] || 'Unknown'}</TableCell>
+                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex justify-end gap-1">
+                      <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(soa.soa_id, soa.soa_no)}><FileDown size={14} /></Button>
+                      {user?.role === 'Admin' && (
+                        <Button size="sm" variant="destructive" onClick={() => handleDelete(soa.soa_id)}><Trash2 size={14} /></Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
       
       {soas.length === 0 && (
         <Card>

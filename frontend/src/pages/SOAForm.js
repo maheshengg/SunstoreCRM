@@ -347,9 +347,14 @@ export const SOAForm = () => {
                               {item.item_code && ` (${item.item_code})`}
                             </div>
                           </div>
-                          <Button type="button" size="sm" variant="destructive" onClick={() => removeItem(idx)}>
-                            <Trash2 size={14} />
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button type="button" size="sm" variant="outline" onClick={() => duplicateItem(idx)} title="Duplicate">
+                              <Copy size={14} />
+                            </Button>
+                            <Button type="button" size="sm" variant="destructive" onClick={() => removeItem(idx)}>
+                              <Trash2 size={14} />
+                            </Button>
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-2">
@@ -443,11 +448,42 @@ export const SOAForm = () => {
         </CardContent>
       </Card>
 
+      {/* Party Selector Modal */}
+      <PartySelectModal
+        open={isPartyModalOpen}
+        onClose={() => setIsPartyModalOpen(false)}
+        parties={parties}
+        onSelectParty={handlePartySelect}
+        onQuickCreate={() => {
+          setIsPartyModalOpen(false);
+          setIsQuickCreatePartyOpen(true);
+        }}
+      />
+
+      {/* Quick Create Party Modal */}
+      <QuickCreatePartyModal
+        open={isQuickCreatePartyOpen}
+        onClose={() => setIsQuickCreatePartyOpen(false)}
+        onCreated={handlePartyCreated}
+      />
+
+      {/* Item Selector Modal */}
       <ItemSelectorModal
         open={isItemModalOpen}
         onClose={() => setIsItemModalOpen(false)}
         items={items}
         onSelectItem={handleItemSelect}
+        onQuickCreate={() => {
+          setIsItemModalOpen(false);
+          setIsQuickCreateItemOpen(true);
+        }}
+      />
+
+      {/* Quick Create Item Modal */}
+      <QuickCreateItemModal
+        open={isQuickCreateItemOpen}
+        onClose={() => setIsQuickCreateItemOpen(false)}
+        onCreated={handleItemCreated}
       />
     </div>
   );
