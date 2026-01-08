@@ -8,7 +8,8 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { Plus, FileDown, Filter, Trash2, User } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { Plus, FileDown, Filter, Trash2, User, Grid, List } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Quotations = () => {
@@ -16,6 +17,8 @@ export const Quotations = () => {
   const [quotations, setQuotations] = useState([]);
   const [users, setUsers] = useState([]);
   const [usersMap, setUsersMap] = useState({});
+  const [partiesMap, setPartiesMap] = useState({});
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const navigate = useNavigate();
   
   // Filter states
@@ -28,12 +31,22 @@ export const Quotations = () => {
     try {
       const response = await api.getUsers();
       setUsers(response.data);
-      // Create a map for quick lookup
       const map = {};
       response.data.forEach(u => { map[u.user_id] = u.name; });
       setUsersMap(map);
     } catch (error) {
       console.error('Failed to fetch users');
+    }
+  };
+
+  const fetchParties = async () => {
+    try {
+      const response = await api.getParties();
+      const map = {};
+      response.data.forEach(p => { map[p.party_id] = p.party_name; });
+      setPartiesMap(map);
+    } catch (error) {
+      console.error('Failed to fetch parties');
     }
   };
 
@@ -61,11 +74,18 @@ export const Quotations = () => {
 
   useEffect(() => {
     fetchUsers();
+    fetchParties();
     fetchQuotations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleApplyFilter = () => {
     fetchQuotations();
+  };
+
+  const getPartyShortName = (partyId) => {
+    const partyName = partiesMap[partyId] || '';
+    return partyName.substring(0, 5).toUpperCase();
   };
 
   const handleDownloadPDF = async (id) => {
