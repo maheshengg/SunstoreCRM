@@ -1,131 +1,141 @@
 <analysis>**original_problem_statement:**
-Build a complete mobile-first CRM mini-ERP web application for SUNSTORE KOLHAPUR with a FastAPI backend, React frontend, and MongoDB database.
+Build a complete mobile-first CRM mini-ERP web application for SUNSTORE KOLHAPUR. The application must be stabilized for production use by addressing critical bugs, improving mobile usability, and implementing several UI/UX enhancements.
 
 **PRODUCT REQUIREMENTS:**
-- **Authentication:** JWT-based login with Admin and Sales User roles.
-- **Branding:** SUNSTORE KOLHAPUR brand to be used throughout the app and on PDFs.
-- **Database & Documents:** Manage , , , , , , , and .
-- **Document Workflow & Conversion:** Implement a workflow allowing conversion between Quotations, Proforma Invoices (PI), and Sales Order Acknowledgements (SOA).
-- **Document Status:** Add and manage status fields for all documents (e.g., , , ).
-- **UI/UX:**
-    - Mobile-first design.
-    - Role-based dashboards with filtering capabilities.
-    - Master data (Party, Item) and Document (Lead, Quotation, etc.) pages to use a table/list format with sorting, filtering, and pagination.
-    - Implement a modal-based, multi-parameter item selector (search by brand, category, name, code) for document forms.
-    - Display User and Status on all document list cards and form headers.
-- **Features:**
-    - PDF generation for all documents with a corrected, professional layout.
-    - Correct GST tax logic based on customer's GST number prefix (27 for Maharashtra).
-    - CRUD operations for all entities, including a Delete option with confirmation for all documents.
-    - CSV import/export for master data.
-- **Dashboard:** A redesigned dashboard with a 3-row layout showing status breakdowns for each document type, quick actions, and master data counts.
+- **Phase 1: Lock Critical Logic:**
+    - Solidify GST calculation logic across the entire application (UI, PDF, conversions) to be non-regressive.
+    - Fix a critical bug causing incorrect party/item data in generated PDFs.
+    - Implement a new, robust PDF file naming convention: .
+- **Phase 2: Mobile Usability:**
+    - Rework Party and Item selection on forms to use a full-screen modal/bottom sheet for a better mobile experience.
+    - Enhance the item selection modal with improved multi-field filtering and clearer display of item details.
+    - Add Quick Create buttons for Parties and Items directly within the selection modals.
+    - Implement a Duplicate Item feature on document forms to speed up data entry.
+- **Phase 3: UI Polish & Clarity:**
+    - Add a toggle for Grid View and List View on all document listing pages.
+    - Display the first 5 letters of the Party Name on document list cards/rows for easy identification.
+    - Decouple the Lead creation form from the Party Master, allowing for free-text entry of party details.
+- **Phase 4: PDF Layout Lock:**
+    - Finalize and enforce a clean, well-spaced, and consistent PDF layout for Quotations, PIs, and SOAs.
+- **Phase 5: General Quality Controls:**
+    - Ensure data consistency between saved documents, UI previews, and generated PDFs, eliminating stale data issues.
 
 **User's preferred language**: English
 
 **what currently exists?**
-A comprehensive full-stack CRM/ERP application using FastAPI, React, and MongoDB. The application includes:
-- JWT-based authentication for Admin and Sales User roles.
-- Role-specific dashboards with advanced filtering and a redesigned layout showing status breakdowns.
-- Full CRUD for Parties, Items, Leads, Quotations, Proforma Invoices (PI), and Sales Order Acknowledgements (SOA).
-- PDF generation for all documents with corrected layout and tax logic.
-- Master data pages (Parties, Items) and Document pages (Leads, etc.) have been refactored from card layouts to functional data tables with filtering, sorting, and pagination.
-- A highly improved item entry UI using a modal for multi-parameter search (brand, category, name) and auto-filling item details on document forms.
-- Document status fields (, , ) have been added to the database models and backend endpoints.
-- Backend API endpoints for document conversion (e.g., Quotation to PI, PI to SOA) and document deletion have been created.
+A full-stack CRM application (React, FastAPI, MongoDB) with user authentication, role-based access, and CRUD operations for Leads, Parties, Items, Quotations, Proforma Invoices (PI), and Sales Order Acknowledgements (SOA). The app features a dashboard, PDF generation, and document conversion workflows.
+
+The agent has already implemented significant changes from a large user request, including:
+- Locking down the backend GST logic and PDF file naming convention (Phase 1).
+- Creating new mobile-first modal components (, , , , ).
+- Decoupling the Lead form and backend model from the Party master (Phase 3).
+- Partially implementing the new mobile modals and Duplicate Item feature on the  and .
+- Partially implementing the Grid/List view toggle and Party Name display on .
 
 **Last working item**:
-- **Last item agent was working:** The agent had just finished creating the backend API endpoints for document conversions (e.g., ) and added the corresponding functions to . However, the user pointed out that none of the requested UI changes for this feature (conversion buttons, user/status display) were visible. The agent was about to start implementing the required frontend UI.
+- **Last item agent was working:** The agent was in the middle of a large, multi-phase feature implementation and stabilization task. It had just updated  with the new mobile-first modals and was about to perform similar updates to  and the remaining document list pages.
 - **Status:** IN PROGRESS
 - **Agent Testing Done:** N
-- **Which testing method agent to use?** Frontend testing agent. The agent must verify the new UI elements on the document list pages and forms, and then test the end-to-end document conversion workflow.
-- **User Testing Done:** Y (User confirmed the UI changes are missing).
+- **Which testing method agent to use?** Frontend testing agent. The scope of changes is very large, affecting core workflows on multiple pages (document forms and lists) and introducing several new components. A comprehensive end-to-end test is required after the implementation is complete.
+- **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-- **Issue 1:** The backend is prone to crashing due to a missing WeasyPrint system dependency (). (P1)
+- **Issue 1: Recurring Backend Crash (P0)**
+    - **Description:** The backend server crashes frequently due to a missing WeasyPrint system dependency (). This is a critical environmental issue that blocks all development and testing when it occurs.
+    - **Status:** RECURRING
+- **Issue 2: User Login Failures (P1)**
+    - **Description:** Users have repeatedly been unable to log in, especially after backend crashes or user data modifications. This often requires the agent to fix the backend and/or reset passwords.
+    - **Status:** RECURRING
 
 **Issues Detail:**
 - **Issue 1: Recurring backend crash due to WeasyPrint dependency**
-    - **Attempted fixes:** The agent has repeatedly fixed this by reinstalling the missing system library. This is a known workaround for an environmental issue.
-    - **Next debug checklist:** If the backend is unresponsive, check logs for .
-        1.  Run Hit:1 http://deb.debian.org/debian bookworm InRelease
+    - **Attempted fixes:** The agent has successfully fixed this multiple times by reinstalling the required library. This is a known workaround.
+    - **Next debug checklist:**
+        1. Check backend logs for .
+        2. Execute: Hit:1 http://deb.debian.org/debian bookworm InRelease
 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
-Hit:4 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 InRelease
-Hit:5 https://deb.nodesource.com/node_20.x nodistro InRelease
-Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [285 kB]
-Fetched 389 kB in 2s (256 kB/s)
+Hit:4 https://deb.nodesource.com/node_20.x nodistro InRelease
+Get:5 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 InRelease [3001 B]
+Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [286 kB]
+Get:7 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0/multiverse amd64 Packages [99.1 kB]
+Get:8 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0/multiverse arm64 Packages [97.8 kB]
+Fetched 589 kB in 2s (295 kB/s)
 Reading package lists...
 Reading package lists...
 Building dependency tree...
 Reading state information...
+libpango-1.0-0 is already the newest version (1.50.12+ds-1).
 The following NEW packages will be installed:
   libpangoft2-1.0-0
 0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
 Need to get 44.5 kB of archives.
 After this operation, 178 kB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian bookworm/main arm64 libpangoft2-1.0-0 arm64 1.50.12+ds-1 [44.5 kB]
-Fetched 44.5 kB in 0s (874 kB/s)
+Fetched 44.5 kB in 0s (594 kB/s)
 Selecting previously unselected package libpangoft2-1.0-0:arm64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 38368 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 38353 files and directories currently installed.)
 Preparing to unpack .../libpangoft2-1.0-0_1.50.12+ds-1_arm64.deb ...
 Unpacking libpangoft2-1.0-0:arm64 (1.50.12+ds-1) ...
 Setting up libpangoft2-1.0-0:arm64 (1.50.12+ds-1) ...
-Processing triggers for libc-bin (2.36-9+deb12u13) ....
-        2.  Restart the backend: backend: stopped
+Processing triggers for libc-bin (2.36-9+deb12u13) ...
+        3. Restart the backend service: backend: stopped
 backend: started.
-    - **Why fix this issue and what will be achieved with the fix?** Makes the backend operational, allowing development to continue.
-    - **Status:** RECURRING (Workaround known)
+    - **Why fix this issue and what will be achieved with the fix?** The backend becomes operational, unblocking all further development and testing.
+    - **Status:** RECURRING
     - **Is recurring issue?** Y
-    - **Should Test frontend/backend/both after fix?** Backend (confirm with a  to an API endpoint).
+    - **Should Test frontend/backend/both after fix?** Backend (confirm login API works with ).
     - **Blocked on other issue:** None.
+- **Issue 2: User Login Failures**
+    - **Attempted fixes:** Resetting user passwords via a Python script; fixing the WeasyPrint dependency crash which was the root cause.
+    - **Next debug checklist:**
+        1. First, check for the WeasyPrint crash (Issue 1).
+        2. If the backend is running, verify user credentials in the database.
+        3. If necessary, run a script to reset the password hash for the affected user.
+    - **Why fix this issue and what will be achieved with the fix?** Allows the user and agent to access and test the application.
+    - **Status:** RECURRING
+    - **Is recurring issue?** Y
+    - **Should Test frontend/backend/both after fix?** Backend.
+    - **Blocked on other issue:** Often blocked by Issue 1.
 
 **In progress Task List**:
-- **Task 1: Implement Frontend UI for Document Status and Conversion** (P0)
-    - **Where to resume:** Implement the frontend changes across all document list pages (, , ) and their corresponding forms (, , ).
-    - **What will be achieved with this?** This will complete the user's latest request by making the document conversion features usable and providing crucial status/user visibility.
+- **Task 1: Complete Multi-Phase Stabilization & Feature Enhancement (P0)**
+    - **Description:** This is the main ongoing task, encompassing all points from the user's detailed request in message #495.
+    - **Where to resume:**
+        1.  Complete the update of  by adding the duplicate item button to the item row.
+        2.  Fully update  to use the new  and , and add the Duplicate Item feature.
+        3.  Implement the Grid/List view toggle and party name display on  and .
+        4.  Proceed to Phase 4 (Final PDF Layout Lock) and Phase 5 (General Quality Controls).
+    - **What will be achieved with this?** A stable, mobile-friendly application that meets all of the user's pre-production requirements, ready for final user acceptance testing.
     - **Status:** IN PROGRESS
-    - **Should Test frontend/backend/both after fix?** Both. Frontend for UI elements and backend for the conversion logic.
-    - **Blocked on something:** None.
+    - **Should Test frontend/backend/both after fix?** Both. Frontend testing agent is required.
+    - **Blocked on something:** None, but highly susceptible to Issue 1.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks:**
-    - **Task 1 (P0):** Show User and Status on all document list cards (Quotations, PI, SOA). Requires fetching user data and mapping it.
-    - **Task 2 (P0):** Add User and Status to the header of each document form.
-    - **Task 3 (P0):** Add the Convert Document UI (dropdown and button) inside each document form page (Quotation, PI, SOA).
-    - **Task 4 (P1):** Verify that Delete buttons and confirmation dialogs are implemented and working correctly on all document list pages as requested.
+    - **Task 1 (P0):** Finalize PDF Layout Lock (Phase 4). Ensure a clean, consistent, and well-spaced layout across Quotation, PI, and SOA PDFs.
+    - **Task 2 (P0):** General Quality Controls (Phase 5). Thoroughly test data consistency between save, preview, and PDF generation to eliminate any stale data issues.
 - **Future Tasks:**
-    - **Task 1 (P2):** Implement enhanced reporting based on the new status fields (e.g., Lead Funnel Report, Quotation Win/Loss Analysis).
+    - **Task 1 (P2):** Implement enhanced reporting based on document statuses (e.g., Lead Funnel Report, Quotation Win/Loss Analysis).
 
 **Completed work in this session**
-- **CSV Import:** Fixed the missing Import CSV button on the Parties page and tested the full feature.
-- **Form UI:** Implemented searchable dropdowns on Proforma & SOA forms.
-- **Dashboard:**
-    - Verified that the Custom Date Range picker was already implemented.
-    - Added comprehensive user and period filters to all document list pages.
-    - Completely redesigned the dashboard UI into a 3-row layout with status breakdowns, color-coding, and icons.
-    - Updated the backend  endpoint to provide status-wise counts.
-- **UI Refactoring:**
-    - Converted Item and Party list pages from a card layout to a data table with search, sorting, pagination, and bulk delete functionality.
-    - Replaced Item Name with Description in the Items table.
-    - Implemented a new modal-based, multi-parameter item selector for all document forms.
-- **Bug Fixes & Core Logic:**
-    - Fixed a critical runtime error on the Quotation form by adding safety checks.
-    - Corrected the PDF layout to prevent the totals box from overlapping the items table.
-    - Fixed the GST tax calculation logic across the application to correctly use the 27 prefix for the customer's GST number.
-    - Repeatedly fixed the recurring backend crash due to the WeasyPrint dependency.
-    - Resolved login failures by repopulating test data and ensuring the backend was running.
-- **Backend APIs:**
-    - Added document status fields (, , ) to the backend models and forms.
-    - Created all necessary backend  endpoints for Leads, Quotations, PIs, and SOAs.
-    - Created a full set of backend  endpoints for document conversions between Quotations, PIs, and SOAs.
-
-**Earlier issues found/mentioned but not fixed**
-- The full suite of reporting features based on document statuses (Lead Funnel, Win/Loss analysis, etc.) was requested but not started.
-
-**Known issue recurrence from previous fork**
-- **Issue recurrence in previous fork:** The backend crash due to the missing  WeasyPrint dependency is a known, recurring environmental issue.
-- **Recurrence count:** High.
-- **Status:** RECURRING (Workaround known)
+- **User & Data Management:** Updated admin credentials, renamed/removed users, reassigned documents, and cleared/re-imported party/item data from user-provided CSVs.
+- **Critical Logic (Phase 1):**
+  - Confirmed and locked down the GST calculation logic in the frontend and backend.
+  - Implemented a new PDF naming convention with username and timestamp to prevent caching issues.
+- **Mobile Usability & UI (Phases 2 & 3):**
+  - Created new mobile-first modal components for Party and Item selection (, , etc.).
+  - Decoupled the Lead creation form from the Party Master, allowing free-text input.
+  - **Partially** implemented the new modals, Duplicate Item feature, and Grid/List view toggle on , , and .
+- **Bug Fixes & Enhancements:**
+  - Fixed a bug where items were not fully populated when converting documents.
+  - Fixed form layout issues where the Party Name overlapped with other fields.
+  - Added a missing CSV export endpoint for Items.
+  - Implemented N+1 query optimizations in PDF generation and report endpoints.
+  - Added new In Process status for Quotations.
+  - Implemented a new quotation number format ().
+  - Implemented a conditional discount column in PDF item tables.
+  - Updated PDF templates with user-requested intro text, terms & conditions, and footers.
 
 **Code Architecture**
 
@@ -138,173 +148,73 @@ backend: started.
 
 **key DB schema**
 - **USER_MASTER:** (user_id, name, email, role, password_hashed)
-- **PARTY_MASTER:** (party_id, party_name, GST_number, ...)
-- **ITEM_MASTER:** (item_id, item_code, item_name, description, brand, category, rate, HSN, ...)
-- **LEADS:** (lead_id, party_id, created_by_user_id, status, ...)
-- **QUOTATIONS:** (quotation_id, party_id, created_by_user_id, **quotation_status**, items, ...)
-- **PROFORMA_INVOICE:** (pi_id, party_id, created_by_user_id, **pi_status**, items, ...)
-- **SOA:** (soa_id, party_id, created_by_user_id, **soa_status**, items, ...)
+- **LEADS:** (lead_id, **party_name**, **address**, **contact_person**, **email**, **gst_number**, created_by_user_id, status) *(Note: Decoupled from PARTY_MASTER)*
+- **QUOTATIONS / PROFORMA_INVOICE / SOA:** (doc_id, party_id, created_by_user_id, status, items, ...)
 
 **changes in tech stack**
 - None.
 
 **All files of reference**
-- : Contains all API endpoints, including the newly added conversion and deletion logic.
-- : Contains all frontend API call functions, including the new conversion functions.
-- : The completely rewritten dashboard component.
-- : Example of the new table layout for master data.
-- : Example of the new table layout for master data.
-- , , : The forms that need the conversion UI and user/status header.
-- , , : The list pages that need user/status display on cards.
-- : The new component for advanced item selection.
+- : Major changes to PDF generation, Lead model, and document creation logic.
+- , , : Core forms being heavily modified for mobile usability.
+- , , : List pages needing Grid/List toggle implementation.
+- : Updated for free-text party fields.
+- : Rewritten for mobile.
+- : New component.
+- , : New components.
 
 **Areas that need refactoring**:
-- The document list pages (, , ) still use a card-based layout. The user has requested a table format for documents as well (Message #115), but this was superseded by other requests. This should be addressed after the current tasks are complete.
+- The three main document form components (, , ) share a large amount of duplicated logic. Once the current feature implementation is stable, this logic could be extracted into a custom hook (e.g., ) to improve maintainability.
 
 **key api endpoints**
-- 
-- : Returns detailed counts including status breakdowns.
--  (e.g., ): Fetches list of documents, now supports user/period filters.
-- : New endpoints to delete documents.
-- : New endpoints for document conversion.
+- : Generates PDFs for documents (Quotation, PI, SOA, Lead).
+- : Exports party data.
+- : Exports item data (newly added).
+- : Endpoint logic updated to handle free-text party fields.
 
 **Critical Info for New Agent**
-- **Highest Priority:** The immediate task is to implement the frontend UI for document conversion and status/user display, as requested by the user in their last message. The backend APIs are already built; you just need to connect the UI.
-- **WeasyPrint Dependency:** The backend is unstable and will crash if the  library is missing. If the backend is unresponsive, check logs and run Reading package lists...
-Building dependency tree...
-Reading state information...
-libpangoft2-1.0-0 is already the newest version (1.50.12+ds-1).
-0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded. followed by backend: stopped
-backend: started.
-- **Test Data:** The database can be empty after resets. If login fails or you see no data, run ============================================================
-SUNSTORE KOLHAPUR CRM - Large Test Data Population
-============================================================
-🗑️  Clearing existing data...
-✓ All data cleared
+- **Top Priority:** You must resume and complete the multi-phase task from user message #495. Start by bringing , , and  to parity with the changes already started on the Quotation pages.
+- **WeasyPrint Dependency Crash:** This is a **highly frequent P0 blocker**. If the app is unresponsive or login fails, your first step should always be to check the backend logs for the  error and apply the known fix.
+- **Incremental Implementation:** The current task is very large. Focus on completing one phase or sub-task at a time and ensure it works before moving on. The immediate goal is to finish the mobile UI rework (Phase 2) and UI polish (Phase 3).
+- **User's Additional Request:** Remember to add the Grid/List view toggle to all document list pages, as confirmed by the user in message #498.
 
-👥 Creating users...
-✓ Created 5 users
+**documents and test reports created in this job**
+-  has been updated multiple times.
 
-🏢 Creating 25 parties...
-✓ Created 25 parties
-
-📦 Creating 60 items...
-✓ Created 60 items
-
-📋 Creating 40 leads and documents...
-✓ Created 40 leads
-✓ Created 24 quotations
-✓ Created 10 proforma invoices
-✓ Created 3 SOA documents
-✓ Created 77 document logs
-
-⚙️  Creating settings...
-✓ Created default settings
-
-============================================================
-✅ LARGE TEST DATA POPULATION COMPLETE!
-============================================================
-
-📌 Login Credentials:
-   Admin: admin@sunstore.com / admin123
-   Sales: rajesh@sunstore.com / sales123
-   Sales: priya@sunstore.com / sales123
-   Sales: amit@sunstore.com / sales123
-   Sales: sneha@sunstore.com / sales123
-
-📊 Database Summary:
-   - Users: 5
-   - Parties: 25
-   - Items: 60
-   - Leads: 40
-   - Quotations: 24
-   - Proforma Invoices: 10
-   - SOA: 3
-   - Document Logs: 77
-
-🎉 Ready for comprehensive testing!.
-
-**documents created in this job**
-- 
-
-**Last 10 User Messages and any pending user messages**
-1. **User:** PDF has a layout issue (overlapping boxes) and incorrect GST logic.
-2. **Agent:** Fixed both PDF layout and GST logic.
-3. **User:** Comprehensive request to add PDF layout fix, correct GST logic, and add DELETE options consistently across ALL document types (Quotation, PI, SOA).
-4. **Agent:** Implemented backend DELETE endpoints and API functions, then summarized progress (prematurely).
-5. **User:** Points out that the DELETE buttons are not visible on the UI.
-6. **Agent:** Acknowledges mistake and adds DELETE buttons to the UI for all document list pages.
-7. **User:** Cannot log in.
-8. **Agent:** Diagnoses an empty database, repopulates test data, and provides credentials.
-9. **User:** Login still fails.
-10. **Agent:** Diagnoses the recurring backend crash, fixes it, and confirms the login API is working. User is asked to try again.
-11. **(PENDING) User:** Provides another screenshot of the PDF with layout issues (black boxes, incorrect positioning of totals/terms).
-12. **(PENDING) User:** Provides a very large, comprehensive request to add User/Status display on document cards/headers and implement a full document conversion feature.
-13. **(PENDING) User:** Complains that none of the changes from the previous request are visible, restating the requirements. This is the most recent and highest-priority task.
+**Last 10 User Messages and any pending HUMAN messages**
+1. **User:** Deploys the app.
+2. **Agent:** Confirms readiness for deployment.
+3. **User:** Asks to list all users.
+4. **Agent:** Lists all 5 users.
+5. **User:** Asks to rename one user.
+6. **Agent:** Renames the user.
+7. **User:** Asks to rename the admin user, reassign all documents to admin, and remove the other 3 sales users.
+8. **Agent:** Completes all user management tasks.
+9. **User:** Reports login failure for both remaining users.
+10. **Agent:** Fixes the recurring backend crash and resets passwords, confirming login now works.
+11. **(PENDING) User:** Asks if they should use the preview version or redeploy to test the fixes. Agent correctly advises using the preview version.
+12. **(PENDING) User:** Reports that after they redeployed, login is failing again.
+13. **(PENDING) User:** Reports that old, deleted users are still appearing in some forms.
+14. **(PENDING) User:** Clarifies the issue is on the new quotation form.
+15. **(PENDING) User:** Submits a very large, multi-phase pre-production stabilization and feature request (the current main task).
+16. **(PENDING) User:** Approves the agent's plan but adds a requirement for a Grid/List view toggle on document list pages.
 
 **Project Health Check:**
-- **Broken:** The frontend UI for document conversion and for displaying user/status information on document lists and forms is completely missing.
+- **Broken:** The primary document forms (, ) and list pages (, ) are in an inconsistent, partially-updated state. The mobile usability rework is incomplete.
 - **Mocked:** None.
 
 **3rd Party Integrations**
-- **WeasyPrint:** Used for PDF generation. Has a fragile system dependency.
+- **WeasyPrint:** Used for PDF generation. Has a fragile and recurring system dependency issue.
 
 **Testing status**
-- **Testing agent used after significant changes:** YES
+- **Testing agent used after significant changes:** YES (but not for the most recent, in-progress changes).
 - **Troubleshoot agent used after agent stuck in loop:** NO
 - **Test files created:** None.
-- **Known regressions:** The backend environment periodically loses the  library, causing the server to crash.
+- **Known regressions:** The WeasyPrint dependency issue causes the entire backend to fail repeatedly.
 
 **Credentials to test flow:**
-- **Admin:**  / 
-- **Sales User:**  / 
-- **Note:** Test data may need to be populated by running ============================================================
-SUNSTORE KOLHAPUR CRM - Large Test Data Population
-============================================================
-🗑️  Clearing existing data...
-✓ All data cleared
-
-👥 Creating users...
-✓ Created 5 users
-
-🏢 Creating 25 parties...
-✓ Created 25 parties
-
-📦 Creating 60 items...
-✓ Created 60 items
-
-📋 Creating 40 leads and documents...
-✓ Created 40 leads
-✓ Created 24 quotations
-✓ Created 11 proforma invoices
-✓ Created 3 SOA documents
-✓ Created 78 document logs
-
-⚙️  Creating settings...
-✓ Created default settings
-
-============================================================
-✅ LARGE TEST DATA POPULATION COMPLETE!
-============================================================
-
-📌 Login Credentials:
-   Admin: admin@sunstore.com / admin123
-   Sales: rajesh@sunstore.com / sales123
-   Sales: priya@sunstore.com / sales123
-   Sales: amit@sunstore.com / sales123
-   Sales: sneha@sunstore.com / sales123
-
-📊 Database Summary:
-   - Users: 5
-   - Parties: 25
-   - Items: 60
-   - Leads: 40
-   - Quotations: 24
-   - Proforma Invoices: 11
-   - SOA: 3
-   - Document Logs: 78
-
-🎉 Ready for comprehensive testing!.
+- **Admin:** uday.patil@maheshengg.com / admin123
+- **Sales User:** surajPatil9995@gmail.com / sales123
 
 **What agent forgot to execute**
-- The previous agent built the entire backend and API layer for the document conversion feature but completely forgot to implement any of the corresponding frontend UI (buttons, dropdowns, status displays). The user's latest message is a direct result of this omission.</analysis>
+- The agent has not forgotten specific instructions but is in the middle of a very large, complex implementation. The key is to ensure the changes (modals, duplicate button, list/grid view) are applied consistently across all three document types (Quotation, PI, SOA) and not just one.</analysis>
