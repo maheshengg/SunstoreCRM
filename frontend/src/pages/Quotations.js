@@ -198,39 +198,105 @@ export const Quotations = () => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {quotations.map(qtn => (
-          <Card key={qtn.quotation_id}>
-            <CardHeader className="pb-2">
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-lg">{qtn.quotation_no}</CardTitle>
-                <Badge variant={
-                  qtn.quotation_status === 'Successful' ? 'default' :
-                  qtn.quotation_status === 'Lost' ? 'destructive' :
-                  qtn.quotation_status === 'In Process' ? 'outline' : 'secondary'
-                }>
-                  {qtn.quotation_status || 'Pending'}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <p className="text-sm">Date: {new Date(qtn.date).toLocaleDateString()}</p>
-              <p className="text-sm">Validity: {qtn.validity_days} days</p>
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <User size={14} />
-                <span>{usersMap[qtn.created_by_user_id] || 'Unknown'}</span>
-              </div>
-              <div className="flex gap-2 pt-2">
-                <Button size="sm" variant="outline" onClick={() => navigate(`/quotations/${qtn.quotation_id}`)}>Edit</Button>
-                <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(qtn.quotation_id)}><FileDown size={14} /></Button>
-                {user?.role === 'Admin' && (
-                  <Button size="sm" variant="destructive" onClick={() => handleDelete(qtn.quotation_id)}><Trash2 size={14} /></Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      {/* View Toggle */}
+      <div className="flex justify-end gap-2 mb-4">
+        <Button
+          variant={viewMode === 'grid' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('grid')}
+        >
+          <Grid size={16} className="mr-1" /> Grid
+        </Button>
+        <Button
+          variant={viewMode === 'list' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('list')}
+        >
+          <List size={16} className="mr-1" /> List
+        </Button>
       </div>
+
+      {/* Grid View */}
+      {viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {quotations.map(qtn => (
+            <Card key={qtn.quotation_id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/quotations/${qtn.quotation_id}`)}>
+              <CardHeader className="pb-2">
+                <div className="flex justify-between items-start">
+                  <CardTitle className="text-base">
+                    {qtn.quotation_no} | {getPartyShortName(qtn.party_id)}
+                  </CardTitle>
+                  <Badge variant={
+                    qtn.quotation_status === 'Successful' ? 'default' :
+                    qtn.quotation_status === 'Lost' ? 'destructive' :
+                    qtn.quotation_status === 'In Process' ? 'outline' : 'secondary'
+                  } className="text-xs">
+                    {qtn.quotation_status || 'Pending'}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-1 pt-0">
+                <p className="text-xs text-muted-foreground">{partiesMap[qtn.party_id] || 'Unknown Party'}</p>
+                <p className="text-xs">Date: {new Date(qtn.date).toLocaleDateString()}</p>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <User size={12} />
+                  <span>{usersMap[qtn.created_by_user_id] || 'Unknown'}</span>
+                </div>
+                <div className="flex gap-2 pt-2" onClick={(e) => e.stopPropagation()}>
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/quotations/${qtn.quotation_id}`)}>Edit</Button>
+                  <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(qtn.quotation_id)}><FileDown size={14} /></Button>
+                  {user?.role === 'Admin' && (
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(qtn.quotation_id)}><Trash2 size={14} /></Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        /* List View */
+        <Card>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Quotation No</TableHead>
+                <TableHead>Party</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Created By</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {quotations.map(qtn => (
+                <TableRow key={qtn.quotation_id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/quotations/${qtn.quotation_id}`)}>
+                  <TableCell className="font-medium">{qtn.quotation_no}</TableCell>
+                  <TableCell>{partiesMap[qtn.party_id] || 'Unknown'}</TableCell>
+                  <TableCell>{new Date(qtn.date).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <Badge variant={
+                      qtn.quotation_status === 'Successful' ? 'default' :
+                      qtn.quotation_status === 'Lost' ? 'destructive' :
+                      qtn.quotation_status === 'In Process' ? 'outline' : 'secondary'
+                    } className="text-xs">
+                      {qtn.quotation_status || 'Pending'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{usersMap[qtn.created_by_user_id] || 'Unknown'}</TableCell>
+                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex justify-end gap-1">
+                      <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(qtn.quotation_id)}><FileDown size={14} /></Button>
+                      {user?.role === 'Admin' && (
+                        <Button size="sm" variant="destructive" onClick={() => handleDelete(qtn.quotation_id)}><Trash2 size={14} /></Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
       
       {quotations.length === 0 && (
         <Card>
@@ -242,3 +308,5 @@ export const Quotations = () => {
     </div>
   );
 };
+
+export default Quotations;
