@@ -109,8 +109,12 @@ class Item(ItemBase):
     item_id: str
 
 class LeadBase(BaseModel):
-    party_id: str
+    party_name: str  # Free text - not linked to Party Master
+    party_address: str = ""  # Free text address
+    party_gst: str = ""  # Optional GST number
+    party_city: str = ""
     contact_name: str
+    contact_mobile: str = ""
     requirement_summary: str
     referred_by: str = ""
     notes: str = ""
