@@ -302,9 +302,56 @@ test_plan:
         -agent: "testing"
         -comment: "✅ COMPREHENSIVE TESTING COMPLETED - User/Status Header & Convert functionality fully working: 1) Quotation Form: User name 'Sneha Kulkarni' displayed in header, Status badge 'Pending' visible, Convert dropdown with 'Proforma Invoice' and 'SOA' options working, Convert button functional, 2) Document Conversion: Successfully converted quotation to Proforma Invoice and redirected to new PI form (PI0012), 3) All form headers show user who created document and current status badge, 4) Convert dropdown shows appropriate options for each document type. Screenshots captured showing successful conversion flow."
 
+  - task: "Mobile UI Rework - Proforma Invoices Grid/List View"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ProformaInvoices.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing Phase 2 & 3 completion - Proforma Invoices page Grid/List view toggle, Party Name display (first 5 chars uppercase), and List view with proper table columns."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PROFORMA INVOICES GRID/LIST VIEW FULLY FUNCTIONAL - Comprehensive testing completed successfully: 1) Grid and List toggle buttons are present and functional, 2) Grid view working with card layout visible, 3) Party Name display working correctly showing 'SHREE' (first 5 chars uppercase), 4) List view working with proper table layout, 5) All expected table headers found: PI No, Party, Date, Validity, Status, Created By, Actions. UI patterns consistent with Quotations implementation."
+
+  - task: "Mobile UI Rework - SOA Grid/List View"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SOAList.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing Phase 2 & 3 completion - SOA page Grid/List view toggle, Party Name display (first 5 chars uppercase), and List view with proper table columns."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ SOA GRID/LIST VIEW FULLY FUNCTIONAL - Comprehensive testing completed successfully: 1) Grid and List toggle buttons are present and functional on SOA page, 2) SOA Grid view working with card layout visible, 3) SOA Party Name display working correctly showing 'SHREE' (first 5 chars uppercase), 4) SOA List view working with proper table layout, 5) All expected SOA table headers found: SOA No, Party, Date, Confirmation ID, Status, Created By, Actions. UI patterns consistent with Quotations and PI implementations."
+
+  - task: "Mobile UI Rework - SOA Form Modal Features"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SOAForm.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing Phase 2 & 3 completion - SOA Form Party Select modal, Item Selector modal with search and Quick Create options, and duplicate item button functionality."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ SOA FORM MODAL FEATURES FULLY FUNCTIONAL - Comprehensive testing completed successfully: 1) Party Select modal opened successfully with search functionality and Quick Create option, 2) Item Selector modal opened successfully with search functionality and Quick Create option, 3) Duplicate item button (Copy icon) found and working correctly - item duplication functionality tested and working (item copied successfully), 4) All modal interactions working as expected with proper search capabilities. Mobile-friendly modal implementation successful."
+
 agent_communication:
     -agent: "main"
     -message: "PHASE 2 & 3 COMPLETION: Implemented mobile UI rework for all document pages. Changes: 1) SOAForm.js - Added duplicate item button to item rows, added PartySelectModal, QuickCreatePartyModal, ItemSelectorModal with QuickCreate option, 2) ProformaInvoices.js - Added Grid/List view toggle, Party Name display (first 5 chars) on cards, enhanced list view with Table component, 3) SOAList.js - Added Grid/List view toggle, Party Name display (first 5 chars) on cards, enhanced list view with Table component. All changes mirror the pattern already implemented in Quotations.js. Test credentials: admin@sunstore.com/admin123 or uday.patil@maheshengg.com/admin123. Please test: 1) Grid/List toggle on PI and SOA list pages, 2) Party name display on document cards, 3) SOA Form - duplicate item button, Party select modal, Item select modal with quick create options."
+    -agent: "testing"
+    -message: "✅ PHASE 2 & 3 MOBILE UI REWORK TESTING COMPLETED SUCCESSFULLY - Comprehensive testing of all requested features completed with 100% success rate. Login successful with admin credentials (uday.patil@maheshengg.com). PROFORMA INVOICES: Grid/List toggle buttons present and functional, Party Name display working (showing 'SHREE' - first 5 chars uppercase), List view with all proper table columns (PI No, Party, Date, Validity, Status, Created By, Actions). SOA PAGE: Grid/List toggle buttons present and functional, Party Name display working (showing 'SHREE' - first 5 chars uppercase), List view with all proper table columns (SOA No, Party, Date, Confirmation ID, Status, Created By, Actions). SOA FORM: Party Select modal with search functionality and Quick Create option working, Item Selector modal with search and Quick Create options working, Duplicate item button (Copy icon) found and functionality tested successfully. UI patterns are consistent across Quotations, PI, and SOA pages. All Phase 2 & 3 mobile UI rework features are production-ready."
     -agent: "testing"
     -message: "✅ DOCUMENT FILTERING TESTING COMPLETED SUCCESSFULLY - All requested features are fully functional and working as expected. Both Admin and Sales user roles have properly implemented filtering with correct role-based access control. Admin users can see both 'Select User' and 'Period' filters on all document pages, while Sales users correctly see only 'Period' filter. Filter cards have proper styling with gray background, all dropdown options work correctly, Custom Date Range functionality is implemented, and Apply Filter button works on all pages. The filtering feature meets all requirements and is ready for production use."
     -agent: "testing"
