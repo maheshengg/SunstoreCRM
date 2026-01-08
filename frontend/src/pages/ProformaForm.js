@@ -350,9 +350,14 @@ export const ProformaForm = () => {
                               {item.item_code && ` (${item.item_code})`}
                             </div>
                           </div>
-                          <Button type="button" size="sm" variant="destructive" onClick={() => removeItem(idx)}>
-                            <Trash2 size={14} />
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button type="button" size="sm" variant="outline" onClick={() => duplicateItem(idx)} title="Duplicate">
+                              <Copy size={14} />
+                            </Button>
+                            <Button type="button" size="sm" variant="destructive" onClick={() => removeItem(idx)}>
+                              <Trash2 size={14} />
+                            </Button>
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-2">
