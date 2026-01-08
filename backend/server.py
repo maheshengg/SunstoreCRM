@@ -1506,10 +1506,16 @@ async def generate_pi_pdf(pi_id: str, current_user: dict = Depends(get_current_u
     
     pdf = HTML(string=html_content).write_pdf()
     
+    # Generate filename with username and timestamp
+    username = current_user["name"].replace(" ", "_").lower()[:10]
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    doc_no_safe = pi['pi_no'].replace("/", "_")
+    filename = f"proforma_invoice_{doc_no_safe}_{username}_{timestamp}.pdf"
+    
     return Response(
         content=pdf,
         media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=proforma_invoice_{pi['pi_no']}.pdf"}
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
 @api_router.get("/soa/{soa_id}/pdf")
