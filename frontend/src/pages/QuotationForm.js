@@ -305,13 +305,18 @@ export const QuotationForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="md:col-span-2">
                 <Label>Party *</Label>
-                <SearchableSelect
-                  options={parties.map(p => ({ value: p.party_id, label: `${p.party_name} (${p.city})` }))}
-                  value={formData.party_id}
-                  onChange={v => setFormData({...formData, party_id: v})}
-                  placeholder="Select party..."
-                  searchPlaceholder="Search parties..."
-                />
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  className="w-full justify-start text-left font-normal h-10 truncate"
+                  onClick={() => setIsPartyModalOpen(true)}
+                >
+                  {selectedParty ? (
+                    <span className="truncate">{selectedParty.party_name} ({selectedParty.city})</span>
+                  ) : (
+                    <span className="text-muted-foreground">Select party...</span>
+                  )}
+                </Button>
               </div>
               <div>
                 <Label>Date</Label>
@@ -335,7 +340,7 @@ export const QuotationForm = () => {
 
               {formData.items.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
-                  No items added yet. Click "Add Item" to get started.
+                  No items added yet. Click &quot;Add Item&quot; to get started.
                 </div>
               ) : (
                 <div className="space-y-4">
