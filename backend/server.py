@@ -837,10 +837,15 @@ async def generate_lead_pdf(lead_id: str, current_user: dict = Depends(get_curre
     
     pdf = HTML(string=html_content).write_pdf()
     
+    # Generate filename with username and timestamp
+    username = current_user["name"].replace(" ", "_").lower()[:10]
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"lead_{lead['lead_id']}_{username}_{timestamp}.pdf"
+    
     return Response(
         content=pdf,
         media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=lead_{lead['lead_id']}.pdf"}
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
 # ==================== QUOTATION ENDPOINTS ====================
