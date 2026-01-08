@@ -192,6 +192,49 @@ export const ProformaForm = () => {
     setFormData({ ...formData, items: newItems });
   };
 
+  const duplicateItem = (index) => {
+    const itemToDuplicate = { ...formData.items[index] };
+    const newItems = [...formData.items];
+    newItems.splice(index + 1, 0, itemToDuplicate);
+    setFormData({ ...formData, items: newItems });
+    toast.success('Item duplicated');
+  };
+
+  const handlePartySelect = (party) => {
+    setFormData({ ...formData, party_id: party.party_id });
+    setSelectedParty(party);
+    const newItems = formData.items.map(item => calculateItemTotals(item, party));
+    setFormData(prev => ({ ...prev, party_id: party.party_id, items: newItems }));
+  };
+
+  const handlePartyCreated = (newParty) => {
+    setParties([...parties, newParty]);
+    handlePartySelect(newParty);
+    setIsQuickCreatePartyOpen(false);
+  };
+
+  const handleItemCreated = (newItem) => {
+    setItems([...items, newItem]);
+    const party = parties.find(p => p.party_id === formData.party_id);
+    const newItemEntry = {
+      item_id: newItem.item_id,
+      item_name: newItem.item_name,
+      item_code: newItem.item_code,
+      HSN: newItem.HSN,
+      GST_percent: newItem.GST_percent,
+      qty: 1,
+      rate: newItem.rate || 0,
+      discount_percent: 0,
+      taxable_amount: 0,
+      tax_type: 'CGST+SGST',
+      tax_amount: 0,
+      total_amount: 0
+    };
+    const calculatedItem = calculateItemTotals(newItemEntry, party);
+    setFormData({ ...formData, items: [...formData.items, calculatedItem] });
+    setIsQuickCreateItemOpen(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
