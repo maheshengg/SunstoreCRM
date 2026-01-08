@@ -6,11 +6,13 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { SearchableSelect } from '../components/SearchableSelect';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
+import { PartySelectModal } from '../components/PartySelectModal';
+import { QuickCreatePartyModal } from '../components/QuickCreatePartyModal';
+import { QuickCreateItemModal } from '../components/QuickCreateItemModal';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Trash2, Plus, ArrowRightLeft, User } from 'lucide-react';
+import { Trash2, Plus, ArrowRightLeft, User, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const SOAForm = () => {
@@ -19,10 +21,14 @@ export const SOAForm = () => {
   const [parties, setParties] = useState([]);
   const [items, setItems] = useState([]);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [isPartyModalOpen, setIsPartyModalOpen] = useState(false);
+  const [isQuickCreatePartyOpen, setIsQuickCreatePartyOpen] = useState(false);
+  const [isQuickCreateItemOpen, setIsQuickCreateItemOpen] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
   const [createdByUser, setCreatedByUser] = useState(null);
   const [convertTarget, setConvertTarget] = useState('');
   const [isConverting, setIsConverting] = useState(false);
+  const [selectedParty, setSelectedParty] = useState(null);
   const [formData, setFormData] = useState({
     party_id: '', date: new Date().toISOString().split('T')[0],
     terms_and_conditions: '', remarks: '', soa_status: 'In Process', items: []
@@ -31,7 +37,15 @@ export const SOAForm = () => {
   useEffect(() => {
     fetchData();
     if (id) fetchSOA();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  useEffect(() => {
+    if (formData.party_id && parties.length > 0) {
+      const party = parties.find(p => p.party_id === formData.party_id);
+      setSelectedParty(party);
+    }
+  }, [formData.party_id, parties]);
 
   const fetchData = async () => {
     try {
