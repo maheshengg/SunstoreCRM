@@ -452,11 +452,42 @@ export const ProformaForm = () => {
         </CardContent>
       </Card>
 
+      {/* Party Selector Modal */}
+      <PartySelectModal
+        open={isPartyModalOpen}
+        onClose={() => setIsPartyModalOpen(false)}
+        parties={parties}
+        onSelectParty={handlePartySelect}
+        onQuickCreate={() => {
+          setIsPartyModalOpen(false);
+          setIsQuickCreatePartyOpen(true);
+        }}
+      />
+
+      {/* Quick Create Party Modal */}
+      <QuickCreatePartyModal
+        open={isQuickCreatePartyOpen}
+        onClose={() => setIsQuickCreatePartyOpen(false)}
+        onCreated={handlePartyCreated}
+      />
+
+      {/* Item Selector Modal */}
       <ItemSelectorModal
         open={isItemModalOpen}
         onClose={() => setIsItemModalOpen(false)}
         items={items}
         onSelectItem={handleItemSelect}
+        onQuickCreate={() => {
+          setIsItemModalOpen(false);
+          setIsQuickCreateItemOpen(true);
+        }}
+      />
+
+      {/* Quick Create Item Modal */}
+      <QuickCreateItemModal
+        open={isQuickCreateItemOpen}
+        onClose={() => setIsQuickCreateItemOpen(false)}
+        onCreated={handleItemCreated}
       />
     </div>
   );
