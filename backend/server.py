@@ -1188,6 +1188,39 @@ async def delete_proforma_invoice(pi_id: str, current_user: dict = Depends(get_c
     
     return {"message": "Proforma Invoice deleted successfully"}
 
+@api_router.post("/proforma-invoices/{pi_id}/duplicate")
+async def duplicate_proforma_invoice(pi_id: str, current_user: dict = Depends(get_current_user)):
+    pi = await db.proforma_invoices.find_one({"pi_id": pi_id}, {"_id": 0})
+    if not pi:
+        raise HTTPException(status_code=404, detail="Proforma Invoice not found")
+    
+    new_pi_no = await get_next_number("pi")
+    new_pi_id = f"PI{await db.proforma_invoices.count_documents({}) + 1:04d}"
+    
+    new_pi = pi.copy()
+    new_pi["pi_id"] = new_pi_id
+    new_pi["pi_no"] = new_pi_no
+    new_pi["created_by_user_id"] = current_user["user_id"]
+    new_pi["date"] = datetime.now(timezone.utc).isoformat()
+    new_pi["is_locked"] = False
+    new_pi["pi_status"] = "PI Submitted"
+    
+    await db.proforma_invoices.insert_one(new_pi)
+    await log_document_action("PROFORMA_INVOICE", new_pi_id, "DUPLICATED", current_user["user_id"])
+    
+    return {"message": "Proforma Invoice duplicated successfully", "pi_id": new_pi_id, "pi_no": new_pi_no}
+
+@api_router.post("/proforma-invoices/{pi_id}/lock")
+async def lock_proforma_invoice(pi_id: str, current_user: dict = Depends(get_current_user)):
+    pi = await db.proforma_invoices.find_one({"pi_id": pi_id}, {"_id": 0})
+    if not pi:
+        raise HTTPException(status_code=404, detail="Proforma Invoice not found")
+    
+    await db.proforma_invoices.update_one({"pi_id": pi_id}, {"$set": {"is_locked": True}})
+    await log_document_action("PROFORMA_INVOICE", pi_id, "LOCKED", current_user["user_id"])
+    
+    return {"message": "Proforma Invoice locked successfully"}
+
 @api_router.post("/proforma-invoices/{pi_id}/convert-to-soa")
 async def convert_pi_to_soa(pi_id: str, current_user: dict = Depends(get_current_user)):
     pi = await db.proforma_invoices.find_one({"pi_id": pi_id}, {"_id": 0})
