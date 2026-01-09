@@ -62,6 +62,9 @@ export const ProformaForm = () => {
       const response = await api.getProformaInvoice(id);
       const piData = response.data;
       
+      // Set locked state
+      setIsLocked(piData.is_locked === true);
+      
       // Enrich items with full details from items master
       const itemsRes = await api.getItems({});
       const itemsMap = {};
@@ -94,6 +97,58 @@ export const ProformaForm = () => {
       }
     } catch (error) {
       toast.error('Failed to load proforma invoice');
+    }
+  };
+
+  const handleLock = async () => {
+    if (!id) return;
+    if (!window.confirm('Are you sure you want to lock this Proforma Invoice? Once locked, it cannot be edited.')) return;
+    try {
+      await api.lockProformaInvoice(id);
+      setIsLocked(true);
+      toast.success('Proforma Invoice locked successfully');
+    } catch (error) {
+      toast.error('Failed to lock Proforma Invoice');
+    }
+  };
+
+  const handleDuplicate = async () => {
+    if (!id) return;
+    try {
+      const response = await api.duplicateProformaInvoice(id);
+      toast.success('Proforma Invoice duplicated successfully');
+      navigate(`/proforma-invoices/${response.data.pi_id}`);
+    } catch (error) {
+      toast.error('Failed to duplicate Proforma Invoice');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    if (!window.confirm('Are you sure you want to permanently delete this Proforma Invoice? This action cannot be undone.')) return;
+    try {
+      await api.deleteProformaInvoice(id);
+      toast.success('Proforma Invoice deleted successfully');
+      navigate('/proforma-invoices');
+    } catch (error) {
+      toast.error('Failed to delete Proforma Invoice');
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!id) return;
+    try {
+      const response = await api.downloadPIPDF(id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `pi_${formData.pi_no || id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error('Failed to download PDF');
     }
   };
 
