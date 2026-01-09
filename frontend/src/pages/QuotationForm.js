@@ -37,7 +37,6 @@ export const QuotationForm = () => {
   useEffect(() => {
     fetchData();
     if (id) fetchQuotation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   // Update selectedParty when formData.party_id changes
