@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Copy, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const PartyForm = () => {
@@ -59,13 +59,48 @@ export const PartyForm = () => {
     }
   };
 
+  const handleDuplicate = async () => {
+    if (!id) return;
+    try {
+      const response = await api.duplicateParty(id);
+      toast.success('Party duplicated successfully');
+      navigate(`/parties/${response.data.party_id}`);
+    } catch (error) {
+      toast.error('Failed to duplicate party');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    if (!window.confirm('Are you sure you want to delete this party? This action cannot be undone.')) return;
+    try {
+      await api.deleteParty(id);
+      toast.success('Party deleted successfully');
+      navigate('/parties');
+    } catch (error) {
+      toast.error('Failed to delete party');
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
-      <div className="flex items-center gap-4">
-        <Button data-testid="back-btn" variant="ghost" size="sm" onClick={() => navigate('/parties')}>
-          <ArrowLeft size={20} />
-        </Button>
-        <h1 className="text-3xl font-bold">{id ? 'Edit' : 'Add'} Party</h1>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Button data-testid="back-btn" variant="ghost" size="sm" onClick={() => navigate('/parties')}>
+            <ArrowLeft size={20} />
+          </Button>
+          <h1 className="text-3xl font-bold">{id ? 'Edit' : 'Add'} Party</h1>
+        </div>
+        {id && (
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" size="sm" onClick={handleDuplicate} className="gap-1">
+              <Copy size={14} /> Duplicate
+            </Button>
+            <Button type="button" variant="destructive" size="sm" onClick={handleDelete} className="gap-1">
+              <Trash2 size={14} /> Delete
+            </Button>
+          </div>
+        )}
       </div>
 
       <Card>
