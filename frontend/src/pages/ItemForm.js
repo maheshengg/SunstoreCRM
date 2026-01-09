@@ -70,7 +70,22 @@ export const ItemForm = () => {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold">{id ? 'Edit' : 'Add'} Item</h1>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" onClick={() => navigate('/items')}><ArrowLeft size={20} /></Button>
+          <h1 className="text-3xl font-bold">{id ? 'Edit' : 'Add'} Item</h1>
+        </div>
+        {id && (
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" size="sm" onClick={handleDuplicate} className="gap-1">
+              <Copy size={14} /> Duplicate
+            </Button>
+            <Button type="button" variant="destructive" size="sm" onClick={handleDelete} className="gap-1">
+              <Trash2 size={14} /> Delete
+            </Button>
+          </div>
+        )}
+      </div>
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
