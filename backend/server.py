@@ -438,6 +438,25 @@ async def delete_party(party_id: str, current_user: dict = Depends(get_current_u
     
     return {"message": "Party deleted successfully"}
 
+@api_router.post("/parties/{party_id}/duplicate")
+async def duplicate_party(party_id: str, current_user: dict = Depends(get_current_user)):
+    party = await db.parties.find_one({"party_id": party_id}, {"_id": 0})
+    if not party:
+        raise HTTPException(status_code=404, detail="Party not found")
+    
+    party_count = await db.parties.count_documents({})
+    new_party_id = f"PTY{str(party_count + 1).zfill(4)}"
+    
+    new_party = party.copy()
+    new_party["party_id"] = new_party_id
+    new_party["party_name"] = f"{party['party_name']} (Copy)"
+    new_party["GST_number"] = ""  # Clear GST to avoid duplicate
+    
+    await db.parties.insert_one(new_party)
+    await log_document_action("PARTY", new_party_id, "DUPLICATED", current_user["user_id"])
+    
+    return {"message": "Party duplicated successfully", "party_id": new_party_id}
+
 @api_router.get("/parties/export/csv")
 async def export_parties_csv(current_user: dict = Depends(get_current_user)):
     parties = await db.parties.find({}, {"_id": 0}).to_list(1000)
