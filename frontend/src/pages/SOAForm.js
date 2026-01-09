@@ -63,6 +63,9 @@ export const SOAForm = () => {
       const response = await api.getSOA(id);
       const soaData = response.data;
       
+      // Set locked state
+      setIsLocked(soaData.is_locked === true);
+      
       // Enrich items with full details from items master
       const itemsRes = await api.getItems({});
       const itemsMap = {};
@@ -95,6 +98,58 @@ export const SOAForm = () => {
       }
     } catch (error) {
       toast.error('Failed to load SOA');
+    }
+  };
+
+  const handleLock = async () => {
+    if (!id) return;
+    if (!window.confirm('Are you sure you want to lock this SOA? Once locked, it cannot be edited.')) return;
+    try {
+      await api.lockSOA(id);
+      setIsLocked(true);
+      toast.success('SOA locked successfully');
+    } catch (error) {
+      toast.error('Failed to lock SOA');
+    }
+  };
+
+  const handleDuplicate = async () => {
+    if (!id) return;
+    try {
+      const response = await api.duplicateSOA(id);
+      toast.success('SOA duplicated successfully');
+      navigate(`/soa/${response.data.soa_id}`);
+    } catch (error) {
+      toast.error('Failed to duplicate SOA');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    if (!window.confirm('Are you sure you want to permanently delete this SOA? This action cannot be undone.')) return;
+    try {
+      await api.deleteSOA(id);
+      toast.success('SOA deleted successfully');
+      navigate('/soa');
+    } catch (error) {
+      toast.error('Failed to delete SOA');
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!id) return;
+    try {
+      const response = await api.downloadSOAPDF(id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `soa_${formData.soa_no || id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error('Failed to download PDF');
     }
   };
 
