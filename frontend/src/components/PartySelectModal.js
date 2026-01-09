@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Search, X, Plus } from 'lucide-react';
@@ -38,66 +38,65 @@ export const PartySelectModal = ({ open, onClose, parties, onSelectParty, onQuic
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-full h-[85vh] max-w-full sm:max-w-lg mx-0 sm:mx-auto p-0 flex flex-col">
-        <DialogHeader className="p-3 sm:p-4 border-b sticky top-0 bg-white z-10">
-          <div className="flex items-center justify-between mb-2">
-            <DialogTitle className="text-lg">Select Party</DialogTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X size={20} />
-            </Button>
+      <DialogContent className="w-[95vw] h-[90vh] max-w-full sm:max-w-lg mx-auto p-0 flex flex-col rounded-lg overflow-hidden">
+        {/* Input Area - 15% height */}
+        <div className="h-[15%] min-h-[80px] p-2 border-b bg-white flex flex-col justify-center">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-sm font-semibold text-gray-800">Select Party</span>
+            <div className="flex items-center gap-1">
+              {onQuickCreate && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-7 px-2 text-xs text-primary" 
+                  onClick={onQuickCreate}
+                >
+                  <Plus size={14} className="mr-1" />
+                  New
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" onClick={onClose} className="h-7 w-7 p-0">
+                <X size={18} />
+              </Button>
+            </div>
           </div>
-
-          {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
             <Input
-              placeholder="Search by name, city, GST, contact..."
+              placeholder="Search name, city, GST, contact, mobile..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 text-sm"
+              className="pl-8 h-8 text-xs"
               autoFocus
             />
           </div>
-
-          {/* Quick Create Button */}
-          {onQuickCreate && (
-            <Button 
-              variant="outline" 
-              className="mt-2 w-full gap-2 text-primary" 
-              onClick={onQuickCreate}
-            >
-              <Plus size={16} />
-              Create New Party
-            </Button>
-          )}
-
-          <div className="text-xs text-gray-500 mt-2">
-            Showing {filteredParties.length} of {parties.length} parties
+          <div className="text-[10px] text-gray-500 mt-1">
+            {filteredParties.length} of {parties.length} parties
           </div>
-        </DialogHeader>
+        </div>
 
-        {/* Results Section - Scrollable */}
-        <div className="flex-1 overflow-y-auto p-2 sm:p-3">
+        {/* Results Area - 85% height */}
+        <div className="h-[85%] overflow-y-auto bg-gray-50">
           {filteredParties.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              No parties found. Try a different search.
+            <div className="flex items-center justify-center h-full text-xs text-gray-500">
+              No parties found
             </div>
           ) : (
-            <div className="space-y-1">
+            <div className="p-1">
               {filteredParties.map(party => (
                 <div
                   key={party.party_id}
                   onClick={() => handleSelectParty(party)}
-                  className="p-2 sm:p-3 border rounded-lg cursor-pointer hover:bg-slate-50 hover:border-primary active:bg-slate-100 transition-all"
+                  className="p-2 mb-1 bg-white border rounded cursor-pointer hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100 transition-all"
                 >
-                  <div className="font-medium text-sm leading-tight">
+                  <div className="font-medium text-xs text-gray-900 leading-tight truncate">
                     {party.party_name}
                   </div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    {party.city}, {party.state}
+                  <div className="text-[10px] text-gray-600 mt-0.5 truncate">
+                    {party.city}{party.state ? `, ${party.state}` : ''}
                   </div>
-                  <div className="text-xs text-gray-500 mt-0.5">
-                    GST: {party.GST_number || 'N/A'} • {party.contact_person} • {party.mobile}
+                  <div className="text-[10px] text-gray-500 mt-0.5 truncate">
+                    {party.GST_number || 'No GST'} • {party.contact_person || ''} • {party.mobile || ''}
                   </div>
                 </div>
               ))}

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Search, X, Plus } from 'lucide-react';
+import { Search, X, Plus, Filter } from 'lucide-react';
 
 export const ItemSelectorModal = ({ open, onClose, items, onSelectItem, onQuickCreate }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,33 +59,49 @@ export const ItemSelectorModal = ({ open, onClose, items, onSelectItem, onQuickC
     setSelectedCategory('ALL');
   };
 
+  const hasActiveFilters = selectedBrand !== 'ALL' || selectedCategory !== 'ALL';
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-full h-[90vh] max-w-full sm:max-w-3xl mx-0 sm:mx-auto p-0 flex flex-col">
-        <DialogHeader className="p-3 sm:p-4 border-b sticky top-0 bg-white z-10">
-          <div className="flex items-center justify-between mb-2">
-            <DialogTitle className="text-lg">Select Item</DialogTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X size={20} />
-            </Button>
+      <DialogContent className="w-[95vw] h-[90vh] max-w-full sm:max-w-lg mx-auto p-0 flex flex-col rounded-lg overflow-hidden">
+        {/* Input Area - 15% height */}
+        <div className="h-[15%] min-h-[100px] p-2 border-b bg-white flex flex-col justify-center">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-sm font-semibold text-gray-800">Select Item</span>
+            <div className="flex items-center gap-1">
+              {onQuickCreate && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-7 px-2 text-xs text-primary" 
+                  onClick={onQuickCreate}
+                >
+                  <Plus size={14} className="mr-1" />
+                  New
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" onClick={onClose} className="h-7 w-7 p-0">
+                <X size={18} />
+              </Button>
+            </div>
           </div>
-
+          
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
             <Input
-              placeholder="Search name, code, brand, category, description..."
+              placeholder="Search name, code, brand, category..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 text-sm"
+              className="pl-8 h-8 text-xs"
               autoFocus
             />
           </div>
 
-          {/* Filters Row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
+          {/* Compact Filters Row */}
+          <div className="flex items-center gap-1 mt-1">
             <Select value={selectedBrand} onValueChange={setSelectedBrand}>
-              <SelectTrigger className="text-xs h-9">
+              <SelectTrigger className="text-[10px] h-6 flex-1 px-2">
                 <SelectValue placeholder="Brand" />
               </SelectTrigger>
               <SelectContent>
@@ -99,7 +114,7 @@ export const ItemSelectorModal = ({ open, onClose, items, onSelectItem, onQuickC
             </Select>
 
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="text-xs h-9">
+              <SelectTrigger className="text-[10px] h-6 flex-1 px-2">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
@@ -111,46 +126,47 @@ export const ItemSelectorModal = ({ open, onClose, items, onSelectItem, onQuickC
               </SelectContent>
             </Select>
 
-            <Button variant="outline" size="sm" onClick={handleClearFilters} className="text-xs h-9">
-              <X size={14} className="mr-1" />
-              Clear
-            </Button>
-
-            {onQuickCreate && (
-              <Button variant="outline" size="sm" onClick={onQuickCreate} className="text-xs h-9 text-primary">
-                <Plus size={14} className="mr-1" />
-                New Item
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={handleClearFilters} className="h-6 px-2 text-[10px]">
+                <X size={12} />
               </Button>
             )}
+            
+            <span className="text-[10px] text-gray-500 whitespace-nowrap">
+              {filteredItems.length}/{items.length}
+            </span>
           </div>
+        </div>
 
-          <div className="text-xs text-gray-500 mt-2">
-            Showing {filteredItems.length} of {items.length} items
-          </div>
-        </DialogHeader>
-
-        {/* Results Section - Scrollable */}
-        <div className="flex-1 overflow-y-auto p-2 sm:p-3">
+        {/* Results Area - 85% height */}
+        <div className="h-[85%] overflow-y-auto bg-gray-50">
           {filteredItems.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              No items found. Try adjusting your filters.
+            <div className="flex items-center justify-center h-full text-xs text-gray-500">
+              No items found
             </div>
           ) : (
-            <div className="space-y-1">
+            <div className="p-1">
               {filteredItems.map(item => (
                 <div
                   key={item.item_id}
                   onClick={() => handleSelectItem(item)}
-                  className="p-2 sm:p-3 border rounded-lg cursor-pointer hover:bg-slate-50 hover:border-primary active:bg-slate-100 transition-all"
+                  className="p-2 mb-1 bg-white border rounded cursor-pointer hover:bg-blue-50 hover:border-blue-300 active:bg-blue-100 transition-all"
                 >
-                  <div className="font-medium text-sm leading-tight">
+                  <div className="font-medium text-xs text-gray-900 leading-tight truncate">
                     {item.item_name || item.description}
                   </div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    {item.brand || 'N/A'} | {item.category || 'N/A'} | {item.item_code}
+                  <div className="flex items-center justify-between mt-0.5">
+                    <span className="text-[10px] text-gray-600 truncate flex-1">
+                      {item.brand || ''} {item.category ? `• ${item.category}` : ''} {item.item_code ? `• ${item.item_code}` : ''}
+                    </span>
                   </div>
-                  <div className="text-xs text-gray-500 mt-0.5">
-                    HSN: {item.HSN || 'N/A'} • GST: {item.GST_percent}% • ₹{item.rate}
+                  <div className="flex items-center justify-between mt-0.5">
+                    <span className="text-[10px] text-gray-500">
+                      HSN: {item.HSN || 'N/A'} • GST: {item.GST_percent}%
+                    </span>
+                    <span className="text-[10px] font-semibold text-green-700">
+                      ₹{item.rate}
+                    </span>
                   </div>
                 </div>
               ))}
