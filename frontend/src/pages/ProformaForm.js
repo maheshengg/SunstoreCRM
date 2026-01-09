@@ -37,7 +37,6 @@ export const ProformaForm = () => {
   useEffect(() => {
     fetchData();
     if (id) fetchProformaInvoice();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
