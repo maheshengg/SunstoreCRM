@@ -1000,6 +1000,8 @@ async def duplicate_quotation(quotation_id: str, current_user: dict = Depends(ge
     new_quotation["quotation_no"] = new_quotation_no
     new_quotation["created_by_user_id"] = current_user["user_id"]
     new_quotation["date"] = datetime.now(timezone.utc).isoformat()
+    new_quotation["is_locked"] = False
+    new_quotation["quotation_status"] = None
     
     await db.quotations.insert_one(new_quotation)
     
@@ -1007,6 +1009,17 @@ async def duplicate_quotation(quotation_id: str, current_user: dict = Depends(ge
     await log_document_action("QUOTATION", new_quotation_id, "DUPLICATED", current_user["user_id"])
     
     return {"message": "Quotation duplicated successfully", "quotation_id": new_quotation_id, "quotation_no": new_quotation_no}
+
+@api_router.post("/quotations/{quotation_id}/lock")
+async def lock_quotation(quotation_id: str, current_user: dict = Depends(get_current_user)):
+    quotation = await db.quotations.find_one({"quotation_id": quotation_id}, {"_id": 0})
+    if not quotation:
+        raise HTTPException(status_code=404, detail="Quotation not found")
+    
+    await db.quotations.update_one({"quotation_id": quotation_id}, {"$set": {"is_locked": True}})
+    await log_document_action("QUOTATION", quotation_id, "LOCKED", current_user["user_id"])
+    
+    return {"message": "Quotation locked successfully"}
 
 @api_router.post("/quotations/{quotation_id}/convert-to-pi")
 async def convert_quotation_to_pi(quotation_id: str, current_user: dict = Depends(get_current_user)):
