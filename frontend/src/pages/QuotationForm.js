@@ -560,6 +560,7 @@ export const QuotationForm = () => {
               )}
             </div>
 
+            <fieldset disabled={isLocked}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Payment Terms</Label>
@@ -593,9 +594,11 @@ export const QuotationForm = () => {
             </div>
 
             <div className="flex gap-4">
-              <Button type="submit" className="flex-1">Save Quotation</Button>
+              {!isLocked && <Button type="submit" className="flex-1">Save Quotation</Button>}
+              {isLocked && <div className="flex-1 text-center text-muted-foreground py-2 bg-muted rounded">This quotation is locked and cannot be edited</div>}
               <Button type="button" variant="outline" onClick={() => navigate('/quotations')}>Cancel</Button>
             </div>
+            </fieldset>
           </form>
         </CardContent>
       </Card>
