@@ -510,18 +510,18 @@ export const ProformaForm = () => {
               </div>
               <div>
                 <Label>Delivery Terms</Label>
-                <Input value={formData.delivery_terms} onChange={e => setFormData({...formData, delivery_terms: e.target.value})} />
+                <Input value={formData.delivery_terms} onChange={e => setFormData({...formData, delivery_terms: e.target.value})} disabled={isLocked} />
               </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Remarks</Label>
-                <Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} />
+                <Input value={formData.remarks} onChange={e => setFormData({...formData, remarks: e.target.value})} disabled={isLocked} />
               </div>
               <div>
                 <Label>PI Status</Label>
-                <Select value={formData.pi_status} onValueChange={v => setFormData({...formData, pi_status: v})}>
+                <Select value={formData.pi_status} onValueChange={v => setFormData({...formData, pi_status: v})} disabled={isLocked}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -534,7 +534,8 @@ export const ProformaForm = () => {
             </div>
 
             <div className="flex gap-4">
-              <Button type="submit" className="flex-1">Save Proforma Invoice</Button>
+              {!isLocked && <Button type="submit" className="flex-1">Save Proforma Invoice</Button>}
+              {isLocked && <div className="flex-1 text-center text-muted-foreground py-2 bg-muted rounded">This PI is locked and cannot be edited</div>}
               <Button type="button" variant="outline" onClick={() => navigate('/proforma-invoices')}>Cancel</Button>
             </div>
           </form>
