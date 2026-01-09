@@ -45,6 +45,29 @@ export const ItemForm = () => {
     }
   };
 
+  const handleDuplicate = async () => {
+    if (!id) return;
+    try {
+      const response = await api.duplicateItem(id);
+      toast.success('Item duplicated successfully');
+      navigate(`/items/${response.data.item_id}`);
+    } catch (error) {
+      toast.error('Failed to duplicate item');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    if (!window.confirm('Are you sure you want to delete this item? This action cannot be undone.')) return;
+    try {
+      await api.deleteItem(id);
+      toast.success('Item deleted successfully');
+      navigate('/items');
+    } catch (error) {
+      toast.error('Failed to delete item');
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <h1 className="text-3xl font-bold">{id ? 'Edit' : 'Add'} Item</h1>
