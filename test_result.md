@@ -219,10 +219,9 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Quotation Creation with 'In Process' Status"
-    - "PDF Generation for Quotations with Enhanced Template"
-    - "Dashboard Stats with 'In Process' Count"
-    - "Quotation Status Update with New Options"
+    - "Lock, Duplicate, and Delete Features for Document Forms"
+    - "Duplicate and Delete Features for Party and Item Forms"
+    - "Mobile Responsiveness for Action Buttons"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
