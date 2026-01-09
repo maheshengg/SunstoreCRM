@@ -311,10 +311,12 @@ export const SOAForm = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h1 className="text-3xl font-bold">{id ? 'Edit' : 'New'} Sales Order Acknowledgement</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-3xl font-bold">{id ? 'Edit' : 'New'} SOA</h1>
+          {isLocked && <Badge variant="destructive"><Lock size={12} className="mr-1" />Locked</Badge>}
+        </div>
         {id && (
-          <div className="flex flex-wrap items-center gap-3">
-            {/* User & Status Info */}
+          <div className="flex flex-wrap items-center gap-2">
             {createdByUser && (
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <User size={14} />
@@ -324,40 +326,62 @@ export const SOAForm = () => {
             <Badge variant={formData.soa_status === 'Material Given' ? 'default' : 'secondary'}>
               {formData.soa_status || 'In Process'}
             </Badge>
-            {/* Convert Document */}
-            <div className="flex items-center gap-2">
-              <Select value={convertTarget} onValueChange={setConvertTarget}>
-                <SelectTrigger className="w-[160px]">
-                  <SelectValue placeholder="Convert to..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="quotation">Quotation</SelectItem>
-                  <SelectItem value="pi">Proforma Invoice</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={handleConvert} 
-                disabled={!convertTarget || isConverting}
-                className="gap-1"
-              >
-                <ArrowRightLeft size={14} />
-                Convert
-              </Button>
-            </div>
           </div>
         )}
       </div>
+
+      {/* Action Buttons Row */}
+      {id && (
+        <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/50 rounded-lg">
+          <Button type="button" variant="outline" size="sm" onClick={handleDownloadPDF} className="gap-1">
+            <FileDown size={14} /> PDF
+          </Button>
+          <Button type="button" variant="outline" size="sm" onClick={handleDuplicate} className="gap-1">
+            <Copy size={14} /> Duplicate
+          </Button>
+          {!isLocked && (
+            <Button type="button" variant="outline" size="sm" onClick={handleLock} className="gap-1 text-orange-600 hover:text-orange-700">
+              <Lock size={14} /> Lock
+            </Button>
+          )}
+          <Button type="button" variant="destructive" size="sm" onClick={handleDelete} className="gap-1">
+            <Trash2 size={14} /> Delete
+          </Button>
+          <div className="flex items-center gap-1 ml-auto">
+            <Select value={convertTarget} onValueChange={setConvertTarget}>
+              <SelectTrigger className="w-[130px] h-8 text-xs">
+                <SelectValue placeholder="Convert to..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="quotation">Quotation</SelectItem>
+                <SelectItem value="pi">Proforma Invoice</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="sm"
+              onClick={handleConvert} 
+              disabled={!convertTarget || isConverting}
+              className="gap-1"
+            >
+              <ArrowRightLeft size={14} />
+            </Button>
+          </div>
+        </div>
+      )}
+
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
+            <fieldset disabled={isLocked}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">
                 <Label>Party *</Label>
                 <Button 
                   type="button"
-                  variant="outline" 
+                  variant="outline"
+                  disabled={isLocked} 
                   className="w-full justify-start text-left font-normal h-10 truncate"
                   onClick={() => setIsPartyModalOpen(true)}
                 >
