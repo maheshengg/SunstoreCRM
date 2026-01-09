@@ -313,9 +313,12 @@ export const QuotationForm = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h1 className="text-3xl font-bold">{id ? 'Edit' : 'New'} Quotation</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-3xl font-bold">{id ? 'Edit' : 'New'} Quotation</h1>
+          {isLocked && <Badge variant="destructive"><Lock size={12} className="mr-1" />Locked</Badge>}
+        </div>
         {id && (
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             {/* User & Status Info */}
             {createdByUser && (
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -330,34 +333,56 @@ export const QuotationForm = () => {
             }>
               {formData.quotation_status || 'Pending'}
             </Badge>
-            {/* Convert Document */}
-            <div className="flex items-center gap-2">
-              <Select value={convertTarget} onValueChange={setConvertTarget}>
-                <SelectTrigger className="w-[160px]">
-                  <SelectValue placeholder="Convert to..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pi">Proforma Invoice</SelectItem>
-                  <SelectItem value="soa">SOA</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={handleConvert} 
-                disabled={!convertTarget || isConverting}
-                className="gap-1"
-              >
-                <ArrowRightLeft size={14} />
-                Convert
-              </Button>
-            </div>
           </div>
         )}
       </div>
+
+      {/* Action Buttons Row - Only show when editing */}
+      {id && (
+        <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/50 rounded-lg">
+          <Button type="button" variant="outline" size="sm" onClick={handleDownloadPDF} className="gap-1">
+            <FileDown size={14} /> PDF
+          </Button>
+          <Button type="button" variant="outline" size="sm" onClick={handleDuplicate} className="gap-1">
+            <Copy size={14} /> Duplicate
+          </Button>
+          {!isLocked && (
+            <Button type="button" variant="outline" size="sm" onClick={handleLock} className="gap-1 text-orange-600 hover:text-orange-700">
+              <Lock size={14} /> Lock
+            </Button>
+          )}
+          <Button type="button" variant="destructive" size="sm" onClick={handleDelete} className="gap-1">
+            <Trash2 size={14} /> Delete
+          </Button>
+          {/* Convert Document */}
+          <div className="flex items-center gap-1 ml-auto">
+            <Select value={convertTarget} onValueChange={setConvertTarget}>
+              <SelectTrigger className="w-[130px] h-8 text-xs">
+                <SelectValue placeholder="Convert to..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pi">Proforma Invoice</SelectItem>
+                <SelectItem value="soa">SOA</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="sm"
+              onClick={handleConvert} 
+              disabled={!convertTarget || isConverting}
+              className="gap-1"
+            >
+              <ArrowRightLeft size={14} />
+            </Button>
+          </div>
+        </div>
+      )}
+
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
+            <fieldset disabled={isLocked}>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="md:col-span-2">
                 <Label>Party *</Label>
@@ -365,7 +390,8 @@ export const QuotationForm = () => {
                   type="button"
                   variant="outline" 
                   className="w-full justify-start text-left font-normal h-10 truncate"
-                  onClick={() => setIsPartyModalOpen(true)}
+                  onClick={() => !isLocked && setIsPartyModalOpen(true)}
+                  disabled={isLocked}
                 >
                   {selectedParty ? (
                     <span className="truncate">{selectedParty.party_name} ({selectedParty.city})</span>
@@ -383,15 +409,18 @@ export const QuotationForm = () => {
                 <Input type="number" value={formData.validity_days} onChange={e => setFormData({...formData, validity_days: parseInt(e.target.value)})} />
               </div>
             </div>
+            </fieldset>
 
             {/* Items Section */}
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <Label className="text-lg font-semibold">Items</Label>
-                <Button type="button" onClick={addItem} className="gap-2">
-                  <Plus size={16} />
-                  Add Item
-                </Button>
+                {!isLocked && (
+                  <Button type="button" onClick={addItem} className="gap-2">
+                    <Plus size={16} />
+                    Add Item
+                  </Button>
+                )}
               </div>
 
               {formData.items.length === 0 ? (
