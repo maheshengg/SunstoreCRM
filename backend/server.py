@@ -1389,6 +1389,39 @@ async def delete_soa(soa_id: str, current_user: dict = Depends(get_current_user)
     
     return {"message": "SOA deleted successfully"}
 
+@api_router.post("/soa/{soa_id}/duplicate")
+async def duplicate_soa(soa_id: str, current_user: dict = Depends(get_current_user)):
+    soa = await db.soa.find_one({"soa_id": soa_id}, {"_id": 0})
+    if not soa:
+        raise HTTPException(status_code=404, detail="SOA not found")
+    
+    new_soa_no = await get_next_number("soa")
+    new_soa_id = f"SOA{await db.soa.count_documents({}) + 1:04d}"
+    
+    new_soa = soa.copy()
+    new_soa["soa_id"] = new_soa_id
+    new_soa["soa_no"] = new_soa_no
+    new_soa["created_by_user_id"] = current_user["user_id"]
+    new_soa["date"] = datetime.now(timezone.utc).isoformat()
+    new_soa["is_locked"] = False
+    new_soa["soa_status"] = "In Process"
+    
+    await db.soa.insert_one(new_soa)
+    await log_document_action("SOA", new_soa_id, "DUPLICATED", current_user["user_id"])
+    
+    return {"message": "SOA duplicated successfully", "soa_id": new_soa_id, "soa_no": new_soa_no}
+
+@api_router.post("/soa/{soa_id}/lock")
+async def lock_soa(soa_id: str, current_user: dict = Depends(get_current_user)):
+    soa = await db.soa.find_one({"soa_id": soa_id}, {"_id": 0})
+    if not soa:
+        raise HTTPException(status_code=404, detail="SOA not found")
+    
+    await db.soa.update_one({"soa_id": soa_id}, {"$set": {"is_locked": True}})
+    await log_document_action("SOA", soa_id, "LOCKED", current_user["user_id"])
+    
+    return {"message": "SOA locked successfully"}
+
 @api_router.post("/soa/{soa_id}/convert-to-quotation")
 async def convert_soa_to_quotation(soa_id: str, current_user: dict = Depends(get_current_user)):
     soa = await db.soa.find_one({"soa_id": soa_id}, {"_id": 0})
