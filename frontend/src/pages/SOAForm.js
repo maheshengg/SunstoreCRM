@@ -38,7 +38,6 @@ export const SOAForm = () => {
   useEffect(() => {
     fetchData();
     if (id) fetchSOA();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
