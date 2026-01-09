@@ -63,6 +63,9 @@ export const QuotationForm = () => {
       const response = await api.getQuotation(id);
       const quotationData = response.data;
       
+      // Set locked state
+      setIsLocked(quotationData.is_locked === true);
+      
       // Enrich items with full details from items master
       const itemsRes = await api.getItems({});
       const itemsMap = {};
@@ -95,6 +98,58 @@ export const QuotationForm = () => {
       }
     } catch (error) {
       toast.error('Failed to load quotation');
+    }
+  };
+
+  const handleLock = async () => {
+    if (!id) return;
+    if (!window.confirm('Are you sure you want to lock this quotation? Once locked, it cannot be edited.')) return;
+    try {
+      await api.lockQuotation(id);
+      setIsLocked(true);
+      toast.success('Quotation locked successfully');
+    } catch (error) {
+      toast.error('Failed to lock quotation');
+    }
+  };
+
+  const handleDuplicate = async () => {
+    if (!id) return;
+    try {
+      const response = await api.duplicateQuotation(id);
+      toast.success('Quotation duplicated successfully');
+      navigate(`/quotations/${response.data.quotation_id}`);
+    } catch (error) {
+      toast.error('Failed to duplicate quotation');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    if (!window.confirm('Are you sure you want to permanently delete this quotation? This action cannot be undone.')) return;
+    try {
+      await api.deleteQuotation(id);
+      toast.success('Quotation deleted successfully');
+      navigate('/quotations');
+    } catch (error) {
+      toast.error('Failed to delete quotation');
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!id) return;
+    try {
+      const response = await api.downloadQuotationPDF(id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `quotation_${formData.quotation_no || id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error('Failed to download PDF');
     }
   };
 
