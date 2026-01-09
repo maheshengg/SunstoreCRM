@@ -383,7 +383,7 @@ export const SOAForm = () => {
                   variant="outline"
                   disabled={isLocked} 
                   className="w-full justify-start text-left font-normal h-10 truncate"
-                  onClick={() => setIsPartyModalOpen(true)}
+                  onClick={() => !isLocked && setIsPartyModalOpen(true)}
                 >
                   {selectedParty ? (
                     <span className="truncate">{selectedParty.party_name} ({selectedParty.city})</span>
@@ -397,15 +397,18 @@ export const SOAForm = () => {
                 <Input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
               </div>
             </div>
+            </fieldset>
 
             {/* Items Section */}
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <Label className="text-lg font-semibold">Items</Label>
-                <Button type="button" onClick={addItem} className="gap-2">
-                  <Plus size={16} />
-                  Add Item
-                </Button>
+                {!isLocked && (
+                  <Button type="button" onClick={addItem} className="gap-2">
+                    <Plus size={16} />
+                    Add Item
+                  </Button>
+                )}
               </div>
 
               {formData.items.length === 0 ? (
@@ -420,21 +423,23 @@ export const SOAForm = () => {
                         <div className="flex justify-between items-center gap-2">
                           <div className="flex-1">
                             <div 
-                              className="text-sm font-medium cursor-pointer text-primary hover:underline"
-                              onClick={() => openItemSelector(idx)}
+                              className={`text-sm font-medium ${!isLocked ? 'cursor-pointer text-primary hover:underline' : ''}`}
+                              onClick={() => !isLocked && openItemSelector(idx)}
                             >
                               {item.item_name || 'Click to select item'}
                               {item.item_code && ` (${item.item_code})`}
                             </div>
                           </div>
-                          <div className="flex gap-1">
-                            <Button type="button" size="sm" variant="outline" onClick={() => duplicateItem(idx)} title="Duplicate">
-                              <Copy size={14} />
-                            </Button>
-                            <Button type="button" size="sm" variant="destructive" onClick={() => removeItem(idx)}>
-                              <Trash2 size={14} />
-                            </Button>
-                          </div>
+                          {!isLocked && (
+                            <div className="flex gap-1">
+                              <Button type="button" size="sm" variant="outline" onClick={() => duplicateItem(idx)} title="Duplicate">
+                                <Copy size={14} />
+                              </Button>
+                              <Button type="button" size="sm" variant="destructive" onClick={() => removeItem(idx)}>
+                                <Trash2 size={14} />
+                              </Button>
+                            </div>
+                          )}
                         </div>
 
                         <div className="grid grid-cols-3 gap-2">
