@@ -12,7 +12,7 @@ import { QuickCreatePartyModal } from '../components/QuickCreatePartyModal';
 import { QuickCreateItemModal } from '../components/QuickCreateItemModal';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Trash2, Plus, ArrowRightLeft, User, Copy } from 'lucide-react';
+import { Trash2, Plus, ArrowRightLeft, User, Copy, Lock, FileDown } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const SOAForm = () => {
@@ -29,6 +29,7 @@ export const SOAForm = () => {
   const [convertTarget, setConvertTarget] = useState('');
   const [isConverting, setIsConverting] = useState(false);
   const [selectedParty, setSelectedParty] = useState(null);
+  const [isLocked, setIsLocked] = useState(false);
   const [formData, setFormData] = useState({
     party_id: '', date: new Date().toISOString().split('T')[0],
     terms_and_conditions: '', remarks: '', soa_status: 'In Process', items: []
