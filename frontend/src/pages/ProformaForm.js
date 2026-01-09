@@ -383,7 +383,6 @@ export const ProformaForm = () => {
                   className="w-full justify-start text-left font-normal h-10 truncate"
                   onClick={() => !isLocked && setIsPartyModalOpen(true)}
                   disabled={isLocked}
-                  onClick={() => setIsPartyModalOpen(true)}
                 >
                   {selectedParty ? (
                     <span className="truncate">{selectedParty.party_name} ({selectedParty.city})</span>
