@@ -401,20 +401,23 @@ export const ProformaForm = () => {
                 <Input type="number" value={formData.validity_days} onChange={e => setFormData({...formData, validity_days: parseInt(e.target.value)})} />
               </div>
             </div>
+            </fieldset>
 
             {/* Items Section */}
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <Label className="text-lg font-semibold">Items</Label>
-                <Button type="button" onClick={addItem} className="gap-2">
-                  <Plus size={16} />
-                  Add Item
-                </Button>
+                {!isLocked && (
+                  <Button type="button" onClick={addItem} className="gap-2">
+                    <Plus size={16} />
+                    Add Item
+                  </Button>
+                )}
               </div>
 
               {formData.items.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
-                  No items added yet. Click "Add Item" to get started.
+                  No items added yet. Click &quot;Add Item&quot; to get started.
                 </div>
               ) : (
                 <div className="space-y-4">
