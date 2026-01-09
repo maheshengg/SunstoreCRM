@@ -585,6 +585,24 @@ async def delete_item(item_id: str, current_user: dict = Depends(get_current_use
         raise HTTPException(status_code=404, detail="Item not found")
     return {"message": "Item deleted successfully"}
 
+@api_router.post("/items/{item_id}/duplicate")
+async def duplicate_item(item_id: str, current_user: dict = Depends(get_current_user)):
+    item = await db.items.find_one({"item_id": item_id}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    item_count = await db.items.count_documents({})
+    new_item_id = f"ITM{str(item_count + 1).zfill(4)}"
+    
+    new_item = item.copy()
+    new_item["item_id"] = new_item_id
+    new_item["item_code"] = f"{item['item_code']}_COPY"
+    new_item["item_name"] = f"{item.get('item_name', '')} (Copy)"
+    
+    await db.items.insert_one(new_item)
+    
+    return {"message": "Item duplicated successfully", "item_id": new_item_id}
+
 @api_router.get("/items/export/csv")
 async def export_items_csv(current_user: dict = Depends(get_current_user)):
     items = await db.items.find({}, {"_id": 0}).to_list(10000)
