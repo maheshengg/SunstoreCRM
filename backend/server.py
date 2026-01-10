@@ -186,12 +186,15 @@ class ProformaInvoice(ProformaInvoiceBase):
     created_by_user_id: str
 
 class SOABase(BaseModel):
-    party_confirmation_ID: str
+    party_confirmation_ID: str = ""
     party_id: str
+    party_name_snapshot: str = ""  # Stored at save time - IMMUTABLE for PDF
     reference_document_id: Optional[str] = None
     terms_and_conditions: str = ""
+    remarks: str = ""
     date: str
     soa_status: str = "In Process"
+    is_locked: bool = False
     items: List[QuotationItemBase]
 
 class SOACreate(SOABase):
