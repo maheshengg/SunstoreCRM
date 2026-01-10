@@ -166,6 +166,7 @@ class Quotation(QuotationBase):
 
 class ProformaInvoiceBase(BaseModel):
     party_id: str
+    party_name_snapshot: str = ""  # Stored at save time - IMMUTABLE for PDF
     reference_document_id: Optional[str] = None
     date: str
     validity_days: int = 30
@@ -173,6 +174,7 @@ class ProformaInvoiceBase(BaseModel):
     delivery_terms: str = ""
     remarks: str = ""
     pi_status: str = "PI Submitted"
+    is_locked: bool = False
     items: List[QuotationItemBase]
 
 class ProformaInvoiceCreate(ProformaInvoiceBase):
