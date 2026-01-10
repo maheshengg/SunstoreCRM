@@ -281,6 +281,7 @@ export const SOAForm = () => {
       item_code: newItem.item_code,
       HSN: newItem.HSN,
       GST_percent: newItem.GST_percent,
+      UOM: newItem.UOM || 'Nos',  // CRITICAL: Store UOM
       qty: 1,
       rate: newItem.rate || 0,
       discount_percent: 0,
@@ -297,11 +298,17 @@ export const SOAForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // CRITICAL: Include party_name_snapshot for data integrity
+      const submitData = {
+        ...formData,
+        party_name_snapshot: selectedParty?.party_name || ''
+      };
+      
       if (id) {
-        await api.updateSOA(id, formData);
+        await api.updateSOA(id, submitData);
         toast.success('SOA updated');
       } else {
-        await api.createSOA(formData);
+        await api.createSOA(submitData);
         toast.success('SOA created');
       }
       navigate('/soa');
