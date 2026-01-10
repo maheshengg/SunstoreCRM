@@ -1629,20 +1629,20 @@ async def generate_pi_pdf(pi_id: str, current_user: dict = Depends(get_current_u
     for item in pi["items"]:
         enriched_item = item.copy()
         
+        # Always fetch description from item master (it's display-only, not stored per line)
+        item_details = await db.items.find_one({"item_id": item["item_id"]}, {"_id": 0})
+        
         # Use stored values first (IMMUTABLE)
         enriched_item['item_name'] = item.get('item_name', '')
         enriched_item['hsn'] = item.get('HSN', '')
         enriched_item['uom'] = item.get('UOM', 'Nos')
-        enriched_item['description'] = item.get('description', '')
+        enriched_item['description'] = item_details.get('description', '') if item_details else ''
         
-        # Only fetch from item master if stored values are empty
-        if not enriched_item['item_name'] or not enriched_item['uom']:
-            item_details = await db.items.find_one({"item_id": item["item_id"]}, {"_id": 0})
-            if item_details:
-                enriched_item['hsn'] = enriched_item['hsn'] or item_details.get('HSN', '')
-                enriched_item['description'] = enriched_item['description'] or item_details.get('description', '')
-                enriched_item['item_name'] = enriched_item['item_name'] or item_details.get('item_name', '')
-                enriched_item['uom'] = enriched_item['uom'] or item_details.get('UOM', 'Nos')
+        # Fallback to item master if stored values are empty (backward compatibility)
+        if item_details:
+            enriched_item['hsn'] = enriched_item['hsn'] or item_details.get('HSN', '')
+            enriched_item['item_name'] = enriched_item['item_name'] or item_details.get('item_name', '')
+            enriched_item['uom'] = enriched_item['uom'] or item_details.get('UOM', 'Nos')
         
         enriched_items.append(enriched_item)
     
