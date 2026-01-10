@@ -181,6 +181,7 @@ export const ProformaForm = () => {
         item_code: '',
         HSN: '',
         GST_percent: 0,
+        UOM: 'Nos',  // CRITICAL: Store UOM per line item
         qty: 1, 
         rate: 0, 
         discount_percent: 0, 
@@ -205,6 +206,7 @@ export const ProformaForm = () => {
     const party = parties.find(p => p.party_id === formData.party_id);
     const newItems = [...formData.items];
     
+    // CRITICAL: Store ALL item data including UOM at selection time - IMMUTABLE
     newItems[currentItemIndex] = {
       ...newItems[currentItemIndex],
       item_id: selectedItem.item_id,
@@ -212,6 +214,7 @@ export const ProformaForm = () => {
       item_code: selectedItem.item_code,
       HSN: selectedItem.HSN,
       GST_percent: selectedItem.GST_percent,
+      UOM: selectedItem.UOM || 'Nos',  // CRITICAL: Store UOM
       rate: selectedItem.rate,
     };
     
