@@ -1541,26 +1541,39 @@ async def convert_soa_to_pi(soa_id: str, current_user: dict = Depends(get_curren
 
 @api_router.get("/quotations/{quotation_id}/pdf")
 async def generate_quotation_pdf(quotation_id: str, current_user: dict = Depends(get_current_user)):
+    # CRITICAL: Fetch document fresh from DB by document_id
     quotation = await db.quotations.find_one({"quotation_id": quotation_id}, {"_id": 0})
     if not quotation:
         raise HTTPException(status_code=404, detail="Quotation not found")
     
+    # CRITICAL: Resolve party strictly by party_id - no fallback
     party = await db.parties.find_one({"party_id": quotation["party_id"]}, {"_id": 0})
     
-    # Enrich items with full details from item master (batch fetch to avoid N+1)
-    item_ids = [item["item_id"] for item in quotation["items"]]
-    items_cursor = await db.items.find({"item_id": {"$in": item_ids}}, {"_id": 0}).to_list(1000)
-    items_map = {i["item_id"]: i for i in items_cursor}
+    # Use party_name_snapshot if available (for data integrity), otherwise use fresh party lookup
+    if quotation.get("party_name_snapshot") and party:
+        party["party_name"] = quotation["party_name_snapshot"]
     
+    # CRITICAL: Items must use stored values (UOM, item_name, etc.), not item master
+    # Only fallback to item master if stored values are missing
     enriched_items = []
     for item in quotation["items"]:
         enriched_item = item.copy()
-        item_details = items_map.get(item["item_id"])
-        if item_details:
-            enriched_item['hsn'] = item_details.get('HSN', '')
-            enriched_item['description'] = item_details.get('description', '')
-            enriched_item['item_name'] = item_details.get('item_name', '')
-            enriched_item['uom'] = item_details.get('UOM', 'Nos')
+        
+        # Use stored values first (IMMUTABLE data captured at save time)
+        enriched_item['item_name'] = item.get('item_name', '')
+        enriched_item['hsn'] = item.get('HSN', '')
+        enriched_item['uom'] = item.get('UOM', 'Nos')  # CRITICAL: Use stored UOM
+        enriched_item['description'] = item.get('description', '')
+        
+        # Only fetch from item master if stored values are empty (backward compatibility)
+        if not enriched_item['item_name'] or not enriched_item['uom']:
+            item_details = await db.items.find_one({"item_id": item["item_id"]}, {"_id": 0})
+            if item_details:
+                enriched_item['hsn'] = enriched_item['hsn'] or item_details.get('HSN', '')
+                enriched_item['description'] = enriched_item['description'] or item_details.get('description', '')
+                enriched_item['item_name'] = enriched_item['item_name'] or item_details.get('item_name', '')
+                enriched_item['uom'] = enriched_item['uom'] or item_details.get('UOM', 'Nos')
+        
         enriched_items.append(enriched_item)
     
     # Calculate totals
