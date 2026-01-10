@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend Testing for SUNSTORE KOLHAPUR CRM - PDF Generation Update
-Testing the updated PDF generation functionality for Quotations
+Backend Testing for SUNSTORE KOLHAPUR CRM - CRITICAL DATA INTEGRITY FIXES
+Testing party name integrity, UOM integrity, and data flow verification
 """
 
 import requests
@@ -14,8 +14,8 @@ import sys
 BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://sunstore-crm.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
-# Test credentials
-ADMIN_EMAIL = "admin@sunstore.com"
+# Test credentials from review request
+ADMIN_EMAIL = "uday.patil@maheshengg.com"
 ADMIN_PASSWORD = "admin123"
 
 class CRMTester:
