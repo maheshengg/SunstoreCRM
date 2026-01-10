@@ -280,6 +280,7 @@ export const ProformaForm = () => {
       item_code: newItem.item_code,
       HSN: newItem.HSN,
       GST_percent: newItem.GST_percent,
+      UOM: newItem.UOM || 'Nos',  // CRITICAL: Store UOM
       qty: 1,
       rate: newItem.rate || 0,
       discount_percent: 0,
@@ -296,11 +297,17 @@ export const ProformaForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // CRITICAL: Include party_name_snapshot for data integrity
+      const submitData = {
+        ...formData,
+        party_name_snapshot: selectedParty?.party_name || ''
+      };
+      
       if (id) {
-        await api.updateProformaInvoice(id, formData);
+        await api.updateProformaInvoice(id, submitData);
         toast.success('Proforma Invoice updated');
       } else {
-        await api.createProformaInvoice(formData);
+        await api.createProformaInvoice(submitData);
         toast.success('Proforma Invoice created');
       }
       navigate('/proforma-invoices');
