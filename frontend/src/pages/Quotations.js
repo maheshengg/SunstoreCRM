@@ -76,7 +76,6 @@ export const Quotations = () => {
     fetchUsers();
     fetchParties();
     fetchQuotations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleApplyFilter = () => {
