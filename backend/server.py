@@ -130,6 +130,11 @@ class Lead(LeadBase):
 
 class QuotationItemBase(BaseModel):
     item_id: str
+    item_name: str = ""  # Stored at selection time - IMMUTABLE
+    item_code: str = ""  # Stored at selection time - IMMUTABLE
+    UOM: str = "Nos"     # Stored at selection time - IMMUTABLE
+    HSN: str = ""        # Stored at selection time - IMMUTABLE
+    GST_percent: float = 18  # Stored at selection time - IMMUTABLE
     qty: float
     rate: float
     discount_percent: float = 0
@@ -140,6 +145,7 @@ class QuotationItemBase(BaseModel):
 
 class QuotationBase(BaseModel):
     party_id: str
+    party_name_snapshot: str = ""  # Stored at save time - IMMUTABLE for PDF
     reference_lead_id: Optional[str] = None
     date: str
     validity_days: int = 30
@@ -147,6 +153,7 @@ class QuotationBase(BaseModel):
     delivery_terms: str = ""
     remarks: str = ""
     quotation_status: Optional[str] = None
+    is_locked: bool = False
     items: List[QuotationItemBase]
 
 class QuotationCreate(QuotationBase):
