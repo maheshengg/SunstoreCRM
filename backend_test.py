@@ -927,11 +927,11 @@ class CRMTester:
             return False
     
     def run_all_tests(self):
-        """Run all PDF generation tests"""
-        print("🚀 Starting SUNSTORE KOLHAPUR CRM - PDF Generation Testing")
-        print("=" * 70)
+        """Run all CRITICAL DATA INTEGRITY tests"""
+        print("🚀 Starting SUNSTORE KOLHAPUR CRM - CRITICAL DATA INTEGRITY TESTING")
+        print("=" * 80)
         
-        # Step 1: Login
+        # Step 1: Login with correct credentials
         if not self.login_admin():
             print("❌ Cannot proceed without admin login")
             return False
@@ -944,24 +944,39 @@ class CRMTester:
             print("❌ Cannot proceed without parties and items data")
             return False
         
-        # Step 3: Create test quotation with 'In Process' status
-        quotation = self.create_test_quotation(parties, items)
+        print(f"\n📋 Test Data Available:")
+        print(f"   Parties: {len(parties)}")
+        print(f"   Items: {len(items)}")
         
-        # Step 4: Test PDF download and content
-        if quotation:
-            self.test_quotation_pdf_download(quotation)
+        # Step 3: Run CRITICAL DATA INTEGRITY TESTS
+        print(f"\n🔍 Running Critical Data Integrity Tests...")
         
-        # Step 5: Test dashboard stats
-        self.test_dashboard_stats()
+        # Test A: Party Name Integrity Test
+        print(f"\n--- Test A: Party Name Integrity ---")
+        quotation_with_snapshot = self.create_test_quotation_with_party_snapshot(parties, items)
+        if quotation_with_snapshot:
+            self.test_party_name_integrity(quotation_with_snapshot, parties[0])
         
-        # Step 6: Test quotation status options
-        if quotation:
-            self.test_quotation_status_options(quotation)
+        # Test B: UOM Integrity Test
+        print(f"\n--- Test B: UOM Integrity ---")
+        self.test_uom_integrity(items)
+        
+        # Test C: Item Change Test
+        print(f"\n--- Test C: Item Change Test ---")
+        self.test_item_change_integrity(parties, items)
+        
+        # Test D: Duplicate Item Test
+        print(f"\n--- Test D: Duplicate Item Test ---")
+        self.test_duplicate_item_integrity(parties, items)
+        
+        # Test E: Data Flow Verification
+        print(f"\n--- Test E: Data Flow Verification ---")
+        self.test_data_flow_verification(parties, items)
         
         # Summary
-        print("\n" + "=" * 70)
-        print("📊 TEST SUMMARY")
-        print("=" * 70)
+        print("\n" + "=" * 80)
+        print("📊 CRITICAL DATA INTEGRITY TEST SUMMARY")
+        print("=" * 80)
         
         total_tests = len(self.test_results)
         passed_tests = sum(1 for result in self.test_results if result['success'])
@@ -972,11 +987,33 @@ class CRMTester:
         print(f"Failed: {failed_tests} ❌")
         print(f"Success Rate: {(passed_tests/total_tests*100):.1f}%")
         
+        # Critical Issues Report
+        critical_failures = []
+        for result in self.test_results:
+            if not result['success'] and any(keyword in result['test'].lower() for keyword in ['integrity', 'party', 'uom', 'data flow']):
+                critical_failures.append(result)
+        
+        if critical_failures:
+            print(f"\n🚨 CRITICAL DATA INTEGRITY FAILURES:")
+            for result in critical_failures:
+                print(f"  ❌ {result['test']}: {result['message']}")
+                if result.get('details'):
+                    print(f"     Details: {result['details']}")
+        
         if failed_tests > 0:
-            print("\n❌ FAILED TESTS:")
+            print(f"\n❌ ALL FAILED TESTS:")
             for result in self.test_results:
                 if not result['success']:
                     print(f"  - {result['test']}: {result['message']}")
+        
+        # Test-specific recommendations
+        if critical_failures:
+            print(f"\n💡 RECOMMENDATIONS:")
+            print(f"  - Verify party_name_snapshot field is being stored and used in PDF generation")
+            print(f"  - Ensure UOM field is stored per item line and not fetched from item master")
+            print(f"  - Check that item changes update stored values, not just references")
+            print(f"  - Validate that duplicate items maintain separate UOM storage")
+            print(f"  - Test complete data flow from creation to PDF generation")
         
         return failed_tests == 0
 
